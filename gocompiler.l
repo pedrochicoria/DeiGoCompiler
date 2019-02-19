@@ -67,9 +67,9 @@ RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"e
 "func"			{if(print==1) printf("FUNC\n");collumn+=yyleng;}
 "os.Args"       {if(print==1) printf("CMDARGS \n");collumn+=yyleng;}
 {REALLIT}		{if(print==1) printf("REALLIT(%s)\n",yytext);collumn+=yyleng;}
-{STRLIT}       {if(print==1) printf("STRLIT(%s)\n",yytext);collumn+=yyleng;}
+{STRLIT}        {if(print==1) printf("STRLIT(%s)\n",yytext);collumn+=yyleng;}
 {ID}            {if(print==1) printf("ID(%s)\n",yytext);collumn+=yyleng;}
-
+{INLIT}         {if(print==1) printf("INTLIT(%s)\n",yytext);collumn+=yyleng;}
 
 
 
