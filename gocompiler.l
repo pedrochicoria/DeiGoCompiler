@@ -72,6 +72,8 @@ RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"e
 {INTLIT}         {if(print==1) printf("INTLIT(%s)\n",yytext);collumn+=yyleng;}
 
 
+"\t"|" "    {collumn+=yyleng;}
+"\n"|"\r"|"\r\n"    {line++;collumn=1;}
 
 .   {printf("Erro");} // erro de caracter illegal
 
