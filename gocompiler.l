@@ -17,8 +17,8 @@ EXPOENTS ("e"|"E")("+"|"-")?{NUMBER}
 ID ([a-zA-Z_])({NUMBER}|[a-zA-Z_])*
 INTLIT {NUMBER}|(0(x|X)([a-fA-F]|{NUMBER}))
 REALLIT  {NUMBER}"."{NUMBER}?{EXPOENTS}?|"."{NUMBER}({EXPOENTS})?|{NUMBER}{EXPOENTS}
-STRLIT  \"(({ESCAPE}|[^"])*)\"
-ESCAPE \\\f|\\\n|\\\r|\\\t|\\\\|(\\\")
+STRLIT  \"(({ESCAPE}|[^"^\\])*)\"
+ESCAPE \\f|\\n|\\r|\\t|\\\\|(\\\")
 
 
 RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"else"|"fallthrough"|"for"|"func"|"go"|"goto"|"if"|"import"|"interface"|"map"|"package"|"range"|"return"|"select"|"struct"|"switch"|"type"|"var"
@@ -71,10 +71,9 @@ RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"e
 {ID}            {if(print==1) printf("ID(%s)\n",yytext);collumn+=yyleng;}
 
 
-"\t"|" "    {collumn+=yyleng;}
-"\n"|"\r"|"\r\n"    {line++;collumn=1;}
 
-.   {printf("Erro\n");} /* aqui da print de um erro de illegal character (verificar no enunciado)*/
+
+.   {printf("Erro");} // erro de caracter illegal
 
 %%
 int main(int argc, char *argv[]){
