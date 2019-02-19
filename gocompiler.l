@@ -1,8 +1,8 @@
-%x comment
+
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include "y.tab.h"
+    #include <string.h>
 
     int line=1;
     int collumn=1;
@@ -11,28 +11,21 @@
     int print=0;
 %}
 
-RESERVED "break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"else"|"fallthrough"|"for"|"func"|"go"|"goto"|"if"|"import"|"interface"|"map"|"package"|"range"|"return"|"select"|"struct"|"switch"|"type"|"var"
-INTLIT [0-9]+
+NUMBER  [0-9]+
+EXPOENTS ("e"|"E")("+"|"-")?{NUMBER}
 
-ID ([a-zA-Z_])([0-9]|[a-zA-Z_])*
+ID ([a-zA-Z_])({NUMBER}|[a-zA-Z_])*
+INTLIT {NUMBER}|(0(x|X)([a-fA-F]|{NUMBER}))
+REALLIT  {NUMBER}"."{NUMBER}?{EXPOENTS}?|"."{NUMBER}({EXPOENTS})?|{NUMBER}{EXPOENTS}
+STRLIT  \"(({ESCAPE}|[^"])*)\"
+ESCAPE \\\f|\\\n|\\\r|\\\t|\\\\|(\\\")
 
-REALLIT  {INTLIT}"."{INTLIT}?{EXPOENTS}?|"."{INTLIT}({EXPOENTS})?|{INTLIT}{EXPOENTS}
 
-EXPOENTS ("e"|"E")("+"|"-")?{INTLIT}
-
-
+RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"else"|"fallthrough"|"for"|"func"|"go"|"goto"|"if"|"import"|"interface"|"map"|"package"|"range"|"return"|"select"|"struct"|"switch"|"type"|"var"
 %%
-"\t"|" "	{collumn+=yyleng;}
-"\n"|"\r"|"\r\n"    {line++;collumn=1;}
 
-"/*"    {BEGIN comment; collumn_begin=collumn;line_begin=line;collumn+=yyleng;}/*begin of comment*/
-<comment>\r|\n|\r\n {line++;collumn=1;}/*change of line, lines ++ and collumn = 1*/
-<comment>\t  {line=1;collumn++;} /*space, collumn++ and line = 1*/
-<comment>"*/" {BEGIN 0;collumn+=yyleng;} /*end of comment*/
-<comment><<EOF>> {printf("Line %d, col %d: unterminated comment\n",line_begin, collumn_begin);
-                 collumn+=1; 
-                 yyterminate();}
-<comment>. {collumn+=yyleng;} /*any character */
+
+
 
 
 ";"             {if(print==1) printf("SEMICOLON\n");collumn+=yyleng;}
@@ -74,8 +67,14 @@ EXPOENTS ("e"|"E")("+"|"-")?{INTLIT}
 "func"			{if(print==1) printf("FUNC\n");collumn+=yyleng;}
 "os.Args"       {if(print==1) printf("CMDARGS \n");collumn+=yyleng;}
 {REALLIT}		{if(print==1) printf("REALLIT(%s)\n",yytext);collumn+=yyleng;}
+{STRLIT}       {if(print==1) printf("STRLIT(%s)\n",yytext);collumn+=yyleng;}
 {ID}            {if(print==1) printf("ID(%s)\n",yytext);collumn+=yyleng;}
-{RESERVED}		{if(print==1) printf("RESERVED(%s)\n",yytext);collumn+=yyleng;}
+
+
+"\t"|" "    {collumn+=yyleng;}
+"\n"|"\r"|"\r\n"    {line++;collumn=1;}
+
+.   {printf("Erro\n");} /* aqui da print de um erro de illegal character (verificar no enunciado)*/
 
 %%
 int main(int argc, char *argv[]){
