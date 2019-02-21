@@ -73,7 +73,10 @@ RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"e
 
 
 "\t"|" "    {collumn+=yyleng;}
-"\n"|"\r"|"\r\n"    {line++;collumn=1;}
+"\r"    {line++;collumn=1;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha
+"\n"    {line++;collumn=1;} // line feed - move o cursor para a proxima linha
+"\r\n"    {line++;collumn=1;} // end of line - combinacao dos dois
+
 
 .   {printf("Erro");} // erro de caracter illegal
 
