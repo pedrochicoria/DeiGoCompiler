@@ -18,6 +18,8 @@
 
 %X STRLIT
 %X IDSTATE
+%x MULTILINECOMENT
+%x ONELINECOMENT
 
 
 NUMBER  [0-9]+
@@ -76,7 +78,7 @@ CMDARGS         "os.Args"
 
 
 %%
-
+{SPACES}    {column+=yyleng;}
 {NEWLINE}    {line++;column=1;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
                             
 {SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;}
@@ -118,15 +120,13 @@ CMDARGS         "os.Args"
 {FUNC}			{if(print==1) printf("FUNC\n");column+=yyleng;}
 {CMDARGS}       {if(print==1) printf("CMDARGS\n");column+=yyleng;}
 
-
 {REALLIT}       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;}
-
 {INTLIT}        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;}
 {RESERVED}      {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;}
 
 
-{SPACES}    {column+=yyleng;}
-{ID}{SPACES}*{NEWLINE}        {
+
+{ID}{SPACES}*{NEWLINE}          {
                                 idaux=yytext;
                                 int i=0;
                                 while(yytext[i]!='\0'&&yytext[i]!=' '&&yytext[i]!='\n'){
@@ -137,7 +137,6 @@ CMDARGS         "os.Args"
                                 if(print==1) printf("ID(%s)\n",idaux);
                                 if(print==1) printf("SEMICOLON\n");
                                 }
-
 {ID}                            {if(print==1) printf("ID(%s)\n",yytext);}
 
 
@@ -183,9 +182,29 @@ CMDARGS         "os.Args"
                     }
                     BEGIN 0;
                     }
+
+<STRLIT>\"{SPACES}*{NEWLINE}          {
+                    column+=yyleng;
+                    if (print==1){
+                        if(invalid_escape==0){
+                            printf("STRLIT(%s)\n",strLitAux);
+                            printf("SEMICOLON\n");
+                        }
+                    }
+                    BEGIN 0;
+                    }
 <STRLIT>.           {column+=yyleng;}
 
+"//"    {BEGIN ONELINECOMENT;column+=2;}
+<ONELINECOMENT>{NEWLINE}                {column=1;line++;BEGIN 0;}
+<ONELINECOMENT>.                        {column+=yyleng;}
 
+"/*"                                {BEGIN MULTILINECOMENT;line_begin=line;column_begin=column;column+=2;}
+
+<MULTILINECOMENT>.                      {column+=yyleng;}
+<MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
+<MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
+<MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;}
 . {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 
 
