@@ -17,7 +17,7 @@ EXPOENTS ("e"|"E")("+"|"-")?{NUMBER}
 ID ([a-zA-Z]|"_")({NUMBER}|[a-zA-Z]|"_")*
 INTLIT {NUMBER}|(0(x|X)([a-fA-F]|{NUMBER}))
 REALLIT  {NUMBER}"."{NUMBER}?{EXPOENTS}?|"."{NUMBER}({EXPOENTS})?|{NUMBER}{EXPOENTS}
-STRLIT  \"(({ESCAPE}|[^"^\\]|" ")*)\"
+STRLIT  \"(({ESCAPE}|[^"^\\^\n]|" ")*)\"
 UNTERMINATED_STRLIT \"([^\"])*
 ESCAPE \\f|\\n|\\r|\\t|\\\\|(\\\")
 RESERVED "++"|"--"|"break"|"case"|"chan"|"const"|"continue"|"default"|"defer"|"fallthrough"|"func"|"go"|"goto"|"import"|"interface"|"map"|"range"|"select"|"struct"|"switch"|"type"
@@ -112,7 +112,7 @@ CMDARGS         "os.Args"
 {ID}            {if(print==1) printf("ID(%s)\n",yytext);collumn+=yyleng;}
 {INTLIT}        {if(print==1) printf("INTLIT(%s)\n",yytext);collumn+=yyleng;}
 {RESERVED}      {if(print==1) printf("RESERVED(%s)\n",yytext);collumn+=yyleng;}
-{UNTERMINATED_STRLIT} {printf("Line %d, column %d: unterminated string literal\n\n",line,collumn);collumn+=yyleng;}
+{UNTERMINATED_STRLIT} {printf("Line %d, column %d: unterminated string literal %s\n",line,collumn,yytext);collumn+=yyleng;line++;} // APAGAR PARTE
 
 
 "\t"|" "|"\f"    {collumn+=yyleng;}
@@ -121,12 +121,12 @@ CMDARGS         "os.Args"
 "\r\n"    {line++;collumn=1;} // end of line - combinacao dos dois
 
 
-. {printf("Line %d, col %d: illegal character (%s)\n",line,collumn,yytext);collumn+=yyleng;};
+. {printf("Line %d, column %d: illegal character (%s)\n",line,collumn,yytext);collumn+=yyleng;};
 
 
 %%
 int main(int argc, char *argv[]){
-    if(argc>=2 && strcmp(argv[1],"-l")==0){
+    if(strcmp(argv[1],"-l")==0){
 		print=1;
         yylex();
     }
