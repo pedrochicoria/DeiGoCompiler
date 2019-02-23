@@ -78,9 +78,7 @@ CMDARGS         "os.Args"
 %%
 
 {NEWLINE}    {line++;column=1;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
-{ID}{SPACES}*{NEWLINE}        {if(print==1) printf("ID(%s)\n",yytext);
-                                if(print==1) printf("SEMICOLON\n");
-                            }
+                            
 {SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;}
 {BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;}
 {PACKAGE}       {if(print==1) printf("PACKAGE\n");column+=yyleng;}
@@ -128,7 +126,17 @@ CMDARGS         "os.Args"
 
 
 {SPACES}    {column+=yyleng;}
-
+{ID}{SPACES}*{NEWLINE}        {
+                                idaux=yytext;
+                                int i=0;
+                                while(yytext[i]!='\0'&&yytext[i]!=' '&&yytext[i]!='\n'){
+                                    idaux[i]=yytext[i];
+                                    i++;
+                                }
+                                idaux[i]='\0';
+                                if(print==1) printf("ID(%s)\n",idaux);
+                                if(print==1) printf("SEMICOLON\n");
+                                }
 
 {ID}                            {if(print==1) printf("ID(%s)\n",yytext);}
 
