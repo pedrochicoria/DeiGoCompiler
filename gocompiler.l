@@ -84,7 +84,7 @@ CMDARGS         "os.Args"
 {SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;}
 {BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;}
 {PACKAGE}       {if(print==1) printf("PACKAGE\n");column+=yyleng;}
-{RETURN}        {if(print==1) printf("RETURN\n");column+=yyleng;}
+
 {AND}           {if(print==1) printf("AND\n");column+=yyleng;}
 {ASSIGN}        {if(print==1) printf("ASSIGN\n");column+=yyleng;}
 {STAR}          {if(print==1) printf("STAR\n");column+=yyleng;}
@@ -119,12 +119,34 @@ CMDARGS         "os.Args"
 {PARSEINT}      {if(print==1) printf("PARSEINT\n");column+=yyleng;}
 {FUNC}			{if(print==1) printf("FUNC\n");column+=yyleng;}
 {CMDARGS}       {if(print==1) printf("CMDARGS\n");column+=yyleng;}
-
-{REALLIT}       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;}
-{INTLIT}        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;}
 {RESERVED}      {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;}
 
+{REALLIT}                       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;}
+{REALLIT}{SPACES}*{NEWLINE}     {if(print==1) printf("REALLIT(%s)\n",yytext);
+                                if(print==1) printf("SEMICOLON\n");
+                                line++;
+                                column=1;
+                                }
 
+
+
+
+{INTLIT}                        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;}
+{INTLIT}{SPACES}*{NEWLINE}      {if(print==1) printf("INTLIT(%s)\n",yytext);
+                                if(print==1) printf("SEMICOLON\n");
+                                line++;
+                                column=1;
+                                }
+
+
+
+{RETURN}{SPACES}*{NEWLINE}      {
+                                if(print==1) printf("RETURN\n");
+                                if(print==1) printf("SEMICOLON\n");
+                                line++;
+                                column=1;
+                                }
+{RETURN}        {if(print==1) printf("RETURN\n");column+=yyleng;}
 
 {ID}{SPACES}*{NEWLINE}          {
                                 idaux=yytext;
@@ -136,8 +158,11 @@ CMDARGS         "os.Args"
                                 idaux[i]='\0';
                                 if(print==1) printf("ID(%s)\n",idaux);
                                 if(print==1) printf("SEMICOLON\n");
+                                line++;
+                                column=1;
                                 }
-{ID}                            {if(print==1) printf("ID(%s)\n",yytext);}
+{ID}                            {if(print==1) printf("ID(%s)\n",yytext);column+=yyleng;}
+
 
 
 
@@ -179,17 +204,6 @@ CMDARGS         "os.Args"
                             printf("STRLIT(%s)\n",strLitAux);
                         }
                         
-                    }
-                    BEGIN 0;
-                    }
-
-<STRLIT>\"{SPACES}*{NEWLINE}          {
-                    column+=yyleng;
-                    if (print==1){
-                        if(invalid_escape==0){
-                            printf("STRLIT(%s)\n",strLitAux);
-                            printf("SEMICOLON\n");
-                        }
                     }
                     BEGIN 0;
                     }
