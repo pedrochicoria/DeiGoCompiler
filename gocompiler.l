@@ -12,7 +12,7 @@
     char* strLitAux;
     char* idaux;
     int invalid_escape;
-    int end_of_file=0;
+
     int missing_semicolon=0;
 
 %}
@@ -83,115 +83,51 @@ EOF             "<EOF>"
 %%
 
 {SPACES}    {column+=yyleng;}
-{NEWLINE}    {line++;column=1;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
+{NEWLINE}    {if(print==1&&missing_semicolon==1) printf("SEMICOLON\n");line++;column=1;missing_semicolon=0;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
                             
-{SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;}
-{BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;}
-{PACKAGE}       {if(print==1) printf("PACKAGE\n");column+=yyleng;}
+{SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;missing_semicolon=0;}
+{BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;missing_semicolon=0;}
+{PACKAGE}       {if(print==1) printf("PACKAGE\n");column+=yyleng;missing_semicolon=0;}
 
-{AND}           {if(print==1) printf("AND\n");column+=yyleng;}
-{ASSIGN}        {if(print==1) printf("ASSIGN\n");column+=yyleng;}
-{STAR}          {if(print==1) printf("STAR\n");column+=yyleng;}
-{COMMA}         {if(print==1) printf("COMMA\n");column+=yyleng;}
-{DIV}           {if(print==1) printf("DIV\n");column+=yyleng;}
-{EQ}            {if(print==1) printf("EQ\n");column+=yyleng;}
-{GE}            {if(print==1) printf("GE\n");column+=yyleng;}
-{GT}            {if(print==1) printf("GT\n");column+=yyleng;}
-{LBRACE}        {if(print==1) printf("LBRACE\n");column+=yyleng;}
-{LE}            {if(print==1) printf("LE\n");column+=yyleng;}
-{LPAR}          {if(print==1) printf("LPAR\n");column+=yyleng;}
-{LSQ}           {if(print==1) printf("LSQ\n");column+=yyleng;}
-{LT}            {if(print==1) printf("LT\n");column+=yyleng;}
-{MINUS}			{if(print==1) printf("MINUS\n");column+=yyleng;}
-{MOD}		    {if(print==1) printf("MOD\n");column+=yyleng;}
-{NE}			{if(print==1) printf("NE\n");column+=yyleng;}
-{NOT}		    {if(print==1) printf("NOT\n");column+=yyleng;}
-{OR}			{if(print==1) printf("OR\n");column+=yyleng;}
-{PLUS}			{if(print==1) printf("PLUS\n");column+=yyleng;}
-
-{RBRACE}                    {if(print==1) printf("RBRACE\n");
-                            column+=yyleng;
-                            if(print==1) printf("SEMICOLON\n");}
-
-{RBRACE}/.                  {if(print==1) printf("RBRACE\n");
-                            column+=yyleng;}
-{RBRACE}{SPACES}*{NEWLINE}               {if(print==1) printf("RBRACE\n");
-                            if(print==1) printf("SEMICOLON\n");
-                            column+=yyleng;
-                            missing_semicolon=1;} 
-{RPAR}			            {if(print==1) printf("RPAR\n");
-                            column+=yyleng;}
-{RPAR}{SPACES}*{NEWLINE}           {if(print==1) printf("RPAR\n");
-                            if(print==1) printf("SEMICOLON\n");
-                            column+=yyleng;
-                        missing_semicolon=1;}                            
-{RSQ}                       {if(print==1) printf("RSQ\n");
-                            column+=yyleng;
-                        missing_semicolon=1;}
-{RSQ}{SPACES}*{NEWLINE}            {if(print==1) printf("RSQ\n");
-                            if(print==1) printf("SEMICOLON\n");
-                            column+=yyleng;
-                            missing_semicolon=1;}
-{ELSE}			            {if(print==1) printf("ELSE\n");column+=yyleng;}
-{FOR}			            {if(print==1) printf("FOR\n");column+=yyleng;}
-{IF}			            {if(print==1) printf("IF\n");column+=yyleng;}
-{VAR}			            {if(print==1) printf("VAR\n");column+=yyleng;}
-{INT}			            {if(print==1) printf("INT\n");column+=yyleng;}
-{FLOAT32}		            {if(print==1) printf("FLOAT32\n");column+=yyleng;}
-{BOOL}			            {if(print==1) printf("BOOL\n");column+=yyleng;}
-{STRING}		            {if(print==1) printf("STRING\n");column+=yyleng;}
-{PRINT}                     {if(print==1) printf("PRINT\n");column+=yyleng;}
-{PARSEINT}                  {if(print==1) printf("PARSEINT\n");column+=yyleng;}
-{FUNC}			            {if(print==1) printf("FUNC\n");column+=yyleng;}
-{CMDARGS}                   {if(print==1) printf("CMDARGS\n");column+=yyleng;}
-{RESERVED}                  {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;}
-
-{REALLIT}                       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;}
-{REALLIT}{SPACES}*{NEWLINE}     {if(print==1) printf("REALLIT(%s)\n",yytext);
-                                if(print==1) printf("SEMICOLON\n");
-                                line++;
-                                column=1;
-                                missing_semicolon=1;
-                                }
-
-{INTLIT}                        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;}
-{INTLIT}{SPACES}*{NEWLINE}      {idaux=yytext;
-                                int i=0;
-                                while(yytext[i]!='\0'&&yytext[i]!=' '&&yytext[i]!='\n'){
-                                    idaux[i]=yytext[i];
-                                    i++;
-                                }
-                                idaux[i]='\0';
-                                if(print==1) printf("INTLIT(%s)\n",idaux);
-                                if(print==1) printf("SEMICOLON\n");
-                                line++;
-                                column=1;
-                                missing_semicolon=1;
-                                }
-
-{RETURN}{SPACES}*{NEWLINE}         {
-                                if(print==1) printf("RETURN\n");
-                                if(print==1) printf("SEMICOLON\n");
-                                line++;
-                                column=1;
-                                missing_semicolon=1;
-                                }
-{RETURN}                        {if(print==1) printf("RETURN\n");column+=yyleng;}
-
-{ID}{SPACES}*{NEWLINE}          {
-                                idaux=yytext;
-                                int i=0;
-                                while(yytext[i]!='\0'&&yytext[i]!=' '&&yytext[i]!='\n'){
-                                    idaux[i]=yytext[i];
-                                    i++;
-                                }
-                                idaux[i]='\0';
-                                if(print==1) printf("ID(%s)\n",idaux);
-                                if(print==1) printf("SEMICOLON\n");
-                                line++;
-                                column=1;
-                                }
-{ID}                            {if(print==1) printf("ID(%s)\n",yytext);column+=yyleng;}
+{AND}           {if(print==1) printf("AND\n");column+=yyleng;missing_semicolon=0;}
+{ASSIGN}        {if(print==1) printf("ASSIGN\n");column+=yyleng;missing_semicolon=0;}
+{STAR}          {if(print==1) printf("STAR\n");column+=yyleng;missing_semicolon=0;}
+{COMMA}         {if(print==1) printf("COMMA\n");column+=yyleng;missing_semicolon=0;}
+{DIV}           {if(print==1) printf("DIV\n");column+=yyleng;missing_semicolon=0;}
+{EQ}            {if(print==1) printf("EQ\n");column+=yyleng;missing_semicolon=0;}
+{GE}            {if(print==1) printf("GE\n");column+=yyleng;missing_semicolon=0;}
+{GT}            {if(print==1) printf("GT\n");column+=yyleng;missing_semicolon=0;}
+{LBRACE}        {if(print==1) printf("LBRACE\n");column+=yyleng;missing_semicolon=0;}
+{LE}            {if(print==1) printf("LE\n");column+=yyleng;missing_semicolon=0;}
+{LPAR}          {if(print==1) printf("LPAR\n");column+=yyleng;missing_semicolon=0;}
+{LSQ}           {if(print==1) printf("LSQ\n");column+=yyleng;missing_semicolon=0;}
+{LT}            {if(print==1) printf("LT\n");column+=yyleng;missing_semicolon=0;}
+{MINUS}			{if(print==1) printf("MINUS\n");column+=yyleng;missing_semicolon=0;}
+{MOD}		    {if(print==1) printf("MOD\n");column+=yyleng;missing_semicolon=0;}
+{NE}			{if(print==1) printf("NE\n");column+=yyleng;missing_semicolon=0;}
+{NOT}		    {if(print==1) printf("NOT\n");column+=yyleng;missing_semicolon=0;}
+{OR}			{if(print==1) printf("OR\n");column+=yyleng;missing_semicolon=0;}
+{PLUS}			{if(print==1) printf("PLUS\n");column+=yyleng;missing_semicolon=0;}
+{RBRACE}                    {if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;}
+{RPAR}			            {if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;}                            
+{RSQ}                       {if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;}
+{ELSE}			            {if(print==1) printf("ELSE\n");column+=yyleng;missing_semicolon=0;}
+{FOR}			            {if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;}
+{IF}			            {if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;}
+{VAR}			            {if(print==1) printf("VAR\n");column+=yyleng;missing_semicolon=0;}
+{INT}			            {if(print==1) printf("INT\n");column+=yyleng;missing_semicolon=0;}
+{FLOAT32}		            {if(print==1) printf("FLOAT32\n");column+=yyleng;missing_semicolon=0;}
+{BOOL}			            {if(print==1) printf("BOOL\n");column+=yyleng;missing_semicolon=0;}
+{STRING}		            {if(print==1) printf("STRING\n");column+=yyleng;missing_semicolon=0;}
+{PRINT}                     {if(print==1) printf("PRINT\n");column+=yyleng;missing_semicolon=0;}
+{PARSEINT}                  {if(print==1) printf("PARSEINT\n");column+=yyleng;missing_semicolon=0;}
+{FUNC}			            {if(print==1) printf("FUNC\n");column+=yyleng;missing_semicolon=0;}
+{CMDARGS}                   {if(print==1) printf("CMDARGS\n");column+=yyleng;missing_semicolon=0;}
+{RESERVED}                  {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;missing_semicolon=0;}
+{REALLIT}                       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;missing_semicolon=1;}
+{INTLIT}                        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;missing_semicolon=1;}
+{RETURN}                        {if(print==1) printf("RETURN\n");column+=yyleng;missing_semicolon=1;}
+{ID}                            {if(print==1) printf("ID(%s)\n",yytext);column+=yyleng;missing_semicolon=1;}
 
 
 
@@ -208,13 +144,13 @@ EOF             "<EOF>"
 <STRLIT>{ESCAPE}    {column+=yyleng;}
 
 <STRLIT>(\\.)|(\\)         {
-                            invalid_escape=1;
+                            invalid_escape=1;missing_semicolon=0;
                             printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext);
                             column+=yyleng;
                             }
 
 
-<STRLIT>{NEWLINE}   {line++;column=1;
+<STRLIT>{NEWLINE}   {line++;column=1;missing_semicolon=0;
                     printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
                     BEGIN 0; // volta ao estado inicial 
                     }
@@ -226,7 +162,7 @@ EOF             "<EOF>"
                     }
 
 <STRLIT>\"          {
-                    column+=yyleng;
+                    column+=yyleng;missing_semicolon=1;
                     if (print==1){
                         if(invalid_escape==0){
                             printf("STRLIT(%s)\n",strLitAux);
@@ -247,11 +183,10 @@ EOF             "<EOF>"
 <MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
 <MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
 <MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;}
-<<EOF>>           {if(end_of_file==0){
-                        printf("EOGFFFFFFFFFFF\n");
-                        end_of_file=1;
-                        return 0;
-                    }}
+<<EOF>>           {if(missing_semicolon==1){
+                        printf("SEMICOLON\n");
+                        
+                    }return 0;}
 .               {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 
 
