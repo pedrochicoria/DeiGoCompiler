@@ -183,10 +183,11 @@ EOF             "<EOF>"
 <MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
 <MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
 <MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;}
-<<EOF>>           {if(missing_semicolon==1){
-                        printf("SEMICOLON\n");
+<<EOF>>         {if(missing_semicolon==1){
+                    printf("SEMICOLON\n");
                         
-                    }return 0;}
+                }
+                return 0;}
 .               {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 
 

@@ -1322,10 +1322,10 @@ case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ONELINECOMENT):
 #line 186 "gocompiler.l"
 {if(missing_semicolon==1){
-                        printf("SEMICOLON\n");
-
-                        return 0;
-                    }}
+                    printf("SEMICOLON\n");
+                        
+                }
+                return 0;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
