@@ -12,12 +12,13 @@
     char* strLitAux;
     char* idaux;
     int invalid_escape;
+    int end_of_file=0;
+    int missing_semicolon=0;
 
 %}
 
 
 %X STRLIT
-%X IDSTATE
 %x MULTILINECOMENT
 %x ONELINECOMENT
 
@@ -75,9 +76,12 @@ PARSEINT        "strconv.Atoi"
 FUNC            "func"
 CMDARGS         "os.Args"
 
+EOF             "<EOF>"
+
 
 
 %%
+
 {SPACES}    {column+=yyleng;}
 {NEWLINE}    {line++;column=1;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
                             
@@ -104,49 +108,75 @@ CMDARGS         "os.Args"
 {NOT}		    {if(print==1) printf("NOT\n");column+=yyleng;}
 {OR}			{if(print==1) printf("OR\n");column+=yyleng;}
 {PLUS}			{if(print==1) printf("PLUS\n");column+=yyleng;}
-{RBRACE}        {if(print==1) printf("RBRACE\n");column+=yyleng;}
-{RPAR}			{if(print==1) printf("RPAR\n");column+=yyleng;}
-{RSQ}           {if(print==1) printf("RSQ\n");column+=yyleng;}
-{ELSE}			{if(print==1) printf("ELSE\n");column+=yyleng;}
-{FOR}			{if(print==1) printf("FOR\n");column+=yyleng;}
-{IF}			{if(print==1) printf("IF\n");column+=yyleng;}
-{VAR}			{if(print==1) printf("VAR\n");column+=yyleng;}
-{INT}			{if(print==1) printf("INT\n");column+=yyleng;}
-{FLOAT32}		{if(print==1) printf("FLOAT32\n");column+=yyleng;}
-{BOOL}			{if(print==1) printf("BOOL\n");column+=yyleng;}
-{STRING}		{if(print==1) printf("STRING\n");column+=yyleng;}
-{PRINT}         {if(print==1) printf("PRINT\n");column+=yyleng;}
-{PARSEINT}      {if(print==1) printf("PARSEINT\n");column+=yyleng;}
-{FUNC}			{if(print==1) printf("FUNC\n");column+=yyleng;}
-{CMDARGS}       {if(print==1) printf("CMDARGS\n");column+=yyleng;}
-{RESERVED}      {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;}
+
+{RBRACE}                    {if(print==1) printf("RBRACE\n");
+                            column+=yyleng;
+                            if(print==1) printf("SEMICOLON\n");}
+
+{RBRACE}/.                  {if(print==1) printf("RBRACE\n");
+                            column+=yyleng;}
+{RBRACE}{SPACES}*{NEWLINE}               {if(print==1) printf("RBRACE\n");
+                            if(print==1) printf("SEMICOLON\n");
+                            column+=yyleng;
+                            missing_semicolon=1;} 
+{RPAR}			            {if(print==1) printf("RPAR\n");
+                            column+=yyleng;}
+{RPAR}{SPACES}*{NEWLINE}           {if(print==1) printf("RPAR\n");
+                            if(print==1) printf("SEMICOLON\n");
+                            column+=yyleng;
+                        missing_semicolon=1;}                            
+{RSQ}                       {if(print==1) printf("RSQ\n");
+                            column+=yyleng;
+                        missing_semicolon=1;}
+{RSQ}{SPACES}*{NEWLINE}            {if(print==1) printf("RSQ\n");
+                            if(print==1) printf("SEMICOLON\n");
+                            column+=yyleng;
+                            missing_semicolon=1;}
+{ELSE}			            {if(print==1) printf("ELSE\n");column+=yyleng;}
+{FOR}			            {if(print==1) printf("FOR\n");column+=yyleng;}
+{IF}			            {if(print==1) printf("IF\n");column+=yyleng;}
+{VAR}			            {if(print==1) printf("VAR\n");column+=yyleng;}
+{INT}			            {if(print==1) printf("INT\n");column+=yyleng;}
+{FLOAT32}		            {if(print==1) printf("FLOAT32\n");column+=yyleng;}
+{BOOL}			            {if(print==1) printf("BOOL\n");column+=yyleng;}
+{STRING}		            {if(print==1) printf("STRING\n");column+=yyleng;}
+{PRINT}                     {if(print==1) printf("PRINT\n");column+=yyleng;}
+{PARSEINT}                  {if(print==1) printf("PARSEINT\n");column+=yyleng;}
+{FUNC}			            {if(print==1) printf("FUNC\n");column+=yyleng;}
+{CMDARGS}                   {if(print==1) printf("CMDARGS\n");column+=yyleng;}
+{RESERVED}                  {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;}
 
 {REALLIT}                       {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;}
 {REALLIT}{SPACES}*{NEWLINE}     {if(print==1) printf("REALLIT(%s)\n",yytext);
                                 if(print==1) printf("SEMICOLON\n");
                                 line++;
                                 column=1;
+                                missing_semicolon=1;
                                 }
 
-
-
-
 {INTLIT}                        {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;}
-{INTLIT}{SPACES}*{NEWLINE}      {if(print==1) printf("INTLIT(%s)\n",yytext);
+{INTLIT}{SPACES}*{NEWLINE}      {idaux=yytext;
+                                int i=0;
+                                while(yytext[i]!='\0'&&yytext[i]!=' '&&yytext[i]!='\n'){
+                                    idaux[i]=yytext[i];
+                                    i++;
+                                }
+                                idaux[i]='\0';
+                                if(print==1) printf("INTLIT(%s)\n",idaux);
                                 if(print==1) printf("SEMICOLON\n");
                                 line++;
                                 column=1;
+                                missing_semicolon=1;
                                 }
 
-
-
-{RETURN}{SPACES}*{NEWLINE}      {
+{RETURN}{SPACES}*{NEWLINE}         {
                                 if(print==1) printf("RETURN\n");
                                 if(print==1) printf("SEMICOLON\n");
                                 line++;
                                 column=1;
+                                missing_semicolon=1;
                                 }
-{RETURN}        {if(print==1) printf("RETURN\n");column+=yyleng;}
+{RETURN}                        {if(print==1) printf("RETURN\n");column+=yyleng;}
 
 {ID}{SPACES}*{NEWLINE}          {
                                 idaux=yytext;
@@ -162,8 +192,6 @@ CMDARGS         "os.Args"
                                 column=1;
                                 }
 {ID}                            {if(print==1) printf("ID(%s)\n",yytext);column+=yyleng;}
-
-
 
 
 
@@ -219,7 +247,12 @@ CMDARGS         "os.Args"
 <MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
 <MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
 <MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;}
-. {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
+<<EOF>>           {if(end_of_file==0){
+                        printf("EOGFFFFFFFFFFF\n");
+                        end_of_file=1;
+                        return 0;
+                    }}
+.               {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 
 
 %%

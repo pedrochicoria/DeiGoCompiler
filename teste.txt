@@ -1,5 +1,3 @@
-"Assad"
-Idalaea
-return
-And
-?
+{{{a=b}
+inttt=z}}
+int a}
