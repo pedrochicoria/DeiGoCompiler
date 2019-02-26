@@ -9,10 +9,9 @@
     int line_begin=1;
     int column_begin=1;
     int print=0;
-    char* strLitAux;
+    char strLitAux[1024];
     char* idaux;
     int invalid_escape;
-
     int missing_semicolon=0;
 
 %}
@@ -27,7 +26,7 @@ NUMBER  [0-9]+
 EXPOENTS ("e"|"E")("+"|"-")?{NUMBER}
 
 ID ([a-z]|[A-Z]|"_")({NUMBER}|[a-z]|[A-Z]|"_")*
-INTLIT {NUMBER}|(0(x|X)([a-fA-F]|{NUMBER}))
+INTLIT {NUMBER}|(0(x|X)([A-F]|[a-f]|[0-9])+)
 REALLIT  {NUMBER}"."{NUMBER}?{EXPOENTS}?|"."{NUMBER}({EXPOENTS})?|{NUMBER}{EXPOENTS}
 
 
@@ -76,7 +75,7 @@ PARSEINT        "strconv.Atoi"
 FUNC            "func"
 CMDARGS         "os.Args"
 
-EOF             "<EOF>"
+
 
 
 
@@ -134,44 +133,56 @@ EOF             "<EOF>"
 
 
 \"          {BEGIN STRLIT;
-            strLitAux=yytext; 
+            strcat(strLitAux,yytext);
             invalid_escape=0;
             line_begin=line;
             column_begin=column;
             column+=yyleng;
             }
 
-<STRLIT>{ESCAPE}    {column+=yyleng;}
+
+<STRLIT>{NEWLINE}   {
+                    missing_semicolon=0;
+                    printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
+                    line++;column=1;
+                    strcpy(strLitAux,"\0");
+                    BEGIN 0; // volta ao estado inicial 
+                    }
+
+
+<STRLIT>{ESCAPE}    {column+=yyleng;strcat(strLitAux,yytext);}
 
 <STRLIT>(\\.)|(\\)         {
                             invalid_escape=1;missing_semicolon=0;
                             printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext);
                             column+=yyleng;
+                            strcpy(strLitAux,"\0");
+
                             }
-
-
-<STRLIT>{NEWLINE}   {line++;column=1;missing_semicolon=0;
-                    printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
-                    BEGIN 0; // volta ao estado inicial 
-                    }
 
 <STRLIT><<EOF>>     {
                     column+=yyleng;
                     printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
+                    strcpy(strLitAux,"\0");
                     BEGIN 0; // volta ao estado inicial 
                     }
 
-<STRLIT>\"          {
-                    column+=yyleng;missing_semicolon=1;
+<STRLIT>"\""        {
+                    column+=yyleng;
+                    missing_semicolon=1;
+                    strcat(strLitAux,yytext);
                     if (print==1){
                         if(invalid_escape==0){
                             printf("STRLIT(%s)\n",strLitAux);
                         }
                         
                     }
+                    strcpy(strLitAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros strlits
                     BEGIN 0;
                     }
-<STRLIT>.           {column+=yyleng;}
+
+
+<STRLIT>.           {column+=yyleng;strcat(strLitAux,yytext);}
 
 "//"    {BEGIN ONELINECOMENT;column+=2;}
 <ONELINECOMENT>{NEWLINE}                {column=1;line++;BEGIN 0;}

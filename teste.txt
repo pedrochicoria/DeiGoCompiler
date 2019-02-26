@@ -1,1 +1,14 @@
-___12_23AAdaaa;
+"aeiPQZ0192*?=)( /&%0 ! ";
+"unterminated...
+"CReturn 
+ 
+"tab 	 tab";
+"form feed 
+; 
+"slash \ slash";
+"aspas \" aspas";
+"invalid\ invalid\a\b\c fim";
+"asd\";
+"\"\"";
+"as\sd;
+";";
