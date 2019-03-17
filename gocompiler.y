@@ -17,3 +17,39 @@
 
 %token<node> Program Declarations VarDeclaration VarSpec Type FuncDeclaration Parameters FuncBody VarsAndStatements Statement ParseArgs FuncInvocation Expr
 
+
+%%
+
+Program: 
+    PACKAGE ID SEMICOLON Declarations
+;
+Declarations:
+;
+VarDeclaration:
+    VAR VarSpec
+    | VAR LPAR VarSpec SEMICOLON RPAR
+;
+VarSpec:
+;
+Type:
+    INT
+    | FLOAT32
+    | BOOL
+    | STRING
+;
+FuncDeclaration:
+;
+Parameters:
+;
+FuncBody:
+;
+VarsAndStatements:
+;
+Statement:
+;
+ParseArgs:
+;
+Expr:
+;
+
+%%
