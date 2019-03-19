@@ -53,8 +53,14 @@ FuncBody:
 VarsAndStatements:
 ;
 Statement:
+     ID ASSIGN Expr
+     | LBRACE empty RBRACE
+     | LBRACE Statement SEMICOLON RBRACE
+     | FuncInvocation
+     | ParseArgs
 ;
 ParseArgs:
+    ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 ;
 Expr:
 ;
