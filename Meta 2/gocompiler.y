@@ -49,6 +49,8 @@ Parameters:
     | ID TYPE COMMA ID TYPE
 ;
 FuncBody:
+     LBRACE RBRACE
+     | LBRACE VarsAndStatements RBRACE
 ;
 VarsAndStatements:
 ;
@@ -63,6 +65,11 @@ ParseArgs:
     ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 ;
 Expr:
+    INTLIT
+    | REALLIT
+    | ID
+    | FuncInvocation
+    |  LPAR Expr RPAR
 ;
 
 empty: {};
