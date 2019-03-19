@@ -43,6 +43,10 @@ Type:
     | STRING
 ;
 FuncDeclaration:
+    FUNC ID LPAR RPAR FuncBody
+    | FUNC ID LPAR Parameters RPAR Type FuncBody
+    | FUNC ID LPAR Parameters RPAR  FuncBody
+    | FUNC ID LPAR RPAR Type FuncBody
 ;
 Parameters:
     ID Type empty
@@ -53,6 +57,9 @@ FuncBody:
      | LBRACE VarsAndStatements RBRACE
 ;
 VarsAndStatements:
+     VarsAndStatement SEMICOLON
+     | VarsAndStatements VarDeclaration SEMICOLON
+     | VarsAndStatements Statement SEMICOLON
 ;
 Statement:
      ID ASSIGN Expr
@@ -60,8 +67,19 @@ Statement:
      | LBRACE Statement SEMICOLON RBRACE
      | FuncInvocation
      | ParseArgs
-     | 
-;
+     | RETURN 
+     | RETURN Expr
+     | IF Expr LBRACE empty RBRACE 
+     | IF Expr LBRACE Statement SEMICOLON RBRACE 
+     | IF Expr LBRACE empty RBRACE ELSE LBRACE empty RBRACE
+     | IF Expr LBRACE empty RBRACE ELSE LBRACE Statement SEMICOLON RBRACE
+     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE Statement SEMICOLON RBRACE
+     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE empty RBRACE
+     | FOR LBRACE empty RBRACE
+     | FOR LBRACE Statement SEMICOLON RBRACE
+     | FOR Expr LBRACE Statement SEMICOLON RBRACE
+     | FOR Expr LBRACE RBRACE
+    ;
 ParseArgs:
     ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
 ;
