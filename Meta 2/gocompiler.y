@@ -60,6 +60,7 @@ Statement:
      | LBRACE Statement SEMICOLON RBRACE
      | FuncInvocation
      | ParseArgs
+     | 
 ;
 ParseArgs:
     ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
@@ -69,7 +70,7 @@ Expr:
     | REALLIT
     | ID
     | FuncInvocation
-    |  LPAR Expr RPAR
+    | LPAR Expr RPAR
 ;
 
 empty: {};
