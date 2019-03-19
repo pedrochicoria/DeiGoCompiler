@@ -20,16 +20,21 @@
 
 %%
 
-Program: 
-    PACKAGE ID SEMICOLON Declarations
-;
+Program:
+     PACKAGE ID SEMICOLON Declarations
+    ;
 Declarations:
-;
+    empty
+    | VarDeclaration SEMICOLON
+    | FuncDeclaration SEMICOLON
+    ;
 VarDeclaration:
     VAR VarSpec
     | VAR LPAR VarSpec SEMICOLON RPAR
 ;
 VarSpec:
+    ID COMMA ID TYPE
+    | ID empty TYPE
 ;
 Type:
     INT
@@ -40,6 +45,8 @@ Type:
 FuncDeclaration:
 ;
 Parameters:
+    ID Type empty
+    | ID TYPE COMMA ID TYPE
 ;
 FuncBody:
 ;
@@ -51,5 +58,7 @@ ParseArgs:
 ;
 Expr:
 ;
+
+empty: {};
 
 %%
