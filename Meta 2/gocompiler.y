@@ -2,128 +2,148 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include <stdarg.h>
     #include "y.tab.h"
+    #include "ast.h"
     
     int yylex(void);
-    void yyerror (const char *s);
-    int yyparse(void);
+    void yyerror(char *s);
     
 %}
 
-%token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS
 
-%token<value> RESERVED INTLIT REALLIT STRLIT ID 
+%union 
+{
+char * value;
+struct nodetree *node;
+}
 
-%token<node> Program Declarations VarDeclaration VarSpec Type FuncDeclaration Parameters FuncBody VarsAndStatements Statement ParseArgs FuncInvocation Expr Expression
+%token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT 
 
+%token <value> RESERVED INTLIT REALLIT STRLIT ID 
+
+%type<node> Program Declarations VarDeclaration VarSpec Type FuncDeclaration Parameters VarsAndStatements Statement ParseArgs FuncInvocation Expr Expression
 
 %%
-
 Program:
-     PACKAGE ID SEMICOLON Declarations
+     PACKAGE ID SEMICOLON Declarations                                                                  {}
     ;
+
 Declarations:
-    empty
-    | VarDeclaration SEMICOLON
-    | FuncDeclaration SEMICOLON
+    empty {}
+    | VarDeclaration SEMICOLON Declarations                                                             {}          
+    | FuncDeclaration SEMICOLON Declarations                                                            {}         
     ;
+
+
 VarDeclaration:
-    VAR VarSpec
-    | VAR LPAR VarSpec SEMICOLON RPAR
-;
+    VAR VarSpec                                                                                         {}
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {}
+    ;    
+
 VarSpec:
-    ID COMMA ID TYPE
-    | ID empty TYPE
-;
+    VAR VarSpec                                                                                         {}  
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {}
+    ;
+
+
 Type:
-    INT
-    | FLOAT32
-    | BOOL
-    | STRING
-;
+    INT                                                                                                 {}
+    | FLOAT32                                                                                           {}
+    | BOOL                                                                                              {}
+    | STRING                                                                                            {}
+    ;
+
 FuncDeclaration:
-    FUNC ID LPAR RPAR FuncBody
-    | FUNC ID LPAR Parameters RPAR Type FuncBody
-    | FUNC ID LPAR Parameters RPAR  FuncBody
-    | FUNC ID LPAR RPAR Type FuncBody
-    | ε
-;
+    FUNC ID LPAR RPAR FuncBody                                                                          {}
+    | FUNC ID LPAR Parameters RPAR Type FuncBody                                                        {}
+    | FUNC ID LPAR Parameters RPAR  FuncBody                                                            {}
+    | FUNC ID LPAR RPAR Type FuncBody                                                                   {}
+    ;
+
 Parameters:
-    ID Type empty
-    | ID TYPE COMMA ID TYPE
+    ID Type empty                                                                                       {} 
+    | ID Type COMMA ID Type                                                                             {}
 ;
+
 FuncBody:
-    LBRACE VarsAndStatements RBRACE
+    LBRACE VarsAndStatements RBRACE                                                                     {}
 ;
+
 VarsAndStatements:
-     VarsAndStatement SEMICOLON
-     | VarsAndStatements VarDeclaration SEMICOLON
-     | VarsAndStatements Statement SEMICOLON
+     VarsAndStatements SEMICOLON                                                                        {}
+     | VarsAndStatements VarDeclaration SEMICOLON                                                       {}
+     | VarsAndStatements Statement SEMICOLON                                                            {}
 ;
+
 Statement:
-     ID ASSIGN Expr
-     | LBRACE empty RBRACE
-     | LBRACE Statement SEMICOLON RBRACE
-     | FuncInvocation
-     | ParseArgs
-     | RETURN 
-     | RETURN Expr
-     | IF Expr LBRACE empty RBRACE 
-     | IF Expr LBRACE Statement SEMICOLON RBRACE 
-     | IF Expr LBRACE empty RBRACE ELSE LBRACE empty RBRACE
-     | IF Expr LBRACE empty RBRACE ELSE LBRACE Statement SEMICOLON RBRACE
-     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE Statement SEMICOLON RBRACE
-     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE empty RBRACE
-     | FOR LBRACE empty RBRACE
-     | FOR LBRACE Statement SEMICOLON RBRACE
-     | FOR Expr LBRACE Statement SEMICOLON RBRACE
-     | FOR Expr LBRACE RBRACE
-     | PRINT LPAR Expr RPAR
-     | PRINT LPAR STRLIT RPAR
-     | error
+     ID ASSIGN Expr                                                                                     {}
+     | LBRACE empty RBRACE                                                                              {}
+     | LBRACE Statement SEMICOLON RBRACE                                                                {}
+     | FuncInvocation                                                                                   {}
+     | ParseArgs                                                                                        {}
+     | RETURN                                                                                           {}
+     | RETURN Expr                                                                                      {}
+     | IF Expr LBRACE empty RBRACE                                                                      {}
+     | IF Expr LBRACE Statement SEMICOLON RBRACE                                                        {}
+     | IF Expr LBRACE empty RBRACE ELSE LBRACE empty RBRACE                                             {}
+     | IF Expr LBRACE empty RBRACE ELSE LBRACE Statement SEMICOLON RBRACE                               {}
+     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE Statement SEMICOLON RBRACE                 {}
+     | IF Expr LBRACE Statement SEMICOLON RBRACE ELSE LBRACE empty RBRACE                               {}
+     | FOR LBRACE empty RBRACE                                                                          {}
+     | FOR LBRACE Statement SEMICOLON RBRACE                                                            {}
+     | FOR Expr LBRACE Statement SEMICOLON RBRACE                                                       {}
+     | FOR Expr LBRACE RBRACE                                                                           {}
+     | PRINT LPAR Expr RPAR                                                                             {}
+     | PRINT LPAR STRLIT RPAR                                                                           {}
+     | error                                                                                            {}
     ;
 
 ParseArgs:
-    ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
-    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
-;
+    ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {}
+    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {}
+    ;
 
 FuncInvocation:
-    ID LPAR error RPAR
-    | ID LPAR RPAR
-    | ID LPAR Expr empty RPAR
-    | ID LPAR Expr COMMA Expr RPAR
+    ID LPAR error RPAR                                                                                  {}
+    | ID LPAR RPAR                                                                                      {}
+    | ID LPAR Expr empty RPAR                                                                           {}
+    | ID LPAR Expr COMMA Expr RPAR                                                                      {}
     ;
 
 Expr:
-    INTLIT
-    | REALLIT
-    | ID
-    | FuncInvocation
-    | LPAR Expr RPAR
-    | NOT Expr
-    | MINUS Expr
-    | PLUS Expr
-    | Expr OR Expr
-    | Expr AND Expr
-    | Expr LT Expr
-    | Expr GT Expr
-    | Expr EQ Expr
-    | Expr NE Expr
-    | Expr LE Expr
-    | Expr GE Expr
-    | Expr PLUS Expr
-    | Expr MINUS Expr
-    | Expr STAR Expr
-    | Expr DIV Expr
-    | Expr MOD Expr
+    INTLIT                                                                                              {}
+    | REALLIT                                                                                           {}
+    | ID                                                                                                {}
+    | FuncInvocation                                                                                    {}
+    | LPAR Expr RPAR                                                                                    {}
+    | NOT Expr                                                                                          {}
+    | MINUS Expr                                                                                        {}
+    | PLUS Expr                                                                                         {}
+    | Expr OR Expr                                                                                      {}
+    | Expr AND Expr                                                                                     {}
+    | Expr LT Expr                                                                                      {}
+    | Expr GT Expr                                                                                      {}
+    | Expr EQ Expr                                                                                      {}
+    | Expr NE Expr                                                                                      {}
+    | Expr LE Expr                                                                                      {}
+    | Expr GE Expr                                                                                      {}
+    | Expr PLUS Expr                                                                                    {}
+    | Expr MINUS Expr                                                                                   {}
+    | Expr STAR Expr                                                                                    {}
+    | Expr DIV Expr                                                                                     {}
+    | Expr MOD Expr                                                                                     {}
     ;
+
 
 Expression:
-    LPAR error RPAR
+    LPAR error RPAR                                                                                     {}
     ;
 
-empty: {};
-
+empty:                                                                                                  {};
 %%
+
+
+
+
+
+
