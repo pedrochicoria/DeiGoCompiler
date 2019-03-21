@@ -47,14 +47,14 @@ FuncDeclaration:
     | FUNC ID LPAR Parameters RPAR Type FuncBody
     | FUNC ID LPAR Parameters RPAR  FuncBody
     | FUNC ID LPAR RPAR Type FuncBody
+    | ε
 ;
 Parameters:
     ID Type empty
     | ID TYPE COMMA ID TYPE
 ;
 FuncBody:
-     LBRACE RBRACE
-     | LBRACE VarsAndStatements RBRACE
+    LBRACE VarsAndStatements RBRACE
 ;
 VarsAndStatements:
      VarsAndStatement SEMICOLON
@@ -81,10 +81,20 @@ Statement:
      | FOR Expr LBRACE RBRACE
      | PRINT LPAR Expr RPAR
      | PRINT LPAR STRLIT RPAR
+     | error
     ;
 ParseArgs:
     ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
+    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
 ;
+
+FuncInvocation:
+    ID LPAR error RPAR
+    | ID LPAR RPAR
+    | ID LPAR Expr empty RPAR
+    | ID LPAR Expr COMMA Expr RPAR
+    ;
+    
 Expr:
     INTLIT
     | REALLIT
