@@ -15,7 +15,7 @@
 
 %token<value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%token<node> Program Declarations VarDeclaration VarSpec Type FuncDeclaration Parameters FuncBody VarsAndStatements Statement ParseArgs FuncInvocation Expr
+%token<node> Program Declarations VarDeclaration VarSpec Type FuncDeclaration Parameters FuncBody VarsAndStatements Statement ParseArgs FuncInvocation Expr Expression
 
 
 %%
@@ -83,6 +83,7 @@ Statement:
      | PRINT LPAR STRLIT RPAR
      | error
     ;
+
 ParseArgs:
     ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
@@ -94,14 +95,34 @@ FuncInvocation:
     | ID LPAR Expr empty RPAR
     | ID LPAR Expr COMMA Expr RPAR
     ;
-    
+
 Expr:
     INTLIT
     | REALLIT
     | ID
     | FuncInvocation
     | LPAR Expr RPAR
-;
+    | NOT Expr
+    | MINUS Expr
+    | PLUS Expr
+    | Expr OR Expr
+    | Expr AND Expr
+    | Expr LT Expr
+    | Expr GT Expr
+    | Expr EQ Expr
+    | Expr NE Expr
+    | Expr LE Expr
+    | Expr GE Expr
+    | Expr PLUS Expr
+    | Expr MINUS Expr
+    | Expr STAR Expr
+    | Expr DIV Expr
+    | Expr MOD Expr
+    ;
+
+Expression:
+    LPAR error RPAR
+    ;
 
 empty: {};
 
