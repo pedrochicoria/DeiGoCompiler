@@ -7,7 +7,6 @@ typedef struct nodetree* node;
 typedef struct nodetree{
     char *value;
     char * type;
-    int depth;
     node child;
     node brother;
 } nodetree;
