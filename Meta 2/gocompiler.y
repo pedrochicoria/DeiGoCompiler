@@ -25,32 +25,32 @@ struct nodetree *node;
 
 %%
 Program:
-     PACKAGE ID SEMICOLON Declarations                                                                  {}
+     PACKAGE ID SEMICOLON Declarations                                                                  {printf("PROGRAM\n");}
     ;
 
 Declarations:
-    empty {}
-    | VarDeclaration SEMICOLON Declarations                                                             {}          
-    | FuncDeclaration SEMICOLON Declarations                                                            {}         
+    empty                                                                                               {printf("NULL\n");}
+    | VarDeclaration SEMICOLON Declarations                                                             {printf("VarDeclaration SEMICOLON Declarations\n");}          
+    | FuncDeclaration SEMICOLON Declarations                                                            {printf("FuncDeclaration SEMICOLON Declarations\n");}         
     ;
 
 
 VarDeclaration:
-    VAR VarSpec                                                                                         {}
-    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {}
+    VAR VarSpec                                                                                         {printf("VAR VarSpec\n");}
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {printf("VAR LPAR VarSpec SEMICOLON RPAR\n");}
     ;    
 
 VarSpec:
-    VAR VarSpec                                                                                         {}  
-    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {}
+    VAR VarSpec                                                                                         {printf("VAR VarSpec\n");}  
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {printf("VAR LPAR VarSpec SEMICOLON RPAR\n");}
     ;
 
 
 Type:
-    INT                                                                                                 {}
-    | FLOAT32                                                                                           {}
-    | BOOL                                                                                              {}
-    | STRING                                                                                            {}
+    INT                                                                                                 {printf("INT\n")}
+    | FLOAT32                                                                                           {printf("FLOAT32\n")}
+    | BOOL                                                                                              {printf("BOOL\n");}
+    | STRING                                                                                            {printf("STRING\n");}
     ;
 
 FuncDeclaration:

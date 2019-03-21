@@ -6,8 +6,15 @@
 typedef struct nodetree* node;
 typedef struct nodetree{
     char *value;
-    char * label;
+    char * type;
     int depth;
-    node son;
+    node child;
     node brother;
 } nodetree;
+
+
+
+node newNode(char* type,char* value);
+void addBrother(node brother,node  newBrother);
+void addChild(node dad,node child);
+void printAST(node current, int npontos);

@@ -1406,12 +1406,12 @@ yyreduce:
     {
         case 2:
 #line 28 "gocompiler.y"
-    {}
+    {printf("PROGRAM\n");}
     break;
 
   case 3:
 #line 32 "gocompiler.y"
-    {}
+    {printf("NULL\n");}
     break;
 
   case 4:
