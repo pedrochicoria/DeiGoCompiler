@@ -2326,6 +2326,7 @@ int main(int argc, char *argv[]){
     }
     if(strcmp(argv[1],"-t")==0){
 		print=0;
+        parse=1;
         yyparse();
     }
 	return 0;
