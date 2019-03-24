@@ -134,7 +134,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 15 "gocompiler.y"
+#line 21 "gocompiler.y"
 {
 char * value;
 struct nodetree *node;

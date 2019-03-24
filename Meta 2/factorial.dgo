@@ -1,8 +1,25 @@
+// for this program, your compiler should produce
+// the same four errors as the standard Go compiler
+
 package main;
-func factorial(n int) int { if n == 0 {
-return 1; };
-return n * factorial(n-1); };
-func main() {
-var argument int;
-argument,_ = strconv.Atoi(os.Args[1]); fmt.Println(factorial(argument));
+
+var n int;
+var x float32;
+
+func f(n int) bool {
+    return (n > );
 };
+
+func f2() {
+    f(&&);
+    n = n;
+    =;;
+};
+
+func main() {
+    n,_ = strconv.Atoi(/);
+};
+
+
+
+
