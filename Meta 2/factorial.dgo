@@ -18,7 +18,7 @@ func f2() {
 
 func main() {
     n,_ = strconv.Atoi(/);
-};
+}
 
 
 

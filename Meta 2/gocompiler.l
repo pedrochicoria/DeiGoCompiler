@@ -169,6 +169,7 @@ CMDARGS         "os.Args"
 <STRLITERAL><<EOF>>     {
                     column+=yyleng;
                     printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
+                    yyterminate();
                     strcpy(STRLITERALAux,"\0");
                     BEGIN 0; // volta ao estado inicial 
                     }
@@ -203,13 +204,19 @@ CMDARGS         "os.Args"
 <MULTILINECOMENT>.                      {column+=yyleng;}
 <MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
 <MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
-<MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;}
+<MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);yyterminate();BEGIN 0;}
 
 <<EOF>>         {if(missing_semicolon==1){
-                    printf("SEMICOLON\n");
-                        
+                    if(print==1){
+                        printf("SEMICOLON\n");
+                    }
+                    if(parse==1)
+                         return SEMICOLON; 
+                       
                 }
+                yyterminate();
                 return 0;
+                
                 }
 .               {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 
