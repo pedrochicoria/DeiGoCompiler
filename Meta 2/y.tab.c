@@ -547,13 +547,13 @@ static const yytype_uint8 yyrline[] =
 {
        0,    47,    47,    51,    52,    56,    57,    58,    59,    63,
       64,    68,    69,    73,    74,    78,    79,    80,    81,    85,
-      86,    87,    88,    92,    96,    97,   101,   105,   106,   107,
-     108,   112,   114,   115,   117,   118,   119,   120,   121,   122,
-     124,   125,   126,   127,   129,   130,   132,   133,   135,   137,
-     141,   142,   146,   147,   151,   152,   156,   157,   158,   159,
-     163,   164,   168,   169,   170,   171,   172,   173,   174,   175,
-     176,   177,   178,   179,   180,   181,   182,   183,   184,   185,
-     186,   187,   188,   189
+      86,    87,    88,    93,    97,    98,   102,   106,   107,   108,
+     109,   113,   115,   116,   118,   119,   120,   121,   122,   123,
+     125,   126,   127,   128,   130,   131,   133,   134,   136,   138,
+     142,   143,   147,   148,   152,   153,   157,   158,   159,   160,
+     164,   165,   169,   170,   171,   172,   173,   174,   175,   176,
+     177,   178,   179,   180,   181,   182,   183,   184,   185,   186,
+     187,   188,   189,   190
 };
 #endif
 
@@ -1739,307 +1739,307 @@ yyreduce:
     break;
 
   case 23:
-#line 92 "gocompiler.y"
+#line 93 "gocompiler.y"
     {;}
     break;
 
   case 24:
-#line 96 "gocompiler.y"
-    {;}
-    break;
-
-  case 25:
 #line 97 "gocompiler.y"
     {;}
     break;
 
+  case 25:
+#line 98 "gocompiler.y"
+    {;}
+    break;
+
   case 26:
-#line 101 "gocompiler.y"
+#line 102 "gocompiler.y"
     {;}
     break;
 
   case 27:
-#line 105 "gocompiler.y"
-    {;}
-    break;
-
-  case 28:
 #line 106 "gocompiler.y"
     {;}
     break;
 
-  case 29:
+  case 28:
 #line 107 "gocompiler.y"
     {;}
     break;
 
-  case 30:
+  case 29:
 #line 108 "gocompiler.y"
     {;}
     break;
 
+  case 30:
+#line 109 "gocompiler.y"
+    {;}
+    break;
+
   case 31:
-#line 112 "gocompiler.y"
+#line 113 "gocompiler.y"
     {;}
     break;
 
   case 32:
-#line 114 "gocompiler.y"
-    {;}
-    break;
-
-  case 33:
 #line 115 "gocompiler.y"
     {;}
     break;
 
-  case 34:
-#line 117 "gocompiler.y"
+  case 33:
+#line 116 "gocompiler.y"
     {;}
     break;
 
-  case 35:
+  case 34:
 #line 118 "gocompiler.y"
     {;}
     break;
 
-  case 36:
+  case 35:
 #line 119 "gocompiler.y"
     {;}
     break;
 
-  case 37:
+  case 36:
 #line 120 "gocompiler.y"
     {;}
     break;
 
-  case 38:
+  case 37:
 #line 121 "gocompiler.y"
     {;}
     break;
 
-  case 39:
+  case 38:
 #line 122 "gocompiler.y"
     {;}
     break;
 
-  case 40:
-#line 124 "gocompiler.y"
+  case 39:
+#line 123 "gocompiler.y"
     {;}
     break;
 
-  case 41:
+  case 40:
 #line 125 "gocompiler.y"
     {;}
     break;
 
-  case 42:
+  case 41:
 #line 126 "gocompiler.y"
     {;}
     break;
 
-  case 43:
+  case 42:
 #line 127 "gocompiler.y"
     {;}
     break;
 
-  case 44:
-#line 129 "gocompiler.y"
+  case 43:
+#line 128 "gocompiler.y"
     {;}
     break;
 
-  case 45:
+  case 44:
 #line 130 "gocompiler.y"
     {;}
     break;
 
-  case 46:
-#line 132 "gocompiler.y"
+  case 45:
+#line 131 "gocompiler.y"
     {;}
     break;
 
-  case 47:
+  case 46:
 #line 133 "gocompiler.y"
     {;}
     break;
 
+  case 47:
+#line 134 "gocompiler.y"
+    {;}
+    break;
+
   case 48:
-#line 135 "gocompiler.y"
+#line 136 "gocompiler.y"
     {;}
     break;
 
   case 49:
-#line 137 "gocompiler.y"
+#line 138 "gocompiler.y"
     {;}
     break;
 
   case 50:
-#line 141 "gocompiler.y"
-    {;}
-    break;
-
-  case 51:
 #line 142 "gocompiler.y"
     {;}
     break;
 
-  case 52:
-#line 146 "gocompiler.y"
+  case 51:
+#line 143 "gocompiler.y"
     {;}
     break;
 
-  case 53:
+  case 52:
 #line 147 "gocompiler.y"
     {;}
     break;
 
-  case 54:
-#line 151 "gocompiler.y"
+  case 53:
+#line 148 "gocompiler.y"
     {;}
     break;
 
-  case 55:
+  case 54:
 #line 152 "gocompiler.y"
     {;}
     break;
 
-  case 56:
-#line 156 "gocompiler.y"
+  case 55:
+#line 153 "gocompiler.y"
     {;}
     break;
 
-  case 57:
+  case 56:
 #line 157 "gocompiler.y"
     {;}
     break;
 
-  case 58:
+  case 57:
 #line 158 "gocompiler.y"
     {;}
     break;
 
-  case 59:
+  case 58:
 #line 159 "gocompiler.y"
     {;}
     break;
 
-  case 60:
-#line 163 "gocompiler.y"
+  case 59:
+#line 160 "gocompiler.y"
     {;}
     break;
 
-  case 61:
+  case 60:
 #line 164 "gocompiler.y"
     {;}
     break;
 
-  case 62:
-#line 168 "gocompiler.y"
+  case 61:
+#line 165 "gocompiler.y"
     {;}
     break;
 
-  case 63:
+  case 62:
 #line 169 "gocompiler.y"
     {;}
     break;
 
-  case 64:
+  case 63:
 #line 170 "gocompiler.y"
     {;}
     break;
 
-  case 65:
+  case 64:
 #line 171 "gocompiler.y"
     {;}
     break;
 
-  case 66:
+  case 65:
 #line 172 "gocompiler.y"
     {;}
     break;
 
-  case 67:
+  case 66:
 #line 173 "gocompiler.y"
     {;}
     break;
 
-  case 68:
+  case 67:
 #line 174 "gocompiler.y"
     {;}
     break;
 
-  case 69:
+  case 68:
 #line 175 "gocompiler.y"
     {;}
     break;
 
-  case 70:
+  case 69:
 #line 176 "gocompiler.y"
     {;}
     break;
 
-  case 71:
+  case 70:
 #line 177 "gocompiler.y"
     {;}
     break;
 
-  case 72:
+  case 71:
 #line 178 "gocompiler.y"
     {;}
     break;
 
-  case 73:
+  case 72:
 #line 179 "gocompiler.y"
     {;}
     break;
 
-  case 74:
+  case 73:
 #line 180 "gocompiler.y"
     {;}
     break;
 
-  case 75:
+  case 74:
 #line 181 "gocompiler.y"
     {;}
     break;
 
-  case 76:
+  case 75:
 #line 182 "gocompiler.y"
     {;}
     break;
 
-  case 77:
+  case 76:
 #line 183 "gocompiler.y"
     {;}
     break;
 
-  case 78:
+  case 77:
 #line 184 "gocompiler.y"
     {;}
     break;
 
-  case 79:
+  case 78:
 #line 185 "gocompiler.y"
     {;}
     break;
 
-  case 80:
+  case 79:
 #line 186 "gocompiler.y"
     {;}
     break;
 
-  case 81:
+  case 80:
 #line 187 "gocompiler.y"
     {;}
     break;
 
-  case 82:
+  case 81:
 #line 188 "gocompiler.y"
     {;}
     break;
 
-  case 83:
+  case 82:
 #line 189 "gocompiler.y"
+    {;}
+    break;
+
+  case 83:
+#line 190 "gocompiler.y"
     {;}
     break;
 
@@ -2259,7 +2259,7 @@ yyreturn:
 }
 
 
-#line 194 "gocompiler.y"
+#line 195 "gocompiler.y"
 
 
 

@@ -88,7 +88,21 @@ CMDARGS         "os.Args"
 %%
 
 {SPACES}    {column+=yyleng;}
-{NEWLINE}    {if(print==1&&missing_semicolon==1) printf("SEMICOLON\n");line++;column=1;missing_semicolon=0;} // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
+{NEWLINE}    {  if(missing_semicolon==1){
+                    line++;column=1;missing_semicolon=0;
+                    if(print==1) {
+                    printf("SEMICOLON\n");
+                        
+                    }
+                    if(parse == 1){yylval.value = (char*) strdup(yytext);return SEMICOLON;}
+                    
+                    // carriage return - representa o fim de uma linha e deixa o cursor no inicio dessa mesma linha ,line feed - move o cursor para a proxima linha, end of line - combinacao dos dois
+                }else{
+                    line++;column=1;
+                }
+                
+                } 
+                
                             
 {SEMICOLON}     {if(print==1) printf("SEMICOLON\n");column+=yyleng;missing_semicolon=0;if(parse == 1){yylval.value = (char*) strdup(yytext);return SEMICOLON;}}
 {BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;missing_semicolon=0;if(parse == 1){yylval.value = (char*) strdup(yytext);return BLANKID;}}
@@ -207,11 +221,15 @@ CMDARGS         "os.Args"
 <MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);yyterminate();BEGIN 0;}
 
 <<EOF>>         {if(missing_semicolon==1){
+                    missing_semicolon=0;
+                    
                     if(print==1){
                         printf("SEMICOLON\n");
                     }
-                    if(parse==1)
-                         return SEMICOLON; 
+                    if(parse == 1){
+                        yylval.value = (char*) strdup(yytext);
+                        return SEMICOLON;
+                    }
                        
                 }
                 yyterminate();
@@ -229,7 +247,6 @@ int main(int argc, char *argv[]){
         yylex();
         }
         if(strcmp(argv[1],"-t")==0){
-            print=0;
             parse=1;
             yyparse();
         }

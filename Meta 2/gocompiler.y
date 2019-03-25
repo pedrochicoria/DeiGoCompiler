@@ -44,7 +44,7 @@ struct nodetree *node;
 
 %%
 Program:
-     PACKAGE ID SEMICOLON Declarations                                                                  {;}
+    PACKAGE ID SEMICOLON Declarations                                                                  {;}
     ;
 
 Declarations:
@@ -86,6 +86,7 @@ FuncDeclaration:
     | FUNC ID LPAR Parameters RPAR Type FuncBody                                                        {;}
     | FUNC ID LPAR Parameters RPAR  FuncBody                                                            {;}
     | FUNC ID LPAR RPAR Type FuncBody                                                                   {;}
+
     ;
 
 Parameters:
