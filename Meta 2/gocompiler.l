@@ -223,15 +223,19 @@ CMDARGS         "os.Args"
 
 %%
 int main(int argc, char *argv[]){
-    if(strcmp(argv[1],"-l")==0){
-		print=1;
+    if (argc>1){
+        if(strcmp(argv[1],"-l")==0){
+        print=1;
         yylex();
+        }
+        if(strcmp(argv[1],"-t")==0){
+
+            print=0;
+            parse=1;
+            yyparse();
+        }
     }
-    if(strcmp(argv[1],"-t")==0){
-		print=0;
-        parse=1;
-        yyparse();
-    }
+
 	return 0;
 }
 

@@ -54,8 +54,8 @@ Declarations:
 
 DeclarationsAux:
     DeclarationsAux VarDeclaration SEMICOLON                                                            {;}
-    | DeclarationsAux FuncDeclaration SEMICOLON                                                          {;}
-    | VarDeclaration SEMICOLON                                                                              {;}
+    | DeclarationsAux FuncDeclaration SEMICOLON                                                         {;}
+    | VarDeclaration SEMICOLON                                                                          {;}
     | FuncDeclaration SEMICOLON                                                                         {;}
     ;
 
@@ -65,8 +65,8 @@ VarDeclaration:
     ;    
 
 VarSpec:
-    ID Type                                                                                       {;}  
-    | ID VarSpecAux Type                                                                   {;}
+    ID Type                                                                                             {;}  
+    | ID VarSpecAux Type                                                                                {;}
     ;
 
 VarSpecAux:
@@ -186,7 +186,7 @@ Expr:
     | Expr STAR Expr                                                                                    {;}
     | Expr DIV Expr                                                                                     {;}
     | Expr MOD Expr                                                                                     {;}
-    | LPAR error RPAR                                                                                     {;}
+    | LPAR error RPAR                                                                                   {;}
     ;
 
 
