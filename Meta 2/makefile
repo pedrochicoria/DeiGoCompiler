@@ -6,4 +6,4 @@ make:
 	rm -f gocompiler.zip
 	zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c
 
-	./gocompiler < testes/errors.dgo  > testes/out.txt
+	./gocompiler < testes/sum.dgo  
