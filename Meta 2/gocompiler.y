@@ -72,7 +72,7 @@ VarSpec:
 VarSpecAux:
     VarSpecAux COMMA ID                                                                                 {;}
     | COMMA ID                                                                                          {;}
-    ;
+    ; 
 
 Type:
     INT                                                                                                 {;}
