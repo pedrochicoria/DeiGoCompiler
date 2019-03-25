@@ -200,7 +200,10 @@ CMDARGS         "os.Args"
                         
                     }
                     if(parse==1){
-                        yylval.value = (char*) strdup(yytext);return STRLIT;
+                        if(invalid_escape==0){
+                            BEGIN 0;
+                            yylval.value = (char*) strdup(STRLITERALAux);return STRLIT;
+                        }
                     }
                     strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
                     BEGIN 0;

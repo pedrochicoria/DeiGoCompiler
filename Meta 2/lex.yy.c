@@ -1293,7 +1293,10 @@ YY_RULE_SETUP
                         
                     }
                     if(parse==1){
-                        yylval.value = (char*) strdup(yytext);return STRLIT;
+                        if(invalid_escape==0){
+                            BEGIN 0;
+                            yylval.value = (char*) strdup(STRLITERALAux);return STRLIT;
+                        }
                     }
                     strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
                     BEGIN 0;
@@ -1301,53 +1304,53 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 210 "gocompiler.l"
+#line 213 "gocompiler.l"
 {column+=yyleng;strcat(STRLITERALAux,yytext);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 212 "gocompiler.l"
+#line 215 "gocompiler.l"
 {BEGIN ONELINECOMENT;column+=2;}
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 213 "gocompiler.l"
+#line 216 "gocompiler.l"
 {column=1;line++;BEGIN 0;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 214 "gocompiler.l"
+#line 217 "gocompiler.l"
 {column+=yyleng;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 216 "gocompiler.l"
+#line 219 "gocompiler.l"
 {BEGIN MULTILINECOMENT;line_begin=line;column_begin=column;column+=2;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 218 "gocompiler.l"
+#line 221 "gocompiler.l"
 {column+=yyleng;}
 	YY_BREAK
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 219 "gocompiler.l"
+#line 222 "gocompiler.l"
 {column=1;line++;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 220 "gocompiler.l"
+#line 223 "gocompiler.l"
 {BEGIN 0;column+=yyleng;}
 	YY_BREAK
 case YY_STATE_EOF(MULTILINECOMENT):
-#line 221 "gocompiler.l"
+#line 224 "gocompiler.l"
 {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);yyterminate();BEGIN 0;}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ONELINECOMENT):
-#line 223 "gocompiler.l"
+#line 226 "gocompiler.l"
 {if(missing_semicolon==1){
                     missing_semicolon=0;
                     
@@ -1355,7 +1358,6 @@ case YY_STATE_EOF(ONELINECOMENT):
                         printf("SEMICOLON\n");
                     }
                     if(parse == 1){
-                        printf("entra aquie\n");
                         yylval.value = (char*) strdup(yytext);
                         return SEMICOLON;
                     }
@@ -1368,15 +1370,15 @@ case YY_STATE_EOF(ONELINECOMENT):
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 240 "gocompiler.l"
+#line 242 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 243 "gocompiler.l"
+#line 245 "gocompiler.l"
 ECHO;
 	YY_BREAK
-#line 1380 "lex.yy.c"
+#line 1382 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2334,7 +2336,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 243 "gocompiler.l"
+#line 245 "gocompiler.l"
 
 
 int main(int argc, char *argv[]){
