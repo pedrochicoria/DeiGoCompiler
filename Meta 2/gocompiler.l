@@ -16,7 +16,7 @@
     int missing_semicolon=0;
     int parse=0;
     int yyparse(void);
-    
+    int lastCol=0;
 
 %}
 
@@ -89,6 +89,7 @@ CMDARGS         "os.Args"
 
 {SPACES}    {column+=yyleng;}
 {NEWLINE}    {  if(missing_semicolon==1){
+                    lastCol=column;
                     line++;column=1;missing_semicolon=0;
                     if(print==1) {
                     printf("SEMICOLON\n");
@@ -189,6 +190,7 @@ CMDARGS         "os.Args"
                     }
 
 <STRLITERAL>"\""        {
+                    BEGIN 0;
                     column+=yyleng;
                     missing_semicolon=1;
                     strcat(STRLITERALAux,yytext);
@@ -201,12 +203,12 @@ CMDARGS         "os.Args"
                     }
                     if(parse==1){
                         if(invalid_escape==0){
-                            BEGIN 0;
+                            //printf("%s",STRLITERALAux);
                             yylval.value = (char*) strdup(STRLITERALAux);return STRLIT;
                         }
                     }
                     strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
-                    BEGIN 0;
+
                     }
 
 
@@ -244,6 +246,7 @@ CMDARGS         "os.Args"
 
 %%
 int main(int argc, char *argv[]){
+    
     if (argc>1){
         if(strcmp(argv[1],"-l")==0){
         print=1;
@@ -266,6 +269,22 @@ int yywrap(){
 }
 
 void yyerror(char *s){
-    printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
+    if(strcmp(yytext,"\n")==0){
+        printf("Line %d, column %d: %s: %s\n",line-1,(int)(lastCol),s,yytext);
+    }
+
+    else if(strcmp(yytext,"\"")==0){
+        int i=0;
+        while(STRLITERALAux[i]!='\0'){
+            i++;
+        }
+        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)i),s,STRLITERALAux);
+    }
+    else{
+
+        
+        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
+    }
+    
 }
 

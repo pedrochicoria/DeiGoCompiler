@@ -112,7 +112,7 @@ VarsAndStatements:
 Statement:
      ID ASSIGN Expr                                                                                     {;}
 
-     | LBRACE RBRACE                                                                                    {;} 
+
      | LBRACE StatementSEMICOLON RBRACE                                                                 {;}
 
      | IF Expr LBRACE  RBRACE                                                                           {;}
@@ -135,7 +135,7 @@ Statement:
 
      | PRINT LPAR StatementExprSTRLIT RPAR                                                              {;}
 
-     | error                                                                                            {;}
+    | error                                                                                            {;}
      ;
 
 StatementSEMICOLON:
