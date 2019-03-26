@@ -1,6 +1,13 @@
 package main; 
-
 func main(){
-if("ok"){
-};
 
+	var a 
+
+
+
+
+
+var b
+if(a==1){
+	
+};};

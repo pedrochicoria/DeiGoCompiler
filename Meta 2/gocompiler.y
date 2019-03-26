@@ -13,6 +13,10 @@
     node aux = NULL;
     int syntax_error=0;
     int stat_list=0;
+    int column;
+    int line;
+    int lastCol;
+    char* straux;
     
 %}
 
@@ -44,7 +48,7 @@ struct nodetree *node;
 
 %%
 Program:
-    PACKAGE ID SEMICOLON Declarations                                                                  {;}
+PACKAGE ID SEMICOLON Declarations                                                                  {;}
     ;
 
 Declarations:
@@ -114,7 +118,6 @@ Statement:
 
 
      | LBRACE StatementSEMICOLON RBRACE                                                                 {;}
-
      | IF Expr LBRACE  RBRACE                                                                           {;}
      | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {;}
      | IF Expr LBRACE  RBRACE ELSE LBRACE RBRACE                                                        {;}
@@ -136,6 +139,9 @@ Statement:
      | PRINT LPAR StatementExprSTRLIT RPAR                                                              {;}
 
     | error                                                                                            {;}
+
+
+
      ;
 
 StatementSEMICOLON:
@@ -195,7 +201,35 @@ Expr:
 %%
 
 
-
-
+/*
+void yyerror(char *s){
+    int i=0;
+    
+    while(straux[i]!='\0'){
+        i++;
+    }
+    if(strcmp(yylval.value,"\n")==0){
+        printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column),s,straux);
+    }
+    else{
+        if(strcmp(yylval.value,"EOF")==0){
+            
+                printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,straux);
+            
+            
+            return;
+        }
+        else{
+            i=0;
+            while(yylval.value[i]!='\0'){
+                i++;
+            }
+            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(lastCol-i),s,yylval.value);
+        }
+        
+    }
+    
+    
+}*/
 
 
