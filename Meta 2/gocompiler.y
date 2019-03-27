@@ -253,8 +253,9 @@ Expr:
     | Expr PLUS Expr                                                                                    {$$ =  newNode("Add",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr MINUS Expr                                                                                   {$$=newNode("Minus",NULL);
-                                                                                                        addChild($$,$2);}
+    | Expr MINUS Expr                                                                                   {$$ =  newNode("Sub",NULL);
+                                                                                            addChild($$,$1);
+                                                                                            addBrother($1,$3);}
     | Expr STAR Expr                                                                                    {$$ =  newNode("Mul",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
