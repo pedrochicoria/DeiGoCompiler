@@ -31,7 +31,7 @@
 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr
+%type<node> Program Declarations  VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr
 
 %left COMMA
 %right ASSIGN
@@ -53,14 +53,11 @@ PACKAGE ID SEMICOLON Declarations                                               
                                                                                                      }
     ;
 
-Declarations:
-                                                                                                        {$$=NULL;}
-    | DeclarationsAux                                                                                   {$$=$1;}
-    ;
 
-DeclarationsAux:
-    DeclarationsAux VarDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
-    | DeclarationsAux FuncDeclaration SEMICOLON                                                         {$$=$1; addBrother($1,$2);}
+
+Declarations:                                                                                           
+    | Declarations VarDeclaration SEMICOLON                                                             {$$=$1; addBrother($1,$2);}
+    | Declarations FuncDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
     | VarDeclaration SEMICOLON                                                                          {$$=$1;}
     | FuncDeclaration SEMICOLON                                                                         {$$=$1;}
     ;
@@ -73,13 +70,15 @@ VarDeclaration:
     ;    
 
 VarSpec:
-    ID Type                                                                                             {;}  
-    | ID VarSpecAux Type                                                                                {;}
+    ID Type                                                                                             {$$=$2;}  
+    | ID VarSpecAux Type                                                                                {$$=$2;
+                                                                                                        addBrother($2,$3);
+                                                                                                        }
     ;
 
 VarSpecAux:
-    VarSpecAux COMMA ID                                                                                 {;}
-    | COMMA ID                                                                                          {;}
+    VarSpecAux COMMA ID                                                                                 {$$=$1; addBrother($1,$3);}
+    | COMMA ID                                                                                          {$$=$2;}
     ; 
 
 Type:
@@ -116,12 +115,14 @@ Parameters:
     ;
 
 ParametersAux:
-    ParametersAux COMMA ID Type                                                                         {;}
-    |ID Type                                                                                            {;}
+    ParametersAux COMMA ID Type                                                                         {$$=$1; addBrother($1,$4);}
+    |ID Type                                                                                            {$$=$2;}
     ;
 
 FuncBody:
-    LBRACE VarsAndStatements RBRACE                                                                     {;}
+    LBRACE VarsAndStatements RBRACE                                                                     {$$=newNode("FuncBody",NULL);
+                                                                                                        addChild($$,$2);
+                                                                                                        }
     ;
 
 VarsAndStatements:
