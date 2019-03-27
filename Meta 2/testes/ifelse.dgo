@@ -1,0 +1,9 @@
+package main
+
+func main() {
+
+	if n<0 {
+		a=1;
+	};
+	
+}
