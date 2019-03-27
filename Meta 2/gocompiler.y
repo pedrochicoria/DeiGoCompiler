@@ -199,15 +199,15 @@ ParseArgs:
     ;
 
 FuncInvocation:
-    IdAux LPAR error RPAR                                                                                  {;}
-    | IdAux LPAR RPAR                                                                                      {;}
-    | IdAux LPAR Expr RPAR                                                                                 {;}
-    | IdAux LPAR Expr FuncInvocationAux RPAR                                                               {;}
+    IdAux LPAR error RPAR                                                                                  {$$=$1;addBrother($1,newNode("Error",NULL));}
+    | IdAux LPAR RPAR                                                                                      {$$=$1;}
+    | IdAux LPAR Expr RPAR                                                                                 {$$=$1;addBrother($1,$3);}
+    | IdAux LPAR Expr FuncInvocationAux RPAR                                                               {$$=$1;addBrother($1,$3);addBrother($3,$4);}
     ;
 
 FuncInvocationAux:
-    FuncInvocationAux COMMA Expr                                                                        {;}
-    | COMMA Expr                                                                                        {;}
+    FuncInvocationAux COMMA Expr                                                                        {$$=$1;addBrother($1,$3);}
+    | COMMA Expr                                                                                        {$$=$2;}
 ;
 
 IdAux:
@@ -216,9 +216,9 @@ IdAux:
 Expr:
     INTLIT                                                                                              {$$=newNode("IntLit",$1);}
     | REALLIT                                                                                           {$$=newNode("Id",$1);}
-    | ID                                                                                                {$$=newNode("Id",$1);}
+    | IdAux                                                                                               {$$=$1;}
     | FuncInvocation                                                                                    {$$=newNode("Call",NULL);
-                                                                                                        addChild($$,newNode("Id",$1));}
+                                                                                                        addChild($$,$1);}
     | LPAR Expr RPAR                                                                                    {$$=$2;}
     | NOT Expr                                                                                          {$$=newNode("Not",NULL);
                                                                                                         addChild($$,$2);}
