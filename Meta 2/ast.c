@@ -50,7 +50,14 @@ void printAST(node *current, int npontos)
             for (int i = 0; i < npontos; i++)
                 printf("..");
 
-            printf("%s\n", current->type);
+            if (current->value != NULL)
+            {
+                printf("%s(%s)\n", current->type, current->value);
+            }
+            else
+            {
+                printf("%s\n", current->type);
+            }
         }
 
         if (current->child != NULL)

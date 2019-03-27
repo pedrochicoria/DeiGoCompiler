@@ -10,6 +10,8 @@
     int yyparse(void);
 
     node* root=NULL;
+    node* aux=NULL;
+    
     int syntax_error=0;
     int stat_list=0;
     int column;
@@ -31,7 +33,7 @@
 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> Program Declarations  VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr
+%type<node> Program Declarations  VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
 
 %left COMMA
 %right ASSIGN
@@ -55,7 +57,7 @@ PACKAGE ID SEMICOLON Declarations                                               
 
 
 
-Declarations:                                                                                           
+Declarations:                                                                                           {$$=NULL;}
     | Declarations VarDeclaration SEMICOLON                                                             {$$=$1; addBrother($1,$2);}
     | Declarations FuncDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
     | VarDeclaration SEMICOLON                                                                          {$$=$1;}
@@ -70,15 +72,15 @@ VarDeclaration:
     ;    
 
 VarSpec:
-    ID Type                                                                                             {$$=$2;}  
-    | ID VarSpecAux Type                                                                                {$$=$2;
+    IdAux Type                                                                                             {$$=$2;}  
+    | IdAux VarSpecAux Type                                                                                {$$=$2;
                                                                                                         addBrother($2,$3);
                                                                                                         }
     ;
 
 VarSpecAux:
-    VarSpecAux COMMA ID                                                                                 {$$=$1; addBrother($1,$3);}
-    | COMMA ID                                                                                          {$$=$2;}
+    VarSpecAux COMMA IdAux                                                                                 {$$=$1; addBrother($1,$3);}
+    | COMMA IdAux                                                                                          {$$=$2;}
     ; 
 
 Type:
@@ -89,21 +91,39 @@ Type:
     ;
 
 FuncDeclaration:
-    FUNC ID LPAR RPAR FuncBody                                                                          {$$=newNode("FuncDecl",NULL);
-                                                                                                         addChild($$,$5);   
+    FUNC IdAux LPAR RPAR FuncBody                                                                          {$$=newNode("FuncDecl",NULL);
+                                                                                                        aux= newNode("FuncHeader",NULL);
+                                                                                                        addChild($$,aux);
+                                                                                                        addChild(aux,$2);
+                                                                                                        addBrother($2,newNode("FuncParams",NULL));
+                                                                                                        addBrother(aux,$5);
+                                                                                                        
+
+                                                                                                            
                                                                                                         }
-    | FUNC ID LPAR Parameters RPAR Type FuncBody                                                        {$$=newNode("FuncDecl",NULL);
-                                                                                                         addChild($$,$4);
-                                                                                                         addBrother($4,$6);
-                                                                                                         addBrother($6,$7);
+    | FUNC IdAux LPAR Parameters RPAR Type FuncBody                                                        {$$=newNode("FuncDecl",NULL);
+                                                                                                        aux= newNode("FuncHeader",NULL);
+                                                                                                        addChild($$,aux);
+                                                                                                        addBrother(aux,$7);
+                                                                                                        addChild(aux,$2);
+                                                                                                        addBrother($6,$4);
+                                                                                                        addBrother($2,$6);
                                                                                                          }
-    | FUNC ID LPAR Parameters RPAR  FuncBody                                                            {$$=newNode("FuncDecl",NULL);
-                                                                                                         addChild($$,$4);
-                                                                                                         addBrother($4,$6);
+    | FUNC IdAux LPAR Parameters RPAR  FuncBody                                                            {$$=newNode("FuncDecl",NULL);
+                                                                                                        aux= newNode("FuncHeader",NULL);
+                                                                                                        addChild($$,aux);
+                                                                                                        addBrother(aux,$6);
+                                                                                                        addChild(aux,$2);
+                                                                                                        addBrother($2,$4);
+                                                                                                        
                                                                                                          }
-    | FUNC ID LPAR RPAR Type FuncBody                                                                   {$$=newNode("FuncDecl",NULL);
-                                                                                                         addChild($$,$5);
-                                                                                                         addBrother($5,$6);
+    | FUNC IdAux LPAR RPAR Type FuncBody                                                                   {$$=newNode("FuncDecl",NULL);
+                                                                                                        aux= newNode("FuncHeader",NULL);
+                                                                                                        addChild($$,aux);
+                                                                                                        addBrother(aux,$6);
+                                                                                                        addChild(aux,$2);
+                                                                                                        addBrother($2,$5);
+                                                                                                        addBrother($5,newNode("FuncParams",NULL));
                                                                                                          }
 
     ;
@@ -115,8 +135,8 @@ Parameters:
     ;
 
 ParametersAux:
-    ParametersAux COMMA ID Type                                                                         {$$=$1; addBrother($1,$4);}
-    |ID Type                                                                                            {$$=$2;}
+    ParametersAux COMMA IdAux Type                                                                         {$$=$1; addBrother($1,$4);}
+    |IdAux Type                                                                                            {$$=$2;}
     ;
 
 FuncBody:
@@ -126,14 +146,14 @@ FuncBody:
     ;
 
 VarsAndStatements:
-     VarsAndStatements SEMICOLON                                                                        {;}
-     | VarsAndStatements VarDeclaration SEMICOLON                                                       {;}
-     | VarsAndStatements Statement SEMICOLON                                                            {;}
-     |                                                                                                  {;}
+     VarsAndStatements SEMICOLON                                                                        {$1=$1;}
+     | VarsAndStatements VarDeclaration SEMICOLON                                                       {$$=$1; addBrother($1,$2);}
+     | VarsAndStatements Statement SEMICOLON                                                            {$$=$1; addBrother($1,$2);;}
+     |                                                                                                  {$$=NULL;}
      ;
 
 Statement:
-     ID ASSIGN Expr                                                                                     {;}
+     IdAux ASSIGN Expr                                                                                     {;}
 
 
      | LBRACE StatementSEMICOLON RBRACE                                                                 {;}
@@ -157,7 +177,7 @@ Statement:
 
      | PRINT LPAR StatementExprSTRLIT RPAR                                                              {;}
 
-    | error                                                                                            {;}
+    | error                                                                                             {;}
 
 
 
@@ -174,15 +194,15 @@ StatementExprSTRLIT:
     ;
 
 ParseArgs:
-    ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {;}
-    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {;}
+    IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {;}
+    | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {;}
     ;
 
 FuncInvocation:
-    ID LPAR error RPAR                                                                                  {;}
-    | ID LPAR RPAR                                                                                      {;}
-    | ID LPAR Expr RPAR                                                                                 {;}
-    | ID LPAR Expr FuncInvocationAux RPAR                                                               {;}
+    IdAux LPAR error RPAR                                                                                  {;}
+    | IdAux LPAR RPAR                                                                                      {;}
+    | IdAux LPAR Expr RPAR                                                                                 {;}
+    | IdAux LPAR Expr FuncInvocationAux RPAR                                                               {;}
     ;
 
 FuncInvocationAux:
@@ -190,6 +210,9 @@ FuncInvocationAux:
     | COMMA Expr                                                                                        {;}
 ;
 
+IdAux:
+    ID                                                       {$$=newNode("Id",yylval.value);}
+;
 Expr:
     INTLIT                                                                                              {;}
     | REALLIT                                                                                           {;}
