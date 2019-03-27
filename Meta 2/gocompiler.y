@@ -33,7 +33,7 @@
 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> Program Declarations  VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
+%type<node> Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
 
 %left COMMA
 %right ASSIGN
@@ -56,13 +56,18 @@ PACKAGE ID SEMICOLON Declarations                                               
     ;
 
 
+Declarations:
+                                                                                                        {$$=NULL;}
+    | DeclarationsAux                                                                                   {$$=$1;}
+    ;
 
-Declarations:                                                                                           {$$=NULL;}
-    | Declarations VarDeclaration SEMICOLON                                                             {$$=$1; addBrother($1,$2);}
-    | Declarations FuncDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
+DeclarationsAux:        
+    DeclarationsAux VarDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
+    | DeclarationsAux FuncDeclaration SEMICOLON                                                         {$$=$1; addBrother($1,$2);}
     | VarDeclaration SEMICOLON                                                                          {$$=$1;}
     | FuncDeclaration SEMICOLON                                                                         {$$=$1;}
     ;
+
 
 VarDeclaration:
     VAR VarSpec                                                                                         {$$=newNode("VarDecl",NULL);
@@ -159,7 +164,7 @@ Statement:
 
 
      | LBRACE StatementSEMICOLON RBRACE                                                                 {$$=$2;}
-     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);addChild($$,$2);addBrother($$,"Block",NULL);}
+     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);addChild($$,$2);}
      | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {$$ =  newNode("If",NULL);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL);
@@ -197,7 +202,7 @@ StatementSEMICOLON:
 
 StatementExprSTRLIT:
     Expr                                                                                                {$$=$1;}
-    | STRLIT                                                                                            {$$=$1;}
+    | STRLIT                                                                                            {$$=newNode("StrLit",$1);}
     ;
 
 ParseArgs:
@@ -222,7 +227,7 @@ IdAux:
 ;
 Expr:
     INTLIT                                                                                              {$$=newNode("IntLit",$1);}
-    | REALLIT                                                                                           {$$=newNode("Id",$1);}
+    | REALLIT                                                                                           {$$=newNode("RealLit",$1);}
     | IdAux                                                                                               {$$=$1;}
     | FuncInvocation                                                                                    {$$=newNode("Call",NULL);
                                                                                                         addChild($$,$1);}
