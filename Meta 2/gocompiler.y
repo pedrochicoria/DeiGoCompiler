@@ -211,32 +211,63 @@ FuncInvocationAux:
 ;
 
 IdAux:
-    ID                                                       {$$=newNode("Id",yylval.value);}
+    ID                                                                                                  {$$=newNode("Id",yylval.value);}
 ;
 Expr:
-    INTLIT                                                                                              {;}
-    | REALLIT                                                                                           {;}
-    | ID                                                                                                {;}
-    | FuncInvocation                                                                                    {;}
-    | LPAR Expr RPAR                                                                                    {;}
-    | NOT Expr                                                                                          {;}
-    | MINUS Expr                                                                                        {;}
-    | PLUS Expr                                                                                         {;}
-    | Expr OR Expr                                                                                      {;}
-    | Expr AND Expr                                                                                     {;}
-    | Expr LT Expr                                                                                      {;}
-    | Expr GT Expr                                                                                      {;}
-    | Expr EQ Expr                                                                                      {;}
-    | Expr NE Expr                                                                                      {;}
-    | Expr LE Expr                                                                                      {;}
-    | Expr GE Expr                                                                                      {;}
-    | Expr PLUS Expr                                                                                    {;}
-    | Expr MINUS Expr                                                                                   {;}
-    | Expr STAR Expr                                                                                    {;}
-    | Expr DIV Expr                                                                                     {;}
-    | Expr MOD Expr                                                                                     {;}
-    | LPAR error RPAR                                                                                   {;}
+    INTLIT                                                                                              {$$=newNode("IntLit",$1);}
+    | REALLIT                                                                                           {$$=newNode("Id",$1);}
+    | ID                                                                                                {$$=newNode("Id",$1);}
+    | FuncInvocation                                                                                    {$$=newNode("Call",NULL);
+                                                                                                        addChild($$,newNode("Id",$1));}
+    | LPAR Expr RPAR                                                                                    {$$=$2;}
+    | NOT Expr                                                                                          {$$=newNode("Not",NULL);
+                                                                                                        addChild($$,$2);}
+    | MINUS Expr                                                                                        {$$=newNode("Minus",NULL);
+                                                                                                        addChild($$,$2);}
+    | PLUS Expr                                                                                         {$$=newNode("Plus",NULL);
+                                                                                                        addChild($$,$2);}
+    | Expr OR Expr                                                                                      {$$ =  newNode("Or",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr AND Expr                                                                                     {$$ =  newNode("And",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr LT Expr                                                                                      {$$ =  newNode("Lt",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr GT Expr                                                                                      {$$ =  newNode("Gt",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr EQ Expr                                                                                      {$$ =  newNode("Eq",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr NE Expr                                                                                      {$$ =  newNode("Ne",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr LE Expr                                                                                      {$$ =  newNode("Ne",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr GE Expr                                                                                      {$$ =  newNode("Ge",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr PLUS Expr                                                                                    {$$ =  newNode("Add",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr MINUS Expr                                                                                   {$$=newNode("Minus",NULL);
+                                                                                                        addChild($$,$2);}
+    | Expr STAR Expr                                                                                    {$$ =  newNode("Mul",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr DIV Expr                                                                                     {$$ =  newNode("Div",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | Expr MOD Expr                                                                                     {$$ =  newNode("Mod",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
+    | LPAR error RPAR                                                                                   {$$=newNode("Error",NULL);syntaxError=1;}
     ;
+
+
 
 
 
