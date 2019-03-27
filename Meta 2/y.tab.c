@@ -1936,12 +1936,12 @@ yyreduce:
 
   case 52:
 #line 197 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("ParseArgs",NULL);addChild((yyval.node),(yyvsp[(1) - (11)].node));addBrother((yyvsp[(1) - (11)].node),(yyvsp[(9) - (11)].node));}
     break;
 
   case 53:
 #line 198 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("ParseArgs",NULL);addChild((yyval.node),(yyvsp[(1) - (8)].node));addBrother((yyvsp[(1) - (8)].node),newNode("Error",NULL));}
     break;
 
   case 54:
@@ -2089,8 +2089,8 @@ yyreduce:
   case 78:
 #line 256 "gocompiler.y"
     {(yyval.node) =  newNode("Sub",NULL);
-                                                                                            addChild((yyval.node),(yyvsp[(1) - (3)].node));
-                                                                                            addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
+                                                                                                        addChild((yyval.node),(yyvsp[(1) - (3)].node));
+                                                                                                        addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;
 
   case 79:

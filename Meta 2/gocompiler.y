@@ -194,8 +194,8 @@ StatementExprSTRLIT:
     ;
 
 ParseArgs:
-    IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {;}
-    | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {;}
+    IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {$$=newNode("ParseArgs",NULL);addChild($$,$1);addBrother($1,$9);}
+    | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {$$=newNode("ParseArgs",NULL);addChild($$,$1);addBrother($1,newNode("Error",NULL));}
     ;
 
 FuncInvocation:
@@ -254,8 +254,8 @@ Expr:
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
     | Expr MINUS Expr                                                                                   {$$ =  newNode("Sub",NULL);
-                                                                                            addChild($$,$1);
-                                                                                            addBrother($1,$3);}
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
     | Expr STAR Expr                                                                                    {$$ =  newNode("Mul",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
