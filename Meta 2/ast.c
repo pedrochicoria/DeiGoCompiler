@@ -39,22 +39,23 @@ void addChild(node *dad, node *child)
 }
 void printAST(node *current, int npontos)
 {
-    printf("Chega aqui\n");
-    
-    node * node = current;
-
-    if (node == NULL)
+    if (current == NULL)
     {
         return;
     }
-    if (node->type != NULL)
+    if (current != NULL)
     {
-        for (int i = 0; i < npontos; i++)
-            printf("..");
+        if (current->type != NULL)
+        {
+            for (int i = 0; i < npontos; i++)
+                printf("..");
 
-        printf("%s\n", node->type);
+            printf("%s\n", current->type);
+        }
+
+        if (current->child != NULL)
+            printAST(current->child, npontos + 1);
+        if (current->brother != NULL)
+            printAST(current->brother, npontos);
     }
-
-    printAST(node->child, npontos + 1);
-    printAST(node->brother, npontos);
 }

@@ -83,22 +83,36 @@ VarSpecAux:
     ; 
 
 Type:
-    INT                                                                                                 {$$=newNode("Int");}
-    | FLOAT32                                                                                           {$$=newNode("Float32");}
-    | BOOL                                                                                              {$$=newNode("Bool");}
-    | STRING                                                                                            {$$=newNode("String");}
+    INT                                                                                                 {$$=newNode("Int",NULL);}
+    | FLOAT32                                                                                           {$$=newNode("Float32",NULL);}
+    | BOOL                                                                                              {$$=newNode("Bool",NULL);}
+    | STRING                                                                                            {$$=newNode("String",NULL);}
     ;
 
 FuncDeclaration:
-    FUNC ID LPAR RPAR FuncBody                                                                          {;}
-    | FUNC ID LPAR Parameters RPAR Type FuncBody                                                        {;}
-    | FUNC ID LPAR Parameters RPAR  FuncBody                                                            {;}
-    | FUNC ID LPAR RPAR Type FuncBody                                                                   {;}
+    FUNC ID LPAR RPAR FuncBody                                                                          {$$=newNode("FuncDecl",NULL);
+                                                                                                         addChild($$,$5);   
+                                                                                                        }
+    | FUNC ID LPAR Parameters RPAR Type FuncBody                                                        {$$=newNode("FuncDecl",NULL);
+                                                                                                         addChild($$,$4);
+                                                                                                         addBrother($4,$6);
+                                                                                                         addBrother($6,$7);
+                                                                                                         }
+    | FUNC ID LPAR Parameters RPAR  FuncBody                                                            {$$=newNode("FuncDecl",NULL);
+                                                                                                         addChild($$,$4);
+                                                                                                         addBrother($4,$6);
+                                                                                                         }
+    | FUNC ID LPAR RPAR Type FuncBody                                                                   {$$=newNode("FuncDecl",NULL);
+                                                                                                         addChild($$,$5);
+                                                                                                         addBrother($5,$6);
+                                                                                                         }
 
     ;
 
 Parameters:
-    ParametersAux                                                                                       {;} 
+    ParametersAux                                                                                       {$$=newNode("FuncParams",NULL);
+                                                                                                         addChild($$,$1);
+                                                                                                        } 
     ;
 
 ParametersAux:

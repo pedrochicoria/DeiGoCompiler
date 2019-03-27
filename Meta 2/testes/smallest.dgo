@@ -1,6 +1,1 @@
-package main;
-
-var (ci, rad, area, PI float32;);
-
-func main(){
-};
+package main; func main(){};

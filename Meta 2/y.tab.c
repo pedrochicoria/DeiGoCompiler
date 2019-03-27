@@ -1711,27 +1711,27 @@ yyreduce:
 
   case 15:
 #line 86 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("Int",NULL);}
     break;
 
   case 16:
 #line 87 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("Float32",NULL);}
     break;
 
   case 17:
 #line 88 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("Bool",NULL);}
     break;
 
   case 18:
 #line 89 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("String",NULL);}
     break;
 
   case 19:
 #line 93 "gocompiler.y"
-    {;}
+    {(yyval.node)=newNode("FuncDecl",NULL);}
     break;
 
   case 20:
