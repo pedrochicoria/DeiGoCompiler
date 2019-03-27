@@ -148,17 +148,24 @@ FuncBody:
 VarsAndStatements:
      VarsAndStatements SEMICOLON                                                                        {$1=$1;}
      | VarsAndStatements VarDeclaration SEMICOLON                                                       {$$=$1; addBrother($1,$2);}
-     | VarsAndStatements Statement SEMICOLON                                                            {$$=$1; addBrother($1,$2);;}
+     | VarsAndStatements Statement SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
      |                                                                                                  {$$=NULL;}
      ;
 
 Statement:
-     IdAux ASSIGN Expr                                                                                     {;}
+     IdAux ASSIGN Expr                                                                                  {$$ =  newNode("Assign",NULL);
+                                                                                                        addChild($$,$1);
+                                                                                                        addBrother($1,$3);}
 
 
-     | LBRACE StatementSEMICOLON RBRACE                                                                 {;}
-     | IF Expr LBRACE  RBRACE                                                                           {;}
-     | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {;}
+     | LBRACE StatementSEMICOLON RBRACE                                                                 {$$=$2;}
+     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);addChild($$,$2);addBrother($$,"Block",NULL);}
+     | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {$$ =  newNode("If",NULL);
+                                                                                                        addChild($$,$2);
+                                                                                                        aux=newNode("Block",NULL);
+                                                                                                        addBrother($$,aux);
+                                                                                                        addChild(aux,$4);
+                                                                                                        }
      | IF Expr LBRACE  RBRACE ELSE LBRACE RBRACE                                                        {;}
      | IF Expr LBRACE  RBRACE ELSE LBRACE StatementSEMICOLON RBRACE                                     {;}
      | IF Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE RBRACE                                      {;}
@@ -169,13 +176,13 @@ Statement:
      | FOR Expr LBRACE StatementSEMICOLON RBRACE                                                        {;}
      | FOR LBRACE StatementSEMICOLON RBRACE                                                             {;}
 
-     | RETURN                                                                                           {;}
-     | RETURN Expr                                                                                      {;}
+     | RETURN                                                                                           {$$ =  newNode("Return",NULL);}
+     | RETURN Expr                                                                                      {$$ =  newNode("Return",NULL);addChild($$,$2);}
 
-     | FuncInvocation                                                                                   {;}
-     | ParseArgs                                                                                        {;}
+     | FuncInvocation                                                                                   {$$=$1;}
+     | ParseArgs                                                                                        {$$=$1;}
 
-     | PRINT LPAR StatementExprSTRLIT RPAR                                                              {;}
+     | PRINT LPAR StatementExprSTRLIT RPAR                                                              {$$ =  newNode("Print",NULL);addChild($$,$3);}
 
     | error                                                                                             {;}
 
@@ -184,13 +191,13 @@ Statement:
      ;
 
 StatementSEMICOLON:
-    StatementSEMICOLON Statement SEMICOLON                                                              {;}
-    | Statement SEMICOLON                                                                               {;}
+    StatementSEMICOLON Statement SEMICOLON                                                              {$$=$2;}
+    | Statement SEMICOLON                                                                               {$$=$1;}
     ;
 
 StatementExprSTRLIT:
-    Expr                                                                                                {;}
-    | STRLIT                                                                                            {;}
+    Expr                                                                                                {$$=$1;}
+    | STRLIT                                                                                            {$$=$1;}
     ;
 
 ParseArgs:
