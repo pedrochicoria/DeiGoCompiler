@@ -9,8 +9,7 @@
     void yyerror(char *s);
     int yyparse(void);
 
-    node root = NULL;
-    node aux = NULL;
+    node* root=NULL;
     int syntax_error=0;
     int stat_list=0;
     int column;
@@ -18,20 +17,21 @@
     int lastCol;
     char* straux;
     
+    int syntaxError=0;
 %}
 
 
-%union 
-{
-char * value;
-struct nodetree *node;
-}
+%union{
+    char* value ;
+    struct node* node;
+    
+};
 
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT 
 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> Program Declarations VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr
+%type<node> Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr
 
 %left COMMA
 %right ASSIGN
@@ -48,24 +48,28 @@ struct nodetree *node;
 
 %%
 Program:
-PACKAGE ID SEMICOLON Declarations                                                                  {;}
+PACKAGE ID SEMICOLON Declarations                                                                  {root=newNode("Program",NULL); 
+                                                                                                    addChild(root,$4);
+                                                                                                     }
     ;
 
 Declarations:
-                                                                                                        {;}
-    | DeclarationsAux                                                                                   {;}
+                                                                                                        {$$=NULL;}
+    | DeclarationsAux                                                                                   {$$=$1;}
     ;
 
 DeclarationsAux:
-    DeclarationsAux VarDeclaration SEMICOLON                                                            {;}
-    | DeclarationsAux FuncDeclaration SEMICOLON                                                         {;}
-    | VarDeclaration SEMICOLON                                                                          {;}
-    | FuncDeclaration SEMICOLON                                                                         {;}
+    DeclarationsAux VarDeclaration SEMICOLON                                                            {$$=$1; addBrother($1,$2);}
+    | DeclarationsAux FuncDeclaration SEMICOLON                                                         {$$=$1; addBrother($1,$2);}
+    | VarDeclaration SEMICOLON                                                                          {$$=$1;}
+    | FuncDeclaration SEMICOLON                                                                         {$$=$1;}
     ;
 
 VarDeclaration:
-    VAR VarSpec                                                                                         {;}
-    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {;}
+    VAR VarSpec                                                                                         {$$=newNode("VarDecl",NULL);
+                                                                                                         addChild($$,$2);   }
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {$$=newNode("VarDecl",NULL);
+                                                                                                        addChild($$,$3);}
     ;    
 
 VarSpec:
@@ -79,10 +83,10 @@ VarSpecAux:
     ; 
 
 Type:
-    INT                                                                                                 {;}
-    | FLOAT32                                                                                           {;}
-    | BOOL                                                                                              {;}
-    | STRING                                                                                            {;}
+    INT                                                                                                 {$$=newNode("Int");}
+    | FLOAT32                                                                                           {$$=newNode("Float32");}
+    | BOOL                                                                                              {$$=newNode("Bool");}
+    | STRING                                                                                            {$$=newNode("String");}
     ;
 
 FuncDeclaration:
@@ -201,22 +205,18 @@ Expr:
 %%
 
 
-/*
+
 void yyerror(char *s){
     int i=0;
-    
     while(straux[i]!='\0'){
         i++;
     }
     if(strcmp(yylval.value,"\n")==0){
-        printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column),s,straux);
+        printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,straux);
     }
     else{
         if(strcmp(yylval.value,"EOF")==0){
-            
-                printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,straux);
-            
-            
+            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-1),s,straux);
             return;
         }
         else{
@@ -224,12 +224,12 @@ void yyerror(char *s){
             while(yylval.value[i]!='\0'){
                 i++;
             }
-            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(lastCol-i),s,yylval.value);
+            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,yylval.value);
         }
         
     }
     
     
-}*/
+}
 
 

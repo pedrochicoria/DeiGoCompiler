@@ -4,6 +4,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
+    #include "ast.h"
 
     int line=1;
     int column=1;
@@ -19,7 +20,8 @@
     int lastCol=0;
     char* straux;
 
-
+    extern int syntaxError;
+extern node* root;
 %}
 
 %option nounput 
@@ -89,7 +91,7 @@ CMDARGS         "os.Args"
 
 %%
 
-{SPACES}    {column+=1;straux=yytext;}
+{SPACES}    {column+=yyleng;straux=yytext;}
 {NEWLINE}    {  if(missing_semicolon==1){
 
                     lastCol=column;
@@ -190,6 +192,7 @@ CMDARGS         "os.Args"
                     yyterminate();
                     strcpy(STRLITERALAux,"\0");
                     BEGIN 0; // volta ao estado inicial 
+                    yyterminate();
                     }
 
 <STRLITERAL>"\""        {
@@ -227,7 +230,7 @@ CMDARGS         "os.Args"
 <MULTILINECOMENT>.                      {column+=yyleng;}
 <MULTILINECOMENT>("\n"|"\r"|"\r\n")     {column=1;line++;}
 <MULTILINECOMENT>"*/"                   {BEGIN 0;column+=yyleng;}
-<MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);yyterminate();BEGIN 0;}
+<MULTILINECOMENT><<EOF>>                {printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;yyterminate();}
 
 <<EOF>>         {if(missing_semicolon==1){
                     missing_semicolon=0;
@@ -242,6 +245,7 @@ CMDARGS         "os.Args"
                        
                 }
                 yylval.value = (char*) strdup("EOF");
+                yyterminate();
                 return EOF;
                 // lastCol=column;yylval.value = (char*) strdup("EOF");return EOF;
                 }
@@ -259,6 +263,9 @@ int main(int argc, char *argv[]){
         if(strcmp(argv[1],"-t")==0){
             parse=1;
             yyparse();
+            if(syntaxError==0){
+				printAST(root,0);
+			}
         }
     }else{
         parse=1;
@@ -273,32 +280,4 @@ int yywrap(){
 }
 
 
-
-void yyerror(char *s){
-    /*
-    printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
-    
-    if(strcmp(yytext,"\n")==0){
-        printf("Line %d, column %d: %s: %s\n",line-1,(int)(lastCol),s,yytext);
-    }
-
-    else if(strcmp(yytext,"\"")==0){
-        int i=0;
-        while(STRLITERALAux[i]!='\0'){
-            i++;
-        }
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)i),s,STRLITERALAux);
-    }
-    else{
-
-        
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
-    }*/
-    
-    if(strcmp("\n",yytext)==0){
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column),s,straux);
-    }else{
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,straux);
-    }
-}
 

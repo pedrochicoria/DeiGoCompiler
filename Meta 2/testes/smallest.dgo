@@ -1,13 +1,6 @@
-package main; 
+package main;
+
+var (ci, rad, area, PI float32;);
+
 func main(){
-
-	var a 
-
-
-
-
-
-var b
-if(a==1){
-	
-};};
+};

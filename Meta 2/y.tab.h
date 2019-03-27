@@ -134,13 +134,14 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "gocompiler.y"
+#line 24 "gocompiler.y"
 {
-char * value;
-struct nodetree *node;
+    char* value ;
+    struct node* node;
+    
 }
 /* Line 1529 of yacc.c.  */
-#line 144 "y.tab.h"
+#line 145 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

@@ -172,8 +172,7 @@
     void yyerror(char *s);
     int yyparse(void);
 
-    node root = NULL;
-    node aux = NULL;
+    node* root=NULL;
     int syntax_error=0;
     int stat_list=0;
     int column;
@@ -181,6 +180,7 @@
     int lastCol;
     char* straux;
     
+    int syntaxError=0;
 
 
 /* Enabling traces.  */
@@ -203,13 +203,14 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 25 "gocompiler.y"
+#line 24 "gocompiler.y"
 {
-char * value;
-struct nodetree *node;
+    char* value ;
+    struct node* node;
+    
 }
 /* Line 193 of yacc.c.  */
-#line 213 "y.tab.c"
+#line 214 "y.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -222,7 +223,7 @@ struct nodetree *node;
 
 
 /* Line 216 of yacc.c.  */
-#line 226 "y.tab.c"
+#line 227 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -549,15 +550,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    51,    51,    55,    56,    60,    61,    62,    63,    67,
-      68,    72,    73,    77,    78,    82,    83,    84,    85,    89,
-      90,    91,    92,    97,   101,   102,   106,   110,   111,   112,
-     113,   117,   120,   121,   122,   123,   124,   125,   126,   128,
-     129,   130,   131,   133,   134,   136,   137,   139,   141,   148,
-     149,   153,   154,   158,   159,   163,   164,   165,   166,   170,
-     171,   175,   176,   177,   178,   179,   180,   181,   182,   183,
-     184,   185,   186,   187,   188,   189,   190,   191,   192,   193,
-     194,   195,   196
+       0,    51,    51,    57,    58,    62,    63,    64,    65,    69,
+      71,    76,    77,    81,    82,    86,    87,    88,    89,    93,
+      94,    95,    96,   101,   105,   106,   110,   114,   115,   116,
+     117,   121,   124,   125,   126,   127,   128,   129,   130,   132,
+     133,   134,   135,   137,   138,   140,   141,   143,   145,   152,
+     153,   157,   158,   162,   163,   167,   168,   169,   170,   174,
+     175,   179,   180,   181,   182,   183,   184,   185,   186,   187,
+     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
+     198,   199,   200
 };
 #endif
 
@@ -1641,412 +1642,416 @@ yyreduce:
     {
         case 2:
 #line 51 "gocompiler.y"
-    {;}
+    {root=newNode("Program",NULL); 
+                                                                                                    addChild(root,(yyvsp[(4) - (4)].node));
+                                                                                                     }
     break;
 
   case 3:
-#line 55 "gocompiler.y"
-    {;}
+#line 57 "gocompiler.y"
+    {(yyval.node)=NULL;}
     break;
 
   case 4:
-#line 56 "gocompiler.y"
-    {;}
+#line 58 "gocompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (1)].node);}
     break;
 
   case 5:
-#line 60 "gocompiler.y"
-    {;}
+#line 62 "gocompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (3)].node); addBrother((yyvsp[(1) - (3)].node),(yyvsp[(2) - (3)].node));}
     break;
 
   case 6:
-#line 61 "gocompiler.y"
-    {;}
+#line 63 "gocompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (3)].node); addBrother((yyvsp[(1) - (3)].node),(yyvsp[(2) - (3)].node));}
     break;
 
   case 7:
-#line 62 "gocompiler.y"
-    {;}
+#line 64 "gocompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (2)].node);}
     break;
 
   case 8:
-#line 63 "gocompiler.y"
-    {;}
+#line 65 "gocompiler.y"
+    {(yyval.node)=(yyvsp[(1) - (2)].node);}
     break;
 
   case 9:
-#line 67 "gocompiler.y"
-    {;}
+#line 69 "gocompiler.y"
+    {(yyval.node)=newNode("VarDecl",NULL);
+                                                                                                         addChild((yyval.node),(yyvsp[(2) - (2)].node));   }
     break;
 
   case 10:
-#line 68 "gocompiler.y"
-    {;}
+#line 71 "gocompiler.y"
+    {(yyval.node)=newNode("VarDecl",NULL);
+                                                                                                        addChild((yyval.node),(yyvsp[(3) - (5)].node));}
     break;
 
   case 11:
-#line 72 "gocompiler.y"
+#line 76 "gocompiler.y"
     {;}
     break;
 
   case 12:
-#line 73 "gocompiler.y"
-    {;}
-    break;
-
-  case 13:
 #line 77 "gocompiler.y"
     {;}
     break;
 
-  case 14:
-#line 78 "gocompiler.y"
+  case 13:
+#line 81 "gocompiler.y"
     {;}
     break;
 
-  case 15:
+  case 14:
 #line 82 "gocompiler.y"
     {;}
     break;
 
+  case 15:
+#line 86 "gocompiler.y"
+    {;}
+    break;
+
   case 16:
-#line 83 "gocompiler.y"
+#line 87 "gocompiler.y"
     {;}
     break;
 
   case 17:
-#line 84 "gocompiler.y"
+#line 88 "gocompiler.y"
     {;}
     break;
 
   case 18:
-#line 85 "gocompiler.y"
-    {;}
-    break;
-
-  case 19:
 #line 89 "gocompiler.y"
     {;}
     break;
 
+  case 19:
+#line 93 "gocompiler.y"
+    {;}
+    break;
+
   case 20:
-#line 90 "gocompiler.y"
+#line 94 "gocompiler.y"
     {;}
     break;
 
   case 21:
-#line 91 "gocompiler.y"
+#line 95 "gocompiler.y"
     {;}
     break;
 
   case 22:
-#line 92 "gocompiler.y"
+#line 96 "gocompiler.y"
     {;}
     break;
 
   case 23:
-#line 97 "gocompiler.y"
-    {;}
-    break;
-
-  case 24:
 #line 101 "gocompiler.y"
     {;}
     break;
 
-  case 25:
-#line 102 "gocompiler.y"
+  case 24:
+#line 105 "gocompiler.y"
     {;}
     break;
 
-  case 26:
+  case 25:
 #line 106 "gocompiler.y"
     {;}
     break;
 
-  case 27:
+  case 26:
 #line 110 "gocompiler.y"
     {;}
     break;
 
+  case 27:
+#line 114 "gocompiler.y"
+    {;}
+    break;
+
   case 28:
-#line 111 "gocompiler.y"
+#line 115 "gocompiler.y"
     {;}
     break;
 
   case 29:
-#line 112 "gocompiler.y"
+#line 116 "gocompiler.y"
     {;}
     break;
 
   case 30:
-#line 113 "gocompiler.y"
-    {;}
-    break;
-
-  case 31:
 #line 117 "gocompiler.y"
     {;}
     break;
 
-  case 32:
-#line 120 "gocompiler.y"
-    {;}
-    break;
-
-  case 33:
+  case 31:
 #line 121 "gocompiler.y"
     {;}
     break;
 
-  case 34:
-#line 122 "gocompiler.y"
-    {;}
-    break;
-
-  case 35:
-#line 123 "gocompiler.y"
-    {;}
-    break;
-
-  case 36:
+  case 32:
 #line 124 "gocompiler.y"
     {;}
     break;
 
-  case 37:
+  case 33:
 #line 125 "gocompiler.y"
     {;}
     break;
 
-  case 38:
+  case 34:
 #line 126 "gocompiler.y"
     {;}
     break;
 
-  case 39:
+  case 35:
+#line 127 "gocompiler.y"
+    {;}
+    break;
+
+  case 36:
 #line 128 "gocompiler.y"
     {;}
     break;
 
-  case 40:
+  case 37:
 #line 129 "gocompiler.y"
     {;}
     break;
 
-  case 41:
+  case 38:
 #line 130 "gocompiler.y"
     {;}
     break;
 
-  case 42:
-#line 131 "gocompiler.y"
+  case 39:
+#line 132 "gocompiler.y"
     {;}
     break;
 
-  case 43:
+  case 40:
 #line 133 "gocompiler.y"
     {;}
     break;
 
-  case 44:
+  case 41:
 #line 134 "gocompiler.y"
     {;}
     break;
 
-  case 45:
-#line 136 "gocompiler.y"
+  case 42:
+#line 135 "gocompiler.y"
     {;}
     break;
 
-  case 46:
+  case 43:
 #line 137 "gocompiler.y"
     {;}
     break;
 
-  case 47:
-#line 139 "gocompiler.y"
+  case 44:
+#line 138 "gocompiler.y"
     {;}
     break;
 
-  case 48:
+  case 45:
+#line 140 "gocompiler.y"
+    {;}
+    break;
+
+  case 46:
 #line 141 "gocompiler.y"
     {;}
     break;
 
+  case 47:
+#line 143 "gocompiler.y"
+    {;}
+    break;
+
+  case 48:
+#line 145 "gocompiler.y"
+    {;}
+    break;
+
   case 49:
-#line 148 "gocompiler.y"
+#line 152 "gocompiler.y"
     {;}
     break;
 
   case 50:
-#line 149 "gocompiler.y"
-    {;}
-    break;
-
-  case 51:
 #line 153 "gocompiler.y"
     {;}
     break;
 
-  case 52:
-#line 154 "gocompiler.y"
+  case 51:
+#line 157 "gocompiler.y"
     {;}
     break;
 
-  case 53:
+  case 52:
 #line 158 "gocompiler.y"
     {;}
     break;
 
-  case 54:
-#line 159 "gocompiler.y"
+  case 53:
+#line 162 "gocompiler.y"
     {;}
     break;
 
-  case 55:
+  case 54:
 #line 163 "gocompiler.y"
     {;}
     break;
 
+  case 55:
+#line 167 "gocompiler.y"
+    {;}
+    break;
+
   case 56:
-#line 164 "gocompiler.y"
+#line 168 "gocompiler.y"
     {;}
     break;
 
   case 57:
-#line 165 "gocompiler.y"
+#line 169 "gocompiler.y"
     {;}
     break;
 
   case 58:
-#line 166 "gocompiler.y"
-    {;}
-    break;
-
-  case 59:
 #line 170 "gocompiler.y"
     {;}
     break;
 
-  case 60:
-#line 171 "gocompiler.y"
+  case 59:
+#line 174 "gocompiler.y"
     {;}
     break;
 
-  case 61:
+  case 60:
 #line 175 "gocompiler.y"
     {;}
     break;
 
-  case 62:
-#line 176 "gocompiler.y"
-    {;}
-    break;
-
-  case 63:
-#line 177 "gocompiler.y"
-    {;}
-    break;
-
-  case 64:
-#line 178 "gocompiler.y"
-    {;}
-    break;
-
-  case 65:
+  case 61:
 #line 179 "gocompiler.y"
     {;}
     break;
 
-  case 66:
+  case 62:
 #line 180 "gocompiler.y"
     {;}
     break;
 
-  case 67:
+  case 63:
 #line 181 "gocompiler.y"
     {;}
     break;
 
-  case 68:
+  case 64:
 #line 182 "gocompiler.y"
     {;}
     break;
 
-  case 69:
+  case 65:
 #line 183 "gocompiler.y"
     {;}
     break;
 
-  case 70:
+  case 66:
 #line 184 "gocompiler.y"
     {;}
     break;
 
-  case 71:
+  case 67:
 #line 185 "gocompiler.y"
     {;}
     break;
 
-  case 72:
+  case 68:
 #line 186 "gocompiler.y"
     {;}
     break;
 
-  case 73:
+  case 69:
 #line 187 "gocompiler.y"
     {;}
     break;
 
-  case 74:
+  case 70:
 #line 188 "gocompiler.y"
     {;}
     break;
 
-  case 75:
+  case 71:
 #line 189 "gocompiler.y"
     {;}
     break;
 
-  case 76:
+  case 72:
 #line 190 "gocompiler.y"
     {;}
     break;
 
-  case 77:
+  case 73:
 #line 191 "gocompiler.y"
     {;}
     break;
 
-  case 78:
+  case 74:
 #line 192 "gocompiler.y"
     {;}
     break;
 
-  case 79:
+  case 75:
 #line 193 "gocompiler.y"
     {;}
     break;
 
-  case 80:
+  case 76:
 #line 194 "gocompiler.y"
     {;}
     break;
 
-  case 81:
+  case 77:
 #line 195 "gocompiler.y"
     {;}
     break;
 
-  case 82:
+  case 78:
 #line 196 "gocompiler.y"
+    {;}
+    break;
+
+  case 79:
+#line 197 "gocompiler.y"
+    {;}
+    break;
+
+  case 80:
+#line 198 "gocompiler.y"
+    {;}
+    break;
+
+  case 81:
+#line 199 "gocompiler.y"
+    {;}
+    break;
+
+  case 82:
+#line 200 "gocompiler.y"
     {;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2050 "y.tab.c"
+#line 2055 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2260,26 +2265,22 @@ yyreturn:
 }
 
 
-#line 201 "gocompiler.y"
+#line 205 "gocompiler.y"
 
 
 
-/*
+
 void yyerror(char *s){
     int i=0;
-    
     while(straux[i]!='\0'){
         i++;
     }
     if(strcmp(yylval.value,"\n")==0){
-        printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column),s,straux);
+        printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,straux);
     }
     else{
         if(strcmp(yylval.value,"EOF")==0){
-            
-                printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,straux);
-            
-            
+            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-1),s,straux);
             return;
         }
         else{
@@ -2287,13 +2288,13 @@ void yyerror(char *s){
             while(yylval.value[i]!='\0'){
                 i++;
             }
-            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(lastCol-i),s,yylval.value);
+            printf("Line %d, column %d: %s: %s\n",(int)(line),(int)(column-i),s,yylval.value);
         }
         
     }
     
     
-}*/
+}
 
 
 

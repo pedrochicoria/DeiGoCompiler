@@ -708,6 +708,7 @@ char *yytext;
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
+    #include "ast.h"
 
     int line=1;
     int column=1;
@@ -723,12 +724,13 @@ char *yytext;
     int lastCol=0;
     char* straux;
 
-
+    extern int syntaxError;
+extern node* root;
 #define YY_NO_INPUT 1
 
 
 
-#line 732 "lex.yy.c"
+#line 734 "lex.yy.c"
 
 #define INITIAL 0
 #define STRLITERAL 1
@@ -911,10 +913,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 90 "gocompiler.l"
+#line 92 "gocompiler.l"
 
 
-#line 918 "lex.yy.c"
+#line 920 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -999,13 +1001,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 92 "gocompiler.l"
-{column+=1;straux=yytext;}
+#line 94 "gocompiler.l"
+{column+=yyleng;straux=yytext;}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 93 "gocompiler.l"
+#line 95 "gocompiler.l"
 {  if(missing_semicolon==1){
 
                     lastCol=column;
@@ -1025,217 +1027,217 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 111 "gocompiler.l"
+#line 113 "gocompiler.l"
 {if(print==1) printf("SEMICOLON\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return SEMICOLON;}}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 112 "gocompiler.l"
+#line 114 "gocompiler.l"
 {if(print==1) printf("BLANKID\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return BLANKID;}}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "gocompiler.l"
+#line 115 "gocompiler.l"
 {if(print==1) printf("PACKAGE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PACKAGE;}}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 115 "gocompiler.l"
+#line 117 "gocompiler.l"
 {if(print==1) printf("AND\n");column+=yyleng;missing_semicolon=0; if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return AND;}}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 116 "gocompiler.l"
+#line 118 "gocompiler.l"
 {if(print==1) printf("ASSIGN\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ASSIGN;}}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 117 "gocompiler.l"
+#line 119 "gocompiler.l"
 {if(print==1) printf("STAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return STAR;}}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 118 "gocompiler.l"
+#line 120 "gocompiler.l"
 {if(print==1) printf("COMMA\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return COMMA;}}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 119 "gocompiler.l"
+#line 121 "gocompiler.l"
 {if(print==1) printf("DIV\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return DIV;}}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 120 "gocompiler.l"
+#line 122 "gocompiler.l"
 {if(print==1) printf("EQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return EQ;}}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 121 "gocompiler.l"
+#line 123 "gocompiler.l"
 {if(print==1) printf("GE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return GE;}}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 122 "gocompiler.l"
+#line 124 "gocompiler.l"
 {if(print==1) printf("GT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return GT;}}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 123 "gocompiler.l"
+#line 125 "gocompiler.l"
 {if(print==1) printf("LBRACE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LBRACE;}}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 124 "gocompiler.l"
+#line 126 "gocompiler.l"
 {if(print==1) printf("LE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LE;}}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 125 "gocompiler.l"
+#line 127 "gocompiler.l"
 {if(print==1) printf("LPAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LPAR;}}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 126 "gocompiler.l"
+#line 128 "gocompiler.l"
 {if(print==1) printf("LSQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LSQ;}}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 127 "gocompiler.l"
+#line 129 "gocompiler.l"
 {if(print==1) printf("LT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LT;}}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 128 "gocompiler.l"
+#line 130 "gocompiler.l"
 {if(print==1) printf("MINUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return MINUS;}}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 129 "gocompiler.l"
+#line 131 "gocompiler.l"
 {if(print==1) printf("MOD\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return MOD;}}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 130 "gocompiler.l"
+#line 132 "gocompiler.l"
 {if(print==1) printf("NE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return NE;}}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 131 "gocompiler.l"
+#line 133 "gocompiler.l"
 {if(print==1) printf("NOT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return NOT;}}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 132 "gocompiler.l"
+#line 134 "gocompiler.l"
 {if(print==1) printf("OR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return OR;}}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 133 "gocompiler.l"
+#line 135 "gocompiler.l"
 {if(print==1) printf("PLUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PLUS;}}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 134 "gocompiler.l"
+#line 136 "gocompiler.l"
 {if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RBRACE;}}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 135 "gocompiler.l"
+#line 137 "gocompiler.l"
 {if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RPAR;}}                            
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 136 "gocompiler.l"
+#line 138 "gocompiler.l"
 {if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RSQ;}}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 137 "gocompiler.l"
+#line 139 "gocompiler.l"
 {if(print==1) printf("ELSE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ELSE;}}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 138 "gocompiler.l"
+#line 140 "gocompiler.l"
 {if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FOR;}}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 139 "gocompiler.l"
+#line 141 "gocompiler.l"
 {if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return IF;}}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 140 "gocompiler.l"
+#line 142 "gocompiler.l"
 {if(print==1) printf("VAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return VAR;}}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 141 "gocompiler.l"
+#line 143 "gocompiler.l"
 {if(print==1) printf("INT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return INT;}}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 142 "gocompiler.l"
+#line 144 "gocompiler.l"
 {if(print==1) printf("FLOAT32\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FLOAT32;}}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 143 "gocompiler.l"
+#line 145 "gocompiler.l"
 {if(print==1) printf("BOOL\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return BOOL;}}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 144 "gocompiler.l"
+#line 146 "gocompiler.l"
 {if(print==1) printf("STRING\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return STRING;}}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 145 "gocompiler.l"
+#line 147 "gocompiler.l"
 {if(print==1) printf("PRINT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PRINT;}}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 146 "gocompiler.l"
+#line 148 "gocompiler.l"
 {if(print==1) printf("PARSEINT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PARSEINT;}}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 147 "gocompiler.l"
+#line 149 "gocompiler.l"
 {if(print==1) printf("FUNC\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FUNC;}}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 148 "gocompiler.l"
+#line 150 "gocompiler.l"
 {if(print==1) printf("CMDARGS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return CMDARGS;}}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 149 "gocompiler.l"
+#line 151 "gocompiler.l"
 {if(print==1) printf("RESERVED(%s)\n",yytext);column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RESERVED;}}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 150 "gocompiler.l"
+#line 152 "gocompiler.l"
 {if(print==1) printf("REALLIT(%s)\n",yytext);column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return REALLIT;}}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 151 "gocompiler.l"
+#line 153 "gocompiler.l"
 {if(print==1) printf("INTLIT(%s)\n",yytext);column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return INTLIT;}}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 152 "gocompiler.l"
+#line 154 "gocompiler.l"
 {if(print==1) printf("RETURN\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RETURN;}}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 153 "gocompiler.l"
+#line 155 "gocompiler.l"
 {if(print==1) printf("ID(%s)\n",yytext);column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ID;}}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 159 "gocompiler.l"
+#line 161 "gocompiler.l"
 {BEGIN STRLITERAL;
             strcat(STRLITERALAux,yytext);
             invalid_escape=0;
@@ -1247,7 +1249,7 @@ YY_RULE_SETUP
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 168 "gocompiler.l"
+#line 170 "gocompiler.l"
 {
                     missing_semicolon=0;
                     printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
@@ -1258,12 +1260,12 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 177 "gocompiler.l"
+#line 179 "gocompiler.l"
 {column+=yyleng;strcat(STRLITERALAux,yytext);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 179 "gocompiler.l"
+#line 181 "gocompiler.l"
 {
                             invalid_escape=1;missing_semicolon=0;
                             printf("Line %d, column %d: invalid escape sequence (%s)\n", line, column, yytext);
@@ -1273,18 +1275,19 @@ YY_RULE_SETUP
                             }
 	YY_BREAK
 case YY_STATE_EOF(STRLITERAL):
-#line 187 "gocompiler.l"
+#line 189 "gocompiler.l"
 {
                     column+=yyleng;
                     printf("Line %d, column %d: unterminated string literal\n", line_begin, column_begin);
                     yyterminate();
                     strcpy(STRLITERALAux,"\0");
                     BEGIN 0; // volta ao estado inicial 
+                    yyterminate();
                     }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 195 "gocompiler.l"
+#line 198 "gocompiler.l"
 {
                     BEGIN 0;
                     straux=STRLITERALAux;
@@ -1310,53 +1313,53 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 219 "gocompiler.l"
+#line 222 "gocompiler.l"
 {column+=yyleng;strcat(STRLITERALAux,yytext);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 221 "gocompiler.l"
+#line 224 "gocompiler.l"
 {BEGIN ONELINECOMENT;column+=2;}
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 222 "gocompiler.l"
+#line 225 "gocompiler.l"
 {column=1;line++;BEGIN 0;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 223 "gocompiler.l"
+#line 226 "gocompiler.l"
 {column+=yyleng;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 225 "gocompiler.l"
+#line 228 "gocompiler.l"
 {BEGIN MULTILINECOMENT;line_begin=line;column_begin=column;column+=2;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 227 "gocompiler.l"
+#line 230 "gocompiler.l"
 {column+=yyleng;}
 	YY_BREAK
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 228 "gocompiler.l"
+#line 231 "gocompiler.l"
 {column=1;line++;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 229 "gocompiler.l"
+#line 232 "gocompiler.l"
 {BEGIN 0;column+=yyleng;}
 	YY_BREAK
 case YY_STATE_EOF(MULTILINECOMENT):
-#line 230 "gocompiler.l"
-{printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);yyterminate();BEGIN 0;}
+#line 233 "gocompiler.l"
+{printf("Line %d, column %d: unterminated comment\n",line_begin,column_begin);BEGIN 0;yyterminate();}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(ONELINECOMENT):
-#line 232 "gocompiler.l"
+#line 235 "gocompiler.l"
 {if(missing_semicolon==1){
                     missing_semicolon=0;
                     
@@ -1370,21 +1373,22 @@ case YY_STATE_EOF(ONELINECOMENT):
                        
                 }
                 yylval.value = (char*) strdup("EOF");
+                yyterminate();
                 return EOF;
                 // lastCol=column;yylval.value = (char*) strdup("EOF");return EOF;
                 }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 248 "gocompiler.l"
+#line 252 "gocompiler.l"
 {printf("Line %d, column %d: illegal character (%s)\n",line,column,yytext);column+=yyleng;};
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 251 "gocompiler.l"
+#line 255 "gocompiler.l"
 ECHO;
 	YY_BREAK
-#line 1388 "lex.yy.c"
+#line 1392 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2342,7 +2346,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 251 "gocompiler.l"
+#line 255 "gocompiler.l"
 
 
 int main(int argc, char *argv[]){
@@ -2355,6 +2359,9 @@ int main(int argc, char *argv[]){
         if(strcmp(argv[1],"-t")==0){
             parse=1;
             yyparse();
+            if(syntaxError==0){
+				printAST(root,0);
+			}
         }
     }else{
         parse=1;
@@ -2369,33 +2376,5 @@ int yywrap(){
 }
 
 
-
-void yyerror(char *s){
-    /*
-    printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
-    
-    if(strcmp(yytext,"\n")==0){
-        printf("Line %d, column %d: %s: %s\n",line-1,(int)(lastCol),s,yytext);
-    }
-
-    else if(strcmp(yytext,"\"")==0){
-        int i=0;
-        while(STRLITERALAux[i]!='\0'){
-            i++;
-        }
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)i),s,STRLITERALAux);
-    }
-    else{
-
-        
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,yytext);
-    }*/
-    
-    if(strcmp("\n",yytext)==0){
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column),s,straux);
-    }else{
-        printf("Line %d, column %d: %s: %s\n",line,(int)(column-(int)yyleng),s,straux);
-    }
-}
 
 
