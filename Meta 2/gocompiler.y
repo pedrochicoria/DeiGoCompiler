@@ -158,9 +158,10 @@ Parameters:
     ;
 
 ParametersAux:
-    ParametersAux COMMA IdAux Type                                                                      {$$=newNode("ParamDecl",NULL); 
-                                                                                                        addChild($$,$4);
-                                                                                                        addBrother($4,$3);
+    IdAux Type COMMA ParametersAux                                                                      {$$=newNode("ParamDecl",NULL); 
+                                                                                                        addChild($$,$2);
+                                                                                                        addBrother($2,$1);
+                                                                                                        addBrother($$,$4);
                                                                                                         }
     |IdAux Type                                                                                         {$$=newNode("ParamDecl",NULL); 
                                                                                                         addChild($$,$2);

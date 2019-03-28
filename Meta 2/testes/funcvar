@@ -1,6 +1,6 @@
 package main;
 
-func factorial(n int) int {
+
+func factorial1(n int,a bool,z int) int {
 
 };
-
