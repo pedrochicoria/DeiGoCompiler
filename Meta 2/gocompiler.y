@@ -95,11 +95,11 @@ VarSpec:
     ;
 
 VarSpecAux:
-    VarSpecAux COMMA IdAux                                                                                 {$$=newNode("VarDecl",NULL);
+    COMMA IdAux VarSpecAux                                                                                  {$$=newNode("VarDecl",NULL);
                                                                                                             aux=newNode("faketype",NULL);
-                                                                                                            addBrother($$,$1);
+                                                                                                            addBrother($$,$3);
                                                                                                             addChild($$,aux);
-                                                                                                            addBrother(aux,$3);}
+                                                                                                            addBrother(aux,$2);}
     | COMMA IdAux                                                                                          {$$=newNode("VarDecl",NULL);
                                                                                                             aux=newNode("faketype",NULL);
                                                                                                             addChild($$,aux);
@@ -215,6 +215,7 @@ Statement:
                                                                                                         aux=newNode("Block",NULL);
                                                                                                         addBrother($2,aux);
                                                                                                         addChild(aux,$4);
+                                                                                                        addBrother(aux,newNode("Block",NULL));
                                                                                                         }
      | IF Expr LBRACE  RBRACE ELSE LBRACE RBRACE                                                        {$$ =  newNode("If",NULL);
                                                                                                         addChild($$,$2);
@@ -338,7 +339,7 @@ Expr:
     | Expr NE Expr                                                                                      {$$ =  newNode("Ne",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr LE Expr                                                                                      {$$ =  newNode("Ne",NULL);
+    | Expr LE Expr                                                                                      {$$ =  newNode("Le",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
     | Expr GE Expr                                                                                      {$$ =  newNode("Ge",NULL);
