@@ -158,7 +158,8 @@ CMDARGS         "os.Args"
 
 
 
-\"          {BEGIN STRLITERAL;
+\"          {strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
+BEGIN STRLITERAL;
             strcat(STRLITERALAux,yytext);
             invalid_escape=0;
             line_begin=line;
@@ -214,7 +215,7 @@ CMDARGS         "os.Args"
                             yylval.value = (char*) strdup(STRLITERALAux);return STRLIT;
                         }
                     }
-                    strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
+                    
 
                     }
 

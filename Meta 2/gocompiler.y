@@ -187,8 +187,23 @@ Statement:
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
 
-     | LBRACE  RBRACE                                                                                   {$$=NULL;}
-     | LBRACE StatementSEMICOLON RBRACE                                                                 {$$=$2;/* BLOCK AQUI ??? parece que sim , fazer um while para ver o numero de filhos que tem */}
+     | LBRACE  RBRACE                                                                                   {$$=newNode("NULL",NULL);}
+     | LBRACE StatementSEMICOLON RBRACE                                                                 {aux2=$2;
+                                                                                                        int numStatements=0;
+                                                                                                        while(aux2!=NULL){
+                                                                                                            if(strcmp(aux2->type,"NULL")!=0){
+                                                                                                                numStatements++;
+                                                                                                            }
+                                                                                                            aux2=aux2->brother;
+                                                                                                        }
+                                                                                                        if(numStatements>=2){
+                                                                                                            $$=newNode("Block",NULL);
+                                                                                                            addChild($$,$2);
+                                                                                                        }
+                                                                                                        else{
+                                                                                                            $$=$2;
+                                                                                                        }
+                                                                                                        }
      | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL);
@@ -251,7 +266,7 @@ Statement:
      | RETURN                                                                                           {$$ =  newNode("Return",NULL);}
      | RETURN Expr                                                                                      {$$ =  newNode("Return",NULL);addChild($$,$2);}
 
-     | FuncInvocation                                                                                   {$$=$1;}
+     | FuncInvocation                                                                                   {$$=newNode("Call",NULL);addChild($$,$1);}
      | ParseArgs                                                                                        {$$=$1;}
 
      | PRINT LPAR StatementExprSTRLIT RPAR                                                              {$$ =  newNode("Print",NULL);addChild($$,$3);}
