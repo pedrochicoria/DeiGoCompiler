@@ -63,13 +63,13 @@ void printAST(node *current, int npontos)
                     printAST(current->child, npontos + 1);
                 if (current->brother != NULL)
                     printAST(current->brother, npontos);
-                }
+            }
                 else{
                     if (current->child != NULL)
                         printAST(current->child, npontos );
                     if (current->brother != NULL)
                         printAST(current->brother, npontos);
-                }
+            }
             
         }
 

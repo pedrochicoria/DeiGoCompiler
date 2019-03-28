@@ -71,23 +71,40 @@ DeclarationsAux:
 
 
 VarDeclaration:
-    VAR VarSpec                                                                                         {$$=newNode("VarDecl",NULL);
-                                                                                                         addChild($$,$2);   }
-    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {$$=newNode("VarDecl",NULL);
-                                                                                                        addChild($$,$3);}
+    VAR VarSpec                                                                                         {$$=$2;  }
+    | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {$$=$3;}
     ;    
 
 VarSpec:
-    IdAux Type                                                                                             {$$=$2;}  
-    | IdAux VarSpecAux Type                                                                                {$$=$2;
-                                                                                                        addBrother($2,$3);
-                                                                                                        }
+    IdAux Type                                                                                             {$$=newNode("VarDecl",NULL);
+                                                                                                            addChild($$,$2);
+                                                                                                            addBrother($2,$1);
+                                                                                                            }  
+    | IdAux VarSpecAux Type                                                                                {$$=newNode("VarDecl",NULL);
+                                                                                                            addChild($$,$3);
+                                                                                                            addBrother($3,$1);
+                                                                                                            addBrother($$,$2);
+                                                                                                            aux2=$$->brother;
+                                                                                                            while(aux2!=NULL&&strcmp(aux2->child->type,"faketype")==0){
+                                                                                                        
+                                                                                                                strcpy(aux2->child->type,$3->type);
+                                                                                                                //aux2->type=$3->type;
+                                                                                                                aux2=aux2->brother;
+                                                                                                            }
+                                                                                                            }  
     ;
 
 VarSpecAux:
-    VarSpecAux COMMA IdAux                                                                                 {$$=$1; addBrother($1,$3);}
-    | COMMA IdAux                                                                                          {$$=$2;}
-    ; 
+    VarSpecAux COMMA IdAux                                                                                 {$$=newNode("VarDecl",NULL);
+                                                                                                            aux=newNode("faketype",NULL);
+                                                                                                            addBrother($$,$1);
+                                                                                                            addChild($$,aux);
+                                                                                                            addBrother(aux,$3);}
+    | COMMA IdAux                                                                                          {$$=newNode("VarDecl",NULL);
+                                                                                                            aux=newNode("faketype",NULL);
+                                                                                                            addChild($$,aux);
+                                                                                                            addBrother(aux,$2);}
+    ;
 
 Type:
     INT                                                                                                 {$$=newNode("Int",NULL);}
@@ -165,13 +182,19 @@ VarsAndStatements:
      ;
 
 Statement:
+    
      IdAux ASSIGN Expr                                                                                  {$$ =  newNode("Assign",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
 
-
-     | LBRACE StatementSEMICOLON RBRACE                                                                 {$$=$2;/* BLOCK AQUI ??? */}
-     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);addChild($$,$2);}
+     | LBRACE  RBRACE                                                                                   {$$=NULL;}
+     | LBRACE StatementSEMICOLON RBRACE                                                                 {$$=$2;/* BLOCK AQUI ??? parece que sim , fazer um while para ver o numero de filhos que tem */}
+     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL);
+                                                                                                        addChild($$,$2);
+                                                                                                        aux=newNode("Block",NULL);
+                                                                                                        addBrother($2,aux);
+                                                                                                        addBrother(aux,newNode("Block",NULL));
+                                                                                                        }
      | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {$$ =  newNode("If",NULL);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL);
@@ -207,10 +230,23 @@ Statement:
                                                                                                         addChild(aux2,$8);
                                                                                                         }
 
-     | FOR LBRACE RBRACE                                                                                {$$ =  newNode("For",NULL);}
-     | FOR Expr LBRACE RBRACE                                                                           {$$ =  newNode("For",NULL);addChild($$,$2);}
-     | FOR Expr LBRACE StatementSEMICOLON RBRACE                                                        {$$ =  newNode("For",NULL);addChild($$,$2);addBrother($2,$4);}
-     | FOR LBRACE StatementSEMICOLON RBRACE                                                             {$$ =  newNode("For",NULL);addChild($$,$3);}
+     | FOR LBRACE RBRACE                                                                                {$$ =  newNode("For",NULL);
+                                                                                                        addChild($$,newNode("Block",NULL));
+                                                                                                        }
+     | FOR Expr LBRACE RBRACE                                                                           {$$ =  newNode("For",NULL);
+                                                                                                        addChild($$,$2);
+                                                                                                        addBrother($2,newNode("Block",NULL));}
+     | FOR Expr LBRACE StatementSEMICOLON RBRACE                                                        {$$ =  newNode("For",NULL);
+                                                                                                        addChild($$,$2);
+                                                                                                        aux=newNode("Block",NULL);
+                                                                                                        addBrother($2,aux);
+                                                                                                        addChild(aux,$4);
+                                                                                                        }
+     | FOR LBRACE StatementSEMICOLON RBRACE                                                             {$$ =  newNode("For",NULL);
+                                                                                                        aux=newNode("Block",NULL);
+                                                                                                        addChild($$,aux);
+                                                                                                        addChild(aux,$3);
+                                                                                                        }
 
      | RETURN                                                                                           {$$ =  newNode("Return",NULL);}
      | RETURN Expr                                                                                      {$$ =  newNode("Return",NULL);addChild($$,$2);}
@@ -227,7 +263,7 @@ Statement:
      ;
 
 StatementSEMICOLON:
-    StatementSEMICOLON Statement SEMICOLON                                                              {$$=$2;}
+    StatementSEMICOLON Statement SEMICOLON                                                              {$$=$1;addBrother($1,$2);}
     | Statement SEMICOLON                                                                               {$$=$1;}
     ;
 

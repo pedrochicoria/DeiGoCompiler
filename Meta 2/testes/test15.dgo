@@ -3,9 +3,9 @@ package main
 
 
 func main() {
-	var i, j int;
-	
-	c;
+	var n,j int;
+	var b bool;
 
-	fmt.Println(i, j, k, c, python, java)
+
+	fmt.Println(i)
 }
