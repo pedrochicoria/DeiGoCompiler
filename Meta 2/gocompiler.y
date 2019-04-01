@@ -13,7 +13,6 @@
     node* aux=NULL;
     node* aux2=NULL;
     
-    int syntax_error=0;
     int stat_list=0;
     int column;
     int line;
@@ -41,14 +40,14 @@
 
 %left OR 
 %left AND
-%left EQ NE
-%left LT LE GT GE
+%left LT LE GT GE EQ NE
 %left PLUS MINUS
 %left STAR DIV MOD
 
 %right NOT
 %left LPAR RPAR LSQ RSQ
 
+%nonassoc ELSE IF
 %%
 Program:
 PACKAGE ID SEMICOLON Declarations                                                                  {root=newNode("Program",NULL); 
@@ -291,11 +290,11 @@ StatementExprSTRLIT:
 
 ParseArgs:
     IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {$$=newNode("ParseArgs",NULL);addChild($$,$1);addBrother($1,$9);}
-    | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {$$=newNode("ParseArgs",NULL);addChild($$,$1);addBrother($1,newNode("Error",NULL));}
+    | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {$$=newNode("ParseArgs",NULL);addChild($$,$1);addBrother($1,newNode("Error",NULL));syntaxError=1;}
     ;
 
 FuncInvocation:
-    IdAux LPAR error RPAR                                                                                  {$$=$1;addBrother($1,newNode("Error",NULL));}
+    IdAux LPAR error RPAR                                                                                  {$$=$1;addBrother($1,newNode("Error",NULL));syntaxError=1;}
     | IdAux LPAR RPAR                                                                                      {$$=$1;}
     | IdAux LPAR Expr RPAR                                                                                 {$$=$1;addBrother($1,$3);}
     | IdAux LPAR Expr FuncInvocationAux RPAR                                                               {$$=$1;addBrother($1,$3);addBrother($3,$4);}
@@ -318,9 +317,9 @@ Expr:
     | LPAR Expr RPAR                                                                                    {$$=$2;}
     | NOT Expr                                                                                          {$$=newNode("Not",NULL);
                                                                                                         addChild($$,$2);}
-    | MINUS Expr                                                                                        {$$=newNode("Minus",NULL);
+    | MINUS Expr          %prec NOT                                                                    {$$=newNode("Minus",NULL);
                                                                                                         addChild($$,$2);}
-    | PLUS Expr                                                                                         {$$=newNode("Plus",NULL);
+    | PLUS Expr           %prec NOT                                                                            {$$=newNode("Plus",NULL);
                                                                                                         addChild($$,$2);}
     | Expr OR Expr                                                                                      {$$ =  newNode("Or",NULL);
                                                                                                         addChild($$,$1);
@@ -361,7 +360,7 @@ Expr:
     | Expr MOD Expr                                                                                     {$$ =  newNode("Mod",NULL);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | LPAR error RPAR                                                                                   {$$=newNode("Error",NULL);syntaxError=1;}
+    | LPAR  error RPAR                                                                                   {$$=newNode("Error",NULL);syntaxError=1;}
     ;
 
 

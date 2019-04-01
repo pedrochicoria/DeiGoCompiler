@@ -1,0 +1,25 @@
+package main
+
+
+func main() {
+   var a bool ;
+   var b bool ;
+   if ( a && b ) {
+fmt.Println("Line 1 - Condition is true\n" );
+   }
+   if ( a || b ) {
+      fmt.Println("Line 2 - Condition is true\n" )
+   }
+   
+   /* lets change the value of  a and b */
+   a = false
+   b = true
+   if ( a && b ) {
+      fmt.Println("Line 3 - Condition is true\n" )
+   } else {
+      fmt.Println("Line 3 - Condition is not true\n" )
+   }
+   if ( !(a && b) ) {
+      fmt.Println("Line 4 - Condition is true\n" )
+   }
+}

@@ -1254,10 +1254,6 @@ state 89
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR  shift, and go to state 93
-    DIV   shift, and go to state 94
-    MOD   shift, and go to state 101
-
     $default  reduce using rule 68 (Expr)
 
 
@@ -1297,10 +1293,6 @@ state 91
    80     | Expr . STAR Expr
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
-
-    STAR  shift, and go to state 93
-    DIV   shift, and go to state 94
-    MOD   shift, and go to state 101
 
     $default  reduce using rule 69 (Expr)
 
@@ -1866,10 +1858,6 @@ state 125
 
     STAR   shift, and go to state 93
     DIV    shift, and go to state 94
-    GE     shift, and go to state 96
-    GT     shift, and go to state 97
-    LE     shift, and go to state 98
-    LT     shift, and go to state 99
     MINUS  shift, and go to state 100
     MOD    shift, and go to state 101
     PLUS   shift, and go to state 104
@@ -2044,10 +2032,6 @@ state 132
 
     STAR   shift, and go to state 93
     DIV    shift, and go to state 94
-    GE     shift, and go to state 96
-    GT     shift, and go to state 97
-    LE     shift, and go to state 98
-    LT     shift, and go to state 99
     MINUS  shift, and go to state 100
     MOD    shift, and go to state 101
     PLUS   shift, and go to state 104

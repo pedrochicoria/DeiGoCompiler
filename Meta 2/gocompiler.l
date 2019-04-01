@@ -1,5 +1,7 @@
 
 %{
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
@@ -159,7 +161,7 @@ CMDARGS         "os.Args"
 
 
 \"          {strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
-BEGIN STRLITERAL;
+            BEGIN STRLITERAL;
             strcat(STRLITERALAux,yytext);
             invalid_escape=0;
             line_begin=line;

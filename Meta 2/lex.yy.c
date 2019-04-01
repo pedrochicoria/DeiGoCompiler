@@ -1239,7 +1239,7 @@ case 45:
 YY_RULE_SETUP
 #line 161 "gocompiler.l"
 {strcpy(STRLITERALAux,"\0"); // apaga o buffer caso contrario o que la estava pode ser acedido por outros STRLITERALs
-BEGIN STRLITERAL;
+            BEGIN STRLITERAL;
             strcat(STRLITERALAux,yytext);
             invalid_escape=0;
             line_begin=line;

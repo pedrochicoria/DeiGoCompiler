@@ -1,9 +1,21 @@
 package main
 
-func main() {
+var d int;
+	var e,f float32;
+	var g ,h string;
+	var i string;
 
-	if n<0 {
-		a=1;
-	};
+func main(a int , b bool,c string) {
+	var d int;
+	var e,f float32;
+	var g ,h string;
+	var i string;
+	
+}
+func main2() {
+	var d int;
+	var e,f float32;
+	var g ,h string;
+	var i string;
 	
 }
