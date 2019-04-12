@@ -2376,9 +2376,7 @@ int main(int argc, char *argv[]){
         yyparse();
     }
 
-    //sleep(6);
     deleteAst(root);
-    //sleep(2);
 	return 0;
 }
 

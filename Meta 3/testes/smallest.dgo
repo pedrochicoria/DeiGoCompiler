@@ -1,17 +1,23 @@
 package main; 
 var a bool;
-var a bool
+//var a bool;
 var b bool;
-func main ()bool{
+func main (s int)float32 {
 	
 };
+/*
 func main ()int{
 	
-};
+};*/
 var c bool;
 func main2 (){
 	
 };
+
+
+
+
+
 /*
 func main3 ()string{
 	

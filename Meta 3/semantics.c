@@ -1,4 +1,5 @@
 #include "semantics.h" 
+#include <ctype.h> // sera que pode dar problemas COMPILE TIME ERROR ?
 struct func_table *funcHead =NULL;                                      // ponteiro para a cabeça da lista ligada de funcoes
 int line;
 int column;
@@ -14,8 +15,6 @@ void criaTabelas(node* current){
     if(strcmp(current->type,"VarDecl")==0){
         adicionaVariavelGlobal(current);
     }
-
-
     // mas sera que precisa de ver os filhos ??? nao deve ser preciso
 
 
@@ -38,9 +37,9 @@ void adicionaFuncao(node* current){                                          // 
         struct func_table *funcAux =funcHead;
         char* funcName = current->child->child->value;                  // funcDcl FuncHeader Id
         char* funcType = current->child->child->brother->type;     
+        funcType[0]=tolower(funcType[0]);
 
-
-         if (existeVariavelOuFuncao(funcName,current)){                           // devolve 0 se a variavel existe
+         if (existeVariavelOuFuncao(funcName,current->child->child)){                           // devolve 0 se a variavel existe
             return;
         }   
 
@@ -53,7 +52,7 @@ void adicionaFuncao(node* current){                                          // 
             //funcHead->type=(char*)malloc(1000*sizeof(char));
 
             if(strcmp(funcType,"FuncParams")==0){
-                funcType="void";    
+                funcType="none";    
             }
             //printf("type %s\n",current->child->child->brother->value);
             funcHead->func=1;
@@ -73,12 +72,12 @@ void adicionaFuncao(node* current){                                          // 
         funcAux->next=(struct func_table*)malloc(sizeof( func_table));
         funcAux=funcAux->next;
 
-        if(strcmp(funcType,"FuncParams")==0){
-            funcType="void";    
+        if(strcmp(funcType,"funcParams")==0){ // esta em minusculo porque em cima foi convertido para minusculo
+            funcType="none";    
         }
             
         //printf("type %s\n",current->child->child->brother->value);
-        funcHead->func=1;
+        funcAux->func=1;
         funcAux->name=funcName;
         funcAux->type=funcType;
         funcAux->next=NULL;
@@ -93,8 +92,9 @@ void adicionaVariavelGlobal(node* current){
         
         char* varName = current->child->brother->value;                 // VarDcl Type Id
         char* varType = current->child->type;                           // é suposto o tipo de variaveis funcoes aparecer em maiusculo ?
+        varType[0]=tolower(varType[0]);
         
-        if (existeVariavelOuFuncao(varName,current)){                           // devolve 0 se a variavel existe
+        if (existeVariavelOuFuncao(varName,current->child->brother)){                           // devolve 0 se a variavel existe
             return;
         }   
 
@@ -128,10 +128,25 @@ void adicionaVariavelGlobal(node* current){
         return;
 }
 void printTabelaFuncoes(){
-    
+    printf("===== Global Symbol Table =====\n");
     struct func_table *funcAux =funcHead;
     while(funcAux){
-        printf("Funcao/variavel : %s Tipo %s\n",funcAux->name, funcAux->type );
+        printf("%s\t",funcAux->name);
+        if(funcAux->func){
+            printf("(");
+            struct param_table *paramsAux=funcAux->params;
+            if(paramsAux){
+                printf("%s",paramsAux->type);
+                paramsAux=paramsAux->next;
+                while(paramsAux){
+                    printf(",%s",paramsAux->type);
+                    paramsAux=paramsAux->next;
+                }
+            }
+
+            printf(")");
+        }
+        printf("\t%s\n", funcAux->type );
         funcAux=funcAux->next;
     }
 }
@@ -140,7 +155,13 @@ int existeVariavelOuFuncao(char * name,node* current){
     while(funcAux){
 
         if(strcmp(funcAux->name,name)==0){
-            printf("Line %d: ,col : %d redefinition of %s\n",current->line,current->column,name);
+            
+            int i=0;
+            while(name[i]!='\0'){
+                i++;
+            }
+
+            printf("Line %d, column %d: redefinition of %s\n",current->line,current->column-i,name);
             return 1;
         }
         funcAux=funcAux->next;
