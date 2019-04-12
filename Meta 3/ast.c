@@ -40,10 +40,7 @@ void addChild(node *dad, node *child)
 }
 void printAST(node *current, int npontos)
 {
-    if (current == NULL)
-    {
-        return;
-    }
+    
     if (current != NULL)
     {
         if (current->type != NULL)

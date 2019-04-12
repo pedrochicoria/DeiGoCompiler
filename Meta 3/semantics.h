@@ -33,3 +33,6 @@ void adicionaFuncao(node* current);
 void adicionaVariavelGlobal(node* current);
 void printTabelaFuncoes();
 int existeVariavelOuFuncao(char * name,node* current);
+void adicionaParametros(node* current,func_table * funcAux);
+void adicionaVarsLocais(node* current,func_table * funcAux);
+void adicionaVarsLocais(node* current,func_table * funcAux);
