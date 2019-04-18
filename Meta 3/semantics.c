@@ -15,6 +15,11 @@ void criaTabelas(node* current){
     else if(strcmp(current->type,"VarDecl")==0){
         adicionaVariavelGlobal(current);
     }
+
+    if(strcmp(current->type,"Eq")==0){
+
+    }
+
     // mas sera que precisa de ver os filhos ??? nao deve ser preciso
 
 
@@ -28,9 +33,9 @@ void criaTabelas(node* current){
     onde e que ele da erro ?  no primeiro a ou no segundo
 
     */
-    else{
-        criaTabelas(current->child); 
-    }
+
+    criaTabelas(current->child); 
+
     criaTabelas(current->brother);
 
 }
@@ -51,6 +56,7 @@ void adicionaFuncao(node* current){                                          // 
 
 
         if(!funcHead){                                                       // no caso em que nao foi adicionada nenhuma funcao/variavel  
+
             funcHead=(struct func_table*)malloc(sizeof( func_table));
          
             if(strcmp(funcType,"funcParams")==0||strcmp(funcType,"FuncParams")==0){
@@ -58,20 +64,23 @@ void adicionaFuncao(node* current){                                          // 
             }
 
                                                                         // adiciona o return as fariaveis locais
-            
+            /*
             funcHead->vars=(struct var_table*)malloc(sizeof( var_table)); 
             funcHead->vars->name=(char *)malloc(sizeof( char)*100) ;
             strcpy(funcHead->vars->name,"return");
             funcHead->vars->type=(char *)malloc(sizeof( char)*100) ; 
             strcpy(funcHead->vars->type,funcType);
             funcHead->vars->isParam=0;
-            funcHead->vars->next=NULL;
-            
+            funcHead->vars->next=NULL;*/
+
+            funcHead->params=NULL;
             funcHead->func=1;
             funcHead->name=funcName;
             funcHead->type=funcType;
             funcHead->next=NULL;
             funcHead->params=NULL;
+            funcHead->vars=NULL;
+
             adicionaParametros(current,funcHead);
             adicionaVarsLocais(current,funcHead);
 
@@ -86,18 +95,19 @@ void adicionaFuncao(node* current){                                          // 
             funcAux->next=(struct func_table*)malloc(sizeof( func_table));
             funcAux=funcAux->next;
 
-        
+            
             if(strcmp(funcType,"funcParams")==0||strcmp(funcType,"FuncParams")==0){ // esta em minusculo porque em cima foi convertido para minusculo
                 funcType="none";                                                    // adiciona Type none se nao houver type
 
             }
+            /*
                                                                         // adiciona o return as fariaveis locais
             funcAux->vars=(struct var_table*)malloc(sizeof( var_table)); 
             funcAux->vars->name=(char *)malloc(sizeof( char)*100) ;
             strcpy(funcAux->vars->name,"return");
             funcAux->vars->type=(char *)malloc(sizeof( char)*100) ; 
             strcpy(funcAux->vars->type,funcType);
-            funcAux->vars->next=NULL;
+            funcAux->vars->next=NULL;*/
             
 
             funcAux->func=1;
@@ -105,6 +115,7 @@ void adicionaFuncao(node* current){                                          // 
             funcAux->type=funcType;
             funcAux->next=NULL;
             funcAux->params=NULL;
+            funcAux->vars=NULL;
             adicionaParametros(current,funcAux);
             adicionaVarsLocais(current,funcAux);
         }
@@ -149,6 +160,7 @@ void adicionaVariavelGlobal(node* current){
         funcAux->next=NULL;
         funcAux->params=NULL;
         funcAux->vars=NULL;
+        
         return;
 }
 void adicionaParametros(node* current,func_table * funcAux){
@@ -199,26 +211,46 @@ void adicionaParametros(node* current,func_table * funcAux){
 }
 void adicionaVarsLocais(node* current,func_table * funcAux){
     node* nodeAux=current->child->brother->child; // a apontar para o primeiro statement
-    var_table *paramsAux =funcAux->vars;
-    printf("--------------%s\n",current->child->brother->child->type);
+    var_table *varsAux =funcAux->vars;
+    var_table *varsHead = NULL;
     while(nodeAux){   // ParamDecl -> ParamDecl || outra coisa
        if(strcmp(nodeAux->type,"VarDecl")==0){
-           printf("okasdasddas\n");
-            paramsAux ->next = (struct var_table*)malloc(sizeof( var_table));
-            paramsAux=paramsAux->next;
-            paramsAux->next=NULL;
-            paramsAux->name=(char *)malloc(sizeof( char)*100); 
-            strcpy(paramsAux->name,nodeAux->child->brother->value);
-            paramsAux->type=(char *)malloc(sizeof( char)*100);
-            strcpy(paramsAux->type,nodeAux->child->type); 
-            paramsAux->type[0]=tolower(paramsAux->type[0]);
+            if(!varsAux){
+                
+                varsAux= (struct var_table*)malloc(sizeof( var_table));
+                varsAux->next=NULL;
+                varsAux->name=(char *)malloc(sizeof( char)*100); 
+                strcpy(varsAux->name,nodeAux->child->brother->value);
+                varsAux->type=(char *)malloc(sizeof( char)*100);
+                strcpy(varsAux->type,nodeAux->child->type); 
+                varsAux->type[0]=tolower(varsAux->type[0]);
 
+                varsHead=varsAux;
+            }
+            else{
+
+                varsAux->next= (struct var_table*)malloc(sizeof( var_table));\
+                varsAux=varsAux->next;
+                varsAux->next=NULL;
+                varsAux->name=(char *)malloc(sizeof( char)*100); 
+                strcpy(varsAux->name,nodeAux->child->brother->value);
+                varsAux->type=(char *)malloc(sizeof( char)*100);
+                strcpy(varsAux->type,nodeAux->child->type); 
+                varsAux->type[0]=tolower(varsAux->type[0]);
+
+
+                
+            }
+            
         }
         nodeAux=nodeAux->brother;
     }
+    funcAux->vars=varsHead;
 
 }
-void printTabelaFuncoes(){ // Verificar se os \n's estao bem
+void printTabelaFuncoes(){ // Verificar se os \n's estao bem 
+                                                                            
+
     printf("\n===== Global Symbol Table =====\n");
     struct func_table *funcAux =funcHead;
     while(funcAux){
@@ -257,9 +289,18 @@ void printTabelaFuncoes(){ // Verificar se os \n's estao bem
                 }
             }
             printf(") Symbol Table =====\n");
-            struct var_table *varsAux=funcAux->vars;
+            printf("%s\t\t%s\n","return",funcAux->type);         // print do return 
+
+            paramsAux=funcAux->params;
+            while(paramsAux){
+                printf("%s\t\t%s\tparam\n",paramsAux->name,paramsAux->type); // print dos parametros como variaveis locais
+                paramsAux=paramsAux->next;
+            }
+
+            struct var_table *varsAux=funcAux->vars;  // print das variaveis locais
             while(varsAux){
-                printf("%s \t %s\n",varsAux->name,varsAux->type);
+
+                printf("%s\t\t%s\n",varsAux->name,varsAux->type);
                 varsAux=varsAux->next;
             }
         }
@@ -285,3 +326,4 @@ int existeVariavelOuFuncao(char * name,node* current){
     }
     return 0;
 }
+

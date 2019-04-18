@@ -1,0 +1,10 @@
+package main;
+var a int;
+
+func main() {
+	if(a==f()){
+		{t=c-d+funcao(e/f);}
+
+	}
+	z=ok();
+};

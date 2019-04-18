@@ -2369,6 +2369,7 @@ int main(int argc, char *argv[]){
 				printAST(root,0);
                 criaTabelas(root);
                 printTabelaFuncoes();
+
 			}
         }
     }else{

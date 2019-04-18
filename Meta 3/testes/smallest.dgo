@@ -7,4 +7,5 @@ func main (s int,z string,t float32 )int {
 	var c string;
 	if a>2{}
 	var s bool;
+
 };

@@ -6,4 +6,4 @@ make:
 	rm -f gocompiler.zip
 	zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c
 
-	./gocompiler -t < testes/smallest.dgo 
+	./gocompiler -t < testes/expr.dgo 
