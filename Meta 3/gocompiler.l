@@ -118,25 +118,30 @@ CMDARGS         "os.Args"
 {BLANKID}       {if(print==1) printf("BLANKID\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return BLANKID;}}
 {PACKAGE}       {if(print==1) printf("PACKAGE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PACKAGE;}}
 
-{AND}           {if(print==1) printf("AND\n");column+=yyleng;missing_semicolon=0; if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return AND;}}
-{ASSIGN}        {if(print==1) printf("ASSIGN\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ASSIGN;}}
-{STAR}          {if(print==1) printf("STAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return STAR;}}
-{COMMA}         {if(print==1) printf("COMMA\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return COMMA;}}
-{DIV}           {if(print==1) printf("DIV\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return DIV;}}
-{EQ}            {if(print==1) printf("EQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return EQ;}}
-{GE}            {if(print==1) printf("GE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return GE;}}
-{GT}            {if(print==1) printf("GT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return GT;}}
+{AND}           {if(print==1) printf("AND\n");column+=yyleng;missing_semicolon=0; if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return AND;}}
+{ASSIGN}        {if(print==1) printf("ASSIGN\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return ASSIGN;}}
+{STAR}          {if(print==1) printf("STAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return STAR;}}
+{COMMA}         {if(print==1) printf("COMMA\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return COMMA;}}
+{DIV}           {if(print==1) printf("DIV\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return DIV;}}
+{MINUS}			{if(print==1) printf("MINUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return MINUS;}}
+{PLUS}			{if(print==1) printf("PLUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return PLUS;}}
+{NOT}		    {if(print==1) printf("NOT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return NOT;}}
+{OR}			{if(print==1) printf("OR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return OR;}}
+{MOD}		    {if(print==1) printf("MOD\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return MOD;}}
+
+{EQ}            {if(print==1) printf("EQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return EQ;}}
+{GE}            {if(print==1) printf("GE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return GE;}}
+{GT}            {if(print==1) printf("GT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return GT;}}
+{LE}            {if(print==1) printf("LE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return LE;}}
+{LT}            {if(print==1) printf("LT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return LT;}}
+{NE}			{if(print==1) printf("NE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return NE;}}
+
 {LBRACE}        {if(print==1) printf("LBRACE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LBRACE;}}
-{LE}            {if(print==1) printf("LE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LE;}}
 {LPAR}          {if(print==1) printf("LPAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LPAR;}}
 {LSQ}           {if(print==1) printf("LSQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LSQ;}}
-{LT}            {if(print==1) printf("LT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LT;}}
-{MINUS}			{if(print==1) printf("MINUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return MINUS;}}
-{MOD}		    {if(print==1) printf("MOD\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return MOD;}}
-{NE}			{if(print==1) printf("NE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return NE;}}
-{NOT}		    {if(print==1) printf("NOT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return NOT;}}
-{OR}			{if(print==1) printf("OR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return OR;}}
-{PLUS}			{if(print==1) printf("PLUS\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return PLUS;}}
+
+
+
 {RBRACE}                    {if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RBRACE;}}
 {RPAR}			            {if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RPAR;}}                            
 {RSQ}                       {if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RSQ;}}
@@ -270,15 +275,33 @@ int main(int argc, char *argv[]){
             parse=1;
             yyparse();
             if(syntaxError==0){
-				printAST(root,0);
+
+                printAST(root,0);
+
+			}
+        }
+        if(strcmp(argv[1],"-s")==0){
+            parse=1;
+            yyparse();
+            if(syntaxError==0){
+
                 criaTabelas(root);
                 printTabelaFuncoes();
+                printAST(root,0);
+                
 
 			}
         }
     }else{
         parse=1;
         yyparse();
+        if(syntaxError==0){
+
+                criaTabelas(root);
+                
+                
+
+			}
     }
 
     deleteAst(root);

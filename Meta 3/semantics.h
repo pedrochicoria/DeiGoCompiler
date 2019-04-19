@@ -29,10 +29,14 @@ typedef struct var_table{ // representa uma lista ligada de variaveis locais de 
 } var_table;
 
 void criaTabelas(node* current);
-void adicionaFuncao(node* current);
+char* anotaStatementsExpressoes(node *current, func_table *funcAux);
+func_table* ponteiroFuncao(char* funcaoNome);
+func_table* adicionaFuncao(node* current);
 void adicionaVariavelGlobal(node* current);
 void printTabelaFuncoes();
 int existeVariavelOuFuncao(char * name,node* current);
 void adicionaParametros(node* current,func_table * funcAux);
 void adicionaVarsLocais(node* current,func_table * funcAux);
 void adicionaVarsLocais(node* current,func_table * funcAux);
+char* anotaId(node* current, func_table* funcAux);
+char* anotaIdFuncao(node* current, func_table* funcAux);

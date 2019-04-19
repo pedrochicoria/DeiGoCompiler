@@ -1,0 +1,35 @@
+package main
+var a bool;
+var d int;
+//var a bool ; 
+func main(c float32){
+var a bool;
+var a bool;  // erro
+var b bool;	
+var c int;	// erro
+var b bool;	// erro
+
+j=1;
+if(a!=b>c) {
+if(a>=b){
+if(0x19af>=c){
+c=!3*1-c(d());
+			
+			}
+		}
+	
+   	}
+if(a==tasdas){ //erro
+	d=1;
+}; 
+
+var string1 string;
+var string2 string;
+	if(string1>string2){
+		
+	}
+	existe(1,123,4-5);
+}
+func existe() int{
+	
+}

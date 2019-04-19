@@ -9,13 +9,20 @@ node *newNode(char *type, char *value,int line,int column)
     new->brother = NULL;
     new->line = line;
     new->column=column;
+    new->note=NULL;
     if (value == NULL)
     {
         new->value = NULL;
         return new;
     }
     new->value = (char *)strdup(value);
+    
     return new;
+}
+void addNote(node *nodeAux,char* note){
+
+    nodeAux->note=(char *)strdup(note);
+    return;
 }
 void addBrother(node *brother, node *newBrother)
 {
@@ -49,14 +56,22 @@ void printAST(node *current, int npontos)
                 for (int i = 0; i < npontos; i++)
                 printf("..");
 
+                // para ver se as linhas e as colunas dos nos estao bem
+                //printf("%d %d ", current->line, current->column);
+                
                 if (current->value != NULL)
                 {
-                    printf("%s(%s)\n", current->type, current->value);
+                    printf("%s(%s)", current->type, current->value);
                 }
                 else
                 {
-                    printf("%s\n", current->type);
+                    printf("%s", current->type);
                 }
+                if(current->note!=NULL){
+
+                    printf(" - %s",current->note);
+                }
+                printf("\n");
                 if (current->child != NULL)
                     printAST(current->child, npontos + 1);
                 if (current->brother != NULL)

@@ -119,45 +119,45 @@ SEMICOLON (258) 1 4 5 6 7 9 26 27 28 49 50
 BLANKID (259) 53 54
 PACKAGE (260) 1
 RETURN (261) 43 44
-AND (262) 71
-ASSIGN (263) 30 53 54
-STAR (264) 80
-COMMA (265) 12 13 23 53 54 59 60
-DIV (266) 81
-EQ (267) 74
-GE (268) 77
-GT (269) 73
-LBRACE (270) 25 31 32 33 34 35 36 37 38 39 40 41 42
-LE (271) 76
-LPAR (272) 9 18 19 20 21 47 53 54 55 56 57 58 66 83
-LSQ (273) 53
-LT (274) 72
-MINUS (275) 68 79
-MOD (276) 82
-NE (277) 75
-NOT (278) 67
-OR (279) 70
-PLUS (280) 69 78
-RBRACE (281) 25 31 32 33 34 35 36 37 38 39 40 41 42
-RPAR (282) 9 18 19 20 21 47 53 54 55 56 57 58 66 83
-RSQ (283) 53
-ELSE (284) 35 36 37 38
-FOR (285) 39 40 41 42
-IF (286) 33 34 35 36 37 38
-VAR (287) 8 9
-INT (288) 14
-FLOAT32 (289) 15
-BOOL (290) 16
-STRING (291) 17
-PARSEINT (292) 53 54
-FUNC (293) 18 19 20 21
-CMDARGS (294) 53
-PRINT (295) 47
-RESERVED (296)
-INTLIT (297) 62
-REALLIT (298) 63
-STRLIT (299) 52
-ID (300) 1 61
+COMMA (262) 12 13 23 53 54 59 60
+LBRACE (263) 25 31 32 33 34 35 36 37 38 39 40 41 42
+LPAR (264) 9 18 19 20 21 47 53 54 55 56 57 58 66 83
+LSQ (265) 53
+RBRACE (266) 25 31 32 33 34 35 36 37 38 39 40 41 42
+RPAR (267) 9 18 19 20 21 47 53 54 55 56 57 58 66 83
+RSQ (268) 53
+ELSE (269) 35 36 37 38
+FOR (270) 39 40 41 42
+IF (271) 33 34 35 36 37 38
+VAR (272) 8 9
+INT (273) 14
+FLOAT32 (274) 15
+BOOL (275) 16
+STRING (276) 17
+PARSEINT (277) 53 54
+FUNC (278) 18 19 20 21
+CMDARGS (279) 53
+PRINT (280) 47
+RESERVED (281)
+INTLIT (282) 62
+REALLIT (283) 63
+STRLIT (284) 52
+ID (285) 1 61
+ASSIGN (286) 30 53 54
+OR (287) 70
+AND (288) 71
+NE (289) 75
+EQ (290) 74
+GE (291) 77
+GT (292) 73
+LE (293) 76
+LT (294) 72
+MINUS (295) 68 79
+PLUS (296) 69 78
+MOD (297) 82
+DIV (298) 81
+STAR (299) 80
+NOT (300) 67
 
 
 Nonterminals, with rules where they appear
@@ -703,12 +703,12 @@ state 53
    44          | RETURN . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     $default  reduce using rule 43 (Statement)
 
@@ -754,12 +754,12 @@ state 56
 
     LBRACE   shift, and go to state 78
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -776,12 +776,12 @@ state 57
    38          | IF . Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE StatementSEMICOLON RBRACE
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -833,9 +833,9 @@ state 63
    57               | IdAux . LPAR Expr RPAR
    58               | IdAux . LPAR Expr FuncInvocationAux RPAR
 
-    ASSIGN  shift, and go to state 84
-    COMMA   shift, and go to state 85
-    LPAR    shift, and go to state 86
+    COMMA   shift, and go to state 84
+    LPAR    shift, and go to state 85
+    ASSIGN  shift, and go to state 86
 
 
 state 64
@@ -859,12 +859,12 @@ state 66
 
     error    shift, and go to state 87
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -873,67 +873,67 @@ state 66
 
 state 67
 
+   62 Expr: INTLIT .
+
+    $default  reduce using rule 62 (Expr)
+
+
+state 68
+
+   63 Expr: REALLIT .
+
+    $default  reduce using rule 63 (Expr)
+
+
+state 69
+
    68 Expr: MINUS . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
     Expr            go to state 89
 
 
-state 68
+state 70
 
-   67 Expr: NOT . Expr
+   69 Expr: PLUS . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
     Expr            go to state 90
 
 
-state 69
+state 71
 
-   69 Expr: PLUS . Expr
+   67 Expr: NOT . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
     Expr            go to state 91
-
-
-state 70
-
-   62 Expr: INTLIT .
-
-    $default  reduce using rule 62 (Expr)
-
-
-state 71
-
-   63 Expr: REALLIT .
-
-    $default  reduce using rule 63 (Expr)
 
 
 state 72
@@ -951,7 +951,7 @@ state 73
    58               | IdAux . LPAR Expr FuncInvocationAux RPAR
    64 Expr: IdAux .
 
-    LPAR  shift, and go to state 86
+    LPAR  shift, and go to state 85
 
     $default  reduce using rule 64 (Expr)
 
@@ -973,19 +973,19 @@ state 74
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 44 (Statement)
 
@@ -1063,20 +1063,20 @@ state 79
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND     shift, and go to state 92
-    STAR    shift, and go to state 93
-    DIV     shift, and go to state 94
+    LBRACE  shift, and go to state 110
+    OR      shift, and go to state 92
+    AND     shift, and go to state 93
+    NE      shift, and go to state 94
     EQ      shift, and go to state 95
     GE      shift, and go to state 96
     GT      shift, and go to state 97
-    LBRACE  shift, and go to state 110
     LE      shift, and go to state 98
     LT      shift, and go to state 99
     MINUS   shift, and go to state 100
-    MOD     shift, and go to state 101
-    NE      shift, and go to state 102
-    OR      shift, and go to state 103
-    PLUS    shift, and go to state 104
+    PLUS    shift, and go to state 101
+    MOD     shift, and go to state 102
+    DIV     shift, and go to state 103
+    STAR    shift, and go to state 104
 
 
 state 80
@@ -1101,20 +1101,20 @@ state 80
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND     shift, and go to state 92
-    STAR    shift, and go to state 93
-    DIV     shift, and go to state 94
+    LBRACE  shift, and go to state 111
+    OR      shift, and go to state 92
+    AND     shift, and go to state 93
+    NE      shift, and go to state 94
     EQ      shift, and go to state 95
     GE      shift, and go to state 96
     GT      shift, and go to state 97
-    LBRACE  shift, and go to state 111
     LE      shift, and go to state 98
     LT      shift, and go to state 99
     MINUS   shift, and go to state 100
-    MOD     shift, and go to state 101
-    NE      shift, and go to state 102
-    OR      shift, and go to state 103
-    PLUS    shift, and go to state 104
+    PLUS    shift, and go to state 101
+    MOD     shift, and go to state 102
+    DIV     shift, and go to state 103
+    STAR    shift, and go to state 104
 
 
 state 81
@@ -1122,13 +1122,13 @@ state 81
    47 Statement: PRINT LPAR . StatementExprSTRLIT RPAR
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     STRLIT   shift, and go to state 112
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     StatementExprSTRLIT  go to state 113
     FuncInvocation       go to state 72
@@ -1152,45 +1152,45 @@ state 83
 
 state 84
 
-   30 Statement: IdAux ASSIGN . Expr
-
-    LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
-    ID       shift, and go to state 13
-
-    FuncInvocation  go to state 72
-    IdAux           go to state 73
-    Expr            go to state 115
-
-
-state 85
-
    53 ParseArgs: IdAux COMMA . BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
    54          | IdAux COMMA . BLANKID ASSIGN PARSEINT LPAR error RPAR
 
-    BLANKID  shift, and go to state 116
+    BLANKID  shift, and go to state 115
 
 
-state 86
+state 85
 
    55 FuncInvocation: IdAux LPAR . error RPAR
    56               | IdAux LPAR . RPAR
    57               | IdAux LPAR . Expr RPAR
    58               | IdAux LPAR . Expr FuncInvocationAux RPAR
 
-    error    shift, and go to state 117
+    error    shift, and go to state 116
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    RPAR     shift, and go to state 118
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    RPAR     shift, and go to state 117
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
+
+    FuncInvocation  go to state 72
+    IdAux           go to state 73
+    Expr            go to state 118
+
+
+state 86
+
+   30 Statement: IdAux ASSIGN . Expr
+
+    LPAR     shift, and go to state 66
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
+    ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1221,20 +1221,20 @@ state 88
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    RPAR   shift, and go to state 121
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
-    RPAR   shift, and go to state 121
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
 
 state 89
@@ -1259,26 +1259,6 @@ state 89
 
 state 90
 
-   67 Expr: NOT Expr .
-   70     | Expr . OR Expr
-   71     | Expr . AND Expr
-   72     | Expr . LT Expr
-   73     | Expr . GT Expr
-   74     | Expr . EQ Expr
-   75     | Expr . NE Expr
-   76     | Expr . LE Expr
-   77     | Expr . GE Expr
-   78     | Expr . PLUS Expr
-   79     | Expr . MINUS Expr
-   80     | Expr . STAR Expr
-   81     | Expr . DIV Expr
-   82     | Expr . MOD Expr
-
-    $default  reduce using rule 67 (Expr)
-
-
-state 91
-
    69 Expr: PLUS Expr .
    70     | Expr . OR Expr
    71     | Expr . AND Expr
@@ -1297,17 +1277,37 @@ state 91
     $default  reduce using rule 69 (Expr)
 
 
+state 91
+
+   67 Expr: NOT Expr .
+   70     | Expr . OR Expr
+   71     | Expr . AND Expr
+   72     | Expr . LT Expr
+   73     | Expr . GT Expr
+   74     | Expr . EQ Expr
+   75     | Expr . NE Expr
+   76     | Expr . LE Expr
+   77     | Expr . GE Expr
+   78     | Expr . PLUS Expr
+   79     | Expr . MINUS Expr
+   80     | Expr . STAR Expr
+   81     | Expr . DIV Expr
+   82     | Expr . MOD Expr
+
+    $default  reduce using rule 67 (Expr)
+
+
 state 92
 
-   71 Expr: Expr AND . Expr
+   70 Expr: Expr OR . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1316,15 +1316,15 @@ state 92
 
 state 93
 
-   80 Expr: Expr STAR . Expr
+   71 Expr: Expr AND . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1333,15 +1333,15 @@ state 93
 
 state 94
 
-   81 Expr: Expr DIV . Expr
+   75 Expr: Expr NE . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1353,12 +1353,12 @@ state 95
    74 Expr: Expr EQ . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1370,12 +1370,12 @@ state 96
    77 Expr: Expr GE . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1387,12 +1387,12 @@ state 97
    73 Expr: Expr GT . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1404,12 +1404,12 @@ state 98
    76 Expr: Expr LE . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1421,12 +1421,12 @@ state 99
    72 Expr: Expr LT . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1438,12 +1438,12 @@ state 100
    79 Expr: Expr MINUS . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1452,15 +1452,15 @@ state 100
 
 state 101
 
-   82 Expr: Expr MOD . Expr
+   78 Expr: Expr PLUS . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1469,15 +1469,15 @@ state 101
 
 state 102
 
-   75 Expr: Expr NE . Expr
+   82 Expr: Expr MOD . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1486,15 +1486,15 @@ state 102
 
 state 103
 
-   70 Expr: Expr OR . Expr
+   81 Expr: Expr DIV . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1503,15 +1503,15 @@ state 103
 
 state 104
 
-   78 Expr: Expr PLUS . Expr
+   80 Expr: Expr STAR . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -1643,58 +1643,24 @@ state 114
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 51 (StatementExprSTRLIT)
 
 
 state 115
-
-   30 Statement: IdAux ASSIGN Expr .
-   70 Expr: Expr . OR Expr
-   71     | Expr . AND Expr
-   72     | Expr . LT Expr
-   73     | Expr . GT Expr
-   74     | Expr . EQ Expr
-   75     | Expr . NE Expr
-   76     | Expr . LE Expr
-   77     | Expr . GE Expr
-   78     | Expr . PLUS Expr
-   79     | Expr . MINUS Expr
-   80     | Expr . STAR Expr
-   81     | Expr . DIV Expr
-   82     | Expr . MOD Expr
-
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
-    EQ     shift, and go to state 95
-    GE     shift, and go to state 96
-    GT     shift, and go to state 97
-    LE     shift, and go to state 98
-    LT     shift, and go to state 99
-    MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
-
-    $default  reduce using rule 30 (Statement)
-
-
-state 116
 
    53 ParseArgs: IdAux COMMA BLANKID . ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
    54          | IdAux COMMA BLANKID . ASSIGN PARSEINT LPAR error RPAR
@@ -1702,21 +1668,21 @@ state 116
     ASSIGN  shift, and go to state 142
 
 
-state 117
+state 116
 
    55 FuncInvocation: IdAux LPAR error . RPAR
 
     RPAR  shift, and go to state 143
 
 
-state 118
+state 117
 
    56 FuncInvocation: IdAux LPAR RPAR .
 
     $default  reduce using rule 56 (FuncInvocation)
 
 
-state 119
+state 118
 
    57 FuncInvocation: IdAux LPAR Expr . RPAR
    58               | IdAux LPAR Expr . FuncInvocationAux RPAR
@@ -1734,23 +1700,57 @@ state 119
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
     COMMA  shift, and go to state 144
-    DIV    shift, and go to state 94
+    RPAR   shift, and go to state 145
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
-    RPAR   shift, and go to state 145
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     FuncInvocationAux  go to state 146
+
+
+state 119
+
+   30 Statement: IdAux ASSIGN Expr .
+   70 Expr: Expr . OR Expr
+   71     | Expr . AND Expr
+   72     | Expr . LT Expr
+   73     | Expr . GT Expr
+   74     | Expr . EQ Expr
+   75     | Expr . NE Expr
+   76     | Expr . LE Expr
+   77     | Expr . GE Expr
+   78     | Expr . PLUS Expr
+   79     | Expr . MINUS Expr
+   80     | Expr . STAR Expr
+   81     | Expr . DIV Expr
+   82     | Expr . MOD Expr
+
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
+    EQ     shift, and go to state 95
+    GE     shift, and go to state 96
+    GT     shift, and go to state 97
+    LE     shift, and go to state 98
+    LT     shift, and go to state 99
+    MINUS  shift, and go to state 100
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
+
+    $default  reduce using rule 30 (Statement)
 
 
 state 120
@@ -1770,6 +1770,39 @@ state 121
 state 122
 
    70 Expr: Expr . OR Expr
+   70     | Expr OR Expr .
+   71     | Expr . AND Expr
+   72     | Expr . LT Expr
+   73     | Expr . GT Expr
+   74     | Expr . EQ Expr
+   75     | Expr . NE Expr
+   76     | Expr . LE Expr
+   77     | Expr . GE Expr
+   78     | Expr . PLUS Expr
+   79     | Expr . MINUS Expr
+   80     | Expr . STAR Expr
+   81     | Expr . DIV Expr
+   82     | Expr . MOD Expr
+
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
+    EQ     shift, and go to state 95
+    GE     shift, and go to state 96
+    GT     shift, and go to state 97
+    LE     shift, and go to state 98
+    LT     shift, and go to state 99
+    MINUS  shift, and go to state 100
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
+
+    $default  reduce using rule 70 (Expr)
+
+
+state 123
+
+   70 Expr: Expr . OR Expr
    71     | Expr . AND Expr
    71     | Expr AND Expr .
    72     | Expr . LT Expr
@@ -1784,39 +1817,19 @@ state 122
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 71 (Expr)
-
-
-state 123
-
-   70 Expr: Expr . OR Expr
-   71     | Expr . AND Expr
-   72     | Expr . LT Expr
-   73     | Expr . GT Expr
-   74     | Expr . EQ Expr
-   75     | Expr . NE Expr
-   76     | Expr . LE Expr
-   77     | Expr . GE Expr
-   78     | Expr . PLUS Expr
-   79     | Expr . MINUS Expr
-   80     | Expr . STAR Expr
-   80     | Expr STAR Expr .
-   81     | Expr . DIV Expr
-   82     | Expr . MOD Expr
-
-    $default  reduce using rule 80 (Expr)
 
 
 state 124
@@ -1827,16 +1840,22 @@ state 124
    73     | Expr . GT Expr
    74     | Expr . EQ Expr
    75     | Expr . NE Expr
+   75     | Expr NE Expr .
    76     | Expr . LE Expr
    77     | Expr . GE Expr
    78     | Expr . PLUS Expr
    79     | Expr . MINUS Expr
    80     | Expr . STAR Expr
    81     | Expr . DIV Expr
-   81     | Expr DIV Expr .
    82     | Expr . MOD Expr
 
-    $default  reduce using rule 81 (Expr)
+    MINUS  shift, and go to state 100
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
+
+    $default  reduce using rule 75 (Expr)
 
 
 state 125
@@ -1856,11 +1875,11 @@ state 125
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 74 (Expr)
 
@@ -1882,11 +1901,11 @@ state 126
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 77 (Expr)
 
@@ -1908,11 +1927,11 @@ state 127
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 73 (Expr)
 
@@ -1934,11 +1953,11 @@ state 128
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 76 (Expr)
 
@@ -1960,11 +1979,11 @@ state 129
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 72 (Expr)
 
@@ -1986,14 +2005,38 @@ state 130
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR  shift, and go to state 93
-    DIV   shift, and go to state 94
-    MOD   shift, and go to state 101
+    MOD   shift, and go to state 102
+    DIV   shift, and go to state 103
+    STAR  shift, and go to state 104
 
     $default  reduce using rule 79 (Expr)
 
 
 state 131
+
+   70 Expr: Expr . OR Expr
+   71     | Expr . AND Expr
+   72     | Expr . LT Expr
+   73     | Expr . GT Expr
+   74     | Expr . EQ Expr
+   75     | Expr . NE Expr
+   76     | Expr . LE Expr
+   77     | Expr . GE Expr
+   78     | Expr . PLUS Expr
+   78     | Expr PLUS Expr .
+   79     | Expr . MINUS Expr
+   80     | Expr . STAR Expr
+   81     | Expr . DIV Expr
+   82     | Expr . MOD Expr
+
+    MOD   shift, and go to state 102
+    DIV   shift, and go to state 103
+    STAR  shift, and go to state 104
+
+    $default  reduce using rule 78 (Expr)
+
+
+state 132
 
    70 Expr: Expr . OR Expr
    71     | Expr . AND Expr
@@ -2013,36 +2056,9 @@ state 131
     $default  reduce using rule 82 (Expr)
 
 
-state 132
-
-   70 Expr: Expr . OR Expr
-   71     | Expr . AND Expr
-   72     | Expr . LT Expr
-   73     | Expr . GT Expr
-   74     | Expr . EQ Expr
-   75     | Expr . NE Expr
-   75     | Expr NE Expr .
-   76     | Expr . LE Expr
-   77     | Expr . GE Expr
-   78     | Expr . PLUS Expr
-   79     | Expr . MINUS Expr
-   80     | Expr . STAR Expr
-   81     | Expr . DIV Expr
-   82     | Expr . MOD Expr
-
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
-    MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    PLUS   shift, and go to state 104
-
-    $default  reduce using rule 75 (Expr)
-
-
 state 133
 
    70 Expr: Expr . OR Expr
-   70     | Expr OR Expr .
    71     | Expr . AND Expr
    72     | Expr . LT Expr
    73     | Expr . GT Expr
@@ -2054,22 +2070,10 @@ state 133
    79     | Expr . MINUS Expr
    80     | Expr . STAR Expr
    81     | Expr . DIV Expr
+   81     | Expr DIV Expr .
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
-    EQ     shift, and go to state 95
-    GE     shift, and go to state 96
-    GT     shift, and go to state 97
-    LE     shift, and go to state 98
-    LT     shift, and go to state 99
-    MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    PLUS   shift, and go to state 104
-
-    $default  reduce using rule 70 (Expr)
+    $default  reduce using rule 81 (Expr)
 
 
 state 134
@@ -2083,17 +2087,13 @@ state 134
    76     | Expr . LE Expr
    77     | Expr . GE Expr
    78     | Expr . PLUS Expr
-   78     | Expr PLUS Expr .
    79     | Expr . MINUS Expr
    80     | Expr . STAR Expr
+   80     | Expr STAR Expr .
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    STAR  shift, and go to state 93
-    DIV   shift, and go to state 94
-    MOD   shift, and go to state 101
-
-    $default  reduce using rule 78 (Expr)
+    $default  reduce using rule 80 (Expr)
 
 
 state 135
@@ -2197,12 +2197,12 @@ state 144
    60 FuncInvocationAux: COMMA . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -2276,19 +2276,19 @@ state 151
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 60 (FuncInvocationAux)
 
@@ -2298,12 +2298,12 @@ state 152
    59 FuncInvocationAux: FuncInvocationAux COMMA . Expr
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -2372,19 +2372,19 @@ state 157
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
     $default  reduce using rule 59 (FuncInvocationAux)
 
@@ -2497,12 +2497,12 @@ state 167
    53 ParseArgs: IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ . Expr RSQ RPAR
 
     LPAR     shift, and go to state 66
-    MINUS    shift, and go to state 67
-    NOT      shift, and go to state 68
-    PLUS     shift, and go to state 69
-    INTLIT   shift, and go to state 70
-    REALLIT  shift, and go to state 71
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
     ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
@@ -2533,20 +2533,20 @@ state 169
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    AND    shift, and go to state 92
-    STAR   shift, and go to state 93
-    DIV    shift, and go to state 94
+    RSQ    shift, and go to state 170
+    OR     shift, and go to state 92
+    AND    shift, and go to state 93
+    NE     shift, and go to state 94
     EQ     shift, and go to state 95
     GE     shift, and go to state 96
     GT     shift, and go to state 97
     LE     shift, and go to state 98
     LT     shift, and go to state 99
     MINUS  shift, and go to state 100
-    MOD    shift, and go to state 101
-    NE     shift, and go to state 102
-    OR     shift, and go to state 103
-    PLUS   shift, and go to state 104
-    RSQ    shift, and go to state 170
+    PLUS   shift, and go to state 101
+    MOD    shift, and go to state 102
+    DIV    shift, and go to state 103
+    STAR   shift, and go to state 104
 
 
 state 170

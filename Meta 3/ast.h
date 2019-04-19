@@ -9,7 +9,8 @@ typedef struct node{
     struct node *brother;
     char* value;
     char* type;
-	
+    char* note;  // para guardar o tipo no caso de arvore anotada
+    
 } node;
 
 
@@ -19,3 +20,4 @@ void addBrother(node* brother,node * newBrother);
 void addChild(node *dad,node *child);
 void printAST(node *current, int npontos);
 void deleteAst(node* current );
+void addNote(node *nodeAux,char* note);

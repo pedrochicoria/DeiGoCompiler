@@ -29,11 +29,11 @@
     
 };
 
-%token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT 
+%token SEMICOLON BLANKID PACKAGE RETURN  COMMA LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT 
 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
+%type<node> DIV AND ASSIGN STAR MINUS MOD NOT OR PLUS GE GT EQ LE LT NE Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
 
 %left COMMA
 %right ASSIGN
@@ -70,7 +70,7 @@ DeclarationsAux:
 
 
 VarDeclaration:
-    VAR VarSpec                                                                                         {$$=$2;  }
+    VAR VarSpec                                                                                         {$$=$2;}
     | VAR LPAR VarSpec SEMICOLON RPAR                                                                   {$$=$3;}
     ;    
 
@@ -285,7 +285,7 @@ StatementSEMICOLON:
 
 StatementExprSTRLIT:
     Expr                                                                                                {$$=$1;}
-    | STRLIT                                                                                            {$$=newNode("StrLit",$1,line,column);}
+    | STRLIT                                                                                            {$$=newNode("StrLit",$1,line-strlen($1),column);}
     ;
 
 ParseArgs:
@@ -306,58 +306,58 @@ FuncInvocationAux:
 ;
 
 IdAux:
-    ID                                                                                                  {$$=newNode("Id",yylval.value,line,column);}
+    ID                                                                                                  {$$=newNode("Id",yylval.value,line,column-strlen(yylval.value));}
 ;
 Expr:
-    INTLIT                                                                                              {$$=newNode("IntLit",$1,line,column);}
-    | REALLIT                                                                                           {$$=newNode("RealLit",$1,line,column);}
-    | IdAux                                                                                               {$$=$1;}
-    | FuncInvocation                                                                                    {$$=newNode("Call",NULL,line,column);
+    INTLIT                                                                                              {$$=newNode("IntLit",$1,line,column-strlen($1));}
+    | REALLIT                                                                                           {$$=newNode("RealLit",$1,line,column-strlen($1));}
+    | IdAux                                                                                             {$$=$1;}
+    | FuncInvocation                                                                                    {$$=newNode("Call",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$1);}
     | LPAR Expr RPAR                                                                                    {$$=$2;}
-    | NOT Expr                                                                                          {$$=newNode("Not",NULL,line,column);
+    | NOT Expr                                                                                          {$$=newNode("Not",NULL,$1->line,$1->column);free($1);
                                                                                                         addChild($$,$2);}
-    | MINUS Expr          %prec NOT                                                                    {$$=newNode("Minus",NULL,line,column);
+    | MINUS Expr          %prec NOT                                                                     {$$=newNode("Minus",NULL,$1->line,$1->column);free($1);
                                                                                                         addChild($$,$2);}
-    | PLUS Expr           %prec NOT                                                                            {$$=newNode("Plus",NULL,line,column);
+    | PLUS Expr           %prec NOT                                                                     {$$=newNode("Plus",NULL,$1->line,$1->column);free($1);
                                                                                                         addChild($$,$2);}
-    | Expr OR Expr                                                                                      {$$ =  newNode("Or",NULL,line,column);
+    | Expr OR Expr                                                                                      {$$ =  newNode("Or",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr AND Expr                                                                                     {$$ =  newNode("And",NULL,line,column);
+    | Expr AND Expr                                                                                     {$$ =  newNode("And",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr LT Expr                                                                                      {$$ =  newNode("Lt",NULL,line,column);
+    | Expr LT Expr                                                                                      {$$ =  newNode("Lt",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr GT Expr                                                                                      {$$ =  newNode("Gt",NULL,line,column);
+    | Expr GT Expr                                                                                      {$$ =  newNode("Gt",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr EQ Expr                                                                                      {$$ =  newNode("Eq",NULL,line,column);
+    | Expr EQ Expr                                                                                      {$$ =  newNode("Eq",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr NE Expr                                                                                      {$$ =  newNode("Ne",NULL,line,column);
+    | Expr NE Expr                                                                                      {$$ =  newNode("Ne",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr LE Expr                                                                                      {$$ =  newNode("Le",NULL,line,column);
+    | Expr LE Expr                                                                                      {$$ =  newNode("Le",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr GE Expr                                                                                      {$$ =  newNode("Ge",NULL,line,column);
+    | Expr GE Expr                                                                                      {$$ =  newNode("Ge",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr PLUS Expr                                                                                    {$$ =  newNode("Add",NULL,line,column);
+    | Expr PLUS Expr                                                                                    {$$ =  newNode("Add",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr MINUS Expr                                                                                   {$$ =  newNode("Sub",NULL,line,column);
+    | Expr MINUS Expr                                                                                   {$$ =  newNode("Sub",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr STAR Expr                                                                                    {$$ =  newNode("Mul",NULL,line,column);
+    | Expr STAR Expr                                                                                    {$$ =  newNode("Mul",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr DIV Expr                                                                                     {$$ =  newNode("Div",NULL,line,column);
+    | Expr DIV Expr                                                                                     {$$ =  newNode("Div",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
-    | Expr MOD Expr                                                                                     {$$ =  newNode("Mod",NULL,line,column);
+    | Expr MOD Expr                                                                                     {$$ =  newNode("Mod",NULL,$2->line,$2->column);free($2);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
     | LPAR  error RPAR                                                                                   {$$=newNode("Error",NULL,line,column);syntaxError=1;}

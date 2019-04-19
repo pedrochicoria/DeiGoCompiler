@@ -1,17 +1,44 @@
 package main
 
+var varGlobal int;
+func main(z float32) {
 
-func main() {
-   var a bool ;
+/*
+{for{};for{}
+	};
+   var a,z int ;
+	
    var b bool ;
-   if ( a && b ) {
-fmt.Println("Line 1 - Condition is true\n" );
+*/
+	var a int;
+	if ( a  ) {
+	
+	
    }
+	/*
+   if ( a && a>casdLASD() ) {
+	
+	fmt.Println("Line 1 - Condition is true\n" );
+   }
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*
    if ( a || b ) {
       fmt.Println("Line 2 - Condition is true\n" )
    }
    
-   /* lets change the value of  a and b */
+   
    a = false
    b = true
    if ( a && b ) {
@@ -21,5 +48,10 @@ fmt.Println("Line 1 - Condition is true\n" );
    }
    if ( !(a && b) ) {
       fmt.Println("Line 4 - Condition is true\n" )
-   }
+   }*/
+}
+var varGlobal2 bool;
+func main2(t string, t string){
+
+
 }

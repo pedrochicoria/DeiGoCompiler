@@ -1,4 +1,0 @@
-Line 10, col 17: syntax error: )
-Line 14, col 7: syntax error: &&
-Line 16, col 5: syntax error: =
-Line 20, col 24: syntax error: /
