@@ -127,37 +127,37 @@ RBRACE (266) 25 31 32 33 34 35 36 37 38 39 40 41 42
 RPAR (267) 9 18 19 20 21 47 53 54 55 56 57 58 66 83
 RSQ (268) 53
 ELSE (269) 35 36 37 38
-FOR (270) 39 40 41 42
-IF (271) 33 34 35 36 37 38
-VAR (272) 8 9
-INT (273) 14
-FLOAT32 (274) 15
-BOOL (275) 16
-STRING (276) 17
-PARSEINT (277) 53 54
-FUNC (278) 18 19 20 21
-CMDARGS (279) 53
-PRINT (280) 47
-RESERVED (281)
-INTLIT (282) 62
-REALLIT (283) 63
-STRLIT (284) 52
-ID (285) 1 61
-ASSIGN (286) 30 53 54
-OR (287) 70
-AND (288) 71
-NE (289) 75
-EQ (290) 74
-GE (291) 77
-GT (292) 73
-LE (293) 76
-LT (294) 72
-MINUS (295) 68 79
-PLUS (296) 69 78
-MOD (297) 82
-DIV (298) 81
-STAR (299) 80
-NOT (300) 67
+VAR (270) 8 9
+INT (271) 14
+FLOAT32 (272) 15
+BOOL (273) 16
+STRING (274) 17
+PARSEINT (275) 53 54
+FUNC (276) 18 19 20 21
+CMDARGS (277) 53
+PRINT (278) 47
+FOR (279) 39 40 41 42
+RESERVED (280)
+INTLIT (281) 62
+REALLIT (282) 63
+STRLIT (283) 52
+ID (284) 1 61
+ASSIGN (285) 30 53 54
+OR (286) 70
+AND (287) 71
+NE (288) 75
+EQ (289) 74
+GE (290) 77
+GT (291) 73
+LE (292) 76
+LT (293) 72
+MINUS (294) 68 79
+PLUS (295) 69 78
+MOD (296) 82
+DIV (297) 81
+STAR (298) 80
+NOT (299) 67
+IF (300) 33 34 35 36 37 38
 
 
 Nonterminals, with rules where they appear
@@ -637,11 +637,11 @@ state 46
     RETURN     shift, and go to state 53
     LBRACE     shift, and go to state 54
     RBRACE     shift, and go to state 55
-    FOR        shift, and go to state 56
-    IF         shift, and go to state 57
     VAR        shift, and go to state 6
-    PRINT      shift, and go to state 58
+    PRINT      shift, and go to state 56
+    FOR        shift, and go to state 57
     ID         shift, and go to state 13
+    IF         shift, and go to state 58
 
     VarDeclaration  go to state 59
     Statement       go to state 60
@@ -726,10 +726,10 @@ state 54
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 75
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement           go to state 76
     StatementSEMICOLON  go to state 77
@@ -747,12 +747,19 @@ state 55
 
 state 56
 
+   47 Statement: PRINT . LPAR StatementExprSTRLIT RPAR
+
+    LPAR  shift, and go to state 78
+
+
+state 57
+
    39 Statement: FOR . LBRACE RBRACE
    40          | FOR . Expr LBRACE RBRACE
    41          | FOR . Expr LBRACE StatementSEMICOLON RBRACE
    42          | FOR . LBRACE StatementSEMICOLON RBRACE
 
-    LBRACE   shift, and go to state 78
+    LBRACE   shift, and go to state 79
     LPAR     shift, and go to state 66
     INTLIT   shift, and go to state 67
     REALLIT  shift, and go to state 68
@@ -763,10 +770,10 @@ state 56
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
-    Expr            go to state 79
+    Expr            go to state 80
 
 
-state 57
+state 58
 
    33 Statement: IF . Expr LBRACE RBRACE
    34          | IF . Expr LBRACE StatementSEMICOLON RBRACE
@@ -785,14 +792,7 @@ state 57
 
     FuncInvocation  go to state 72
     IdAux           go to state 73
-    Expr            go to state 80
-
-
-state 58
-
-   47 Statement: PRINT . LPAR StatementExprSTRLIT RPAR
-
-    LPAR  shift, and go to state 81
+    Expr            go to state 81
 
 
 state 59
@@ -1013,10 +1013,10 @@ state 77
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 106
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement       go to state 107
     ParseArgs       go to state 61
@@ -1026,26 +1026,45 @@ state 77
 
 state 78
 
+   47 Statement: PRINT LPAR . StatementExprSTRLIT RPAR
+
+    LPAR     shift, and go to state 66
+    INTLIT   shift, and go to state 67
+    REALLIT  shift, and go to state 68
+    STRLIT   shift, and go to state 108
+    ID       shift, and go to state 13
+    MINUS    shift, and go to state 69
+    PLUS     shift, and go to state 70
+    NOT      shift, and go to state 71
+
+    StatementExprSTRLIT  go to state 109
+    FuncInvocation       go to state 72
+    IdAux                go to state 73
+    Expr                 go to state 110
+
+
+state 79
+
    39 Statement: FOR LBRACE . RBRACE
    42          | FOR LBRACE . StatementSEMICOLON RBRACE
 
     error   shift, and go to state 51
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
-    RBRACE  shift, and go to state 108
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    RBRACE  shift, and go to state 111
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement           go to state 76
-    StatementSEMICOLON  go to state 109
+    StatementSEMICOLON  go to state 112
     ParseArgs           go to state 61
     FuncInvocation      go to state 62
     IdAux               go to state 63
 
 
-state 79
+state 80
 
    40 Statement: FOR Expr . LBRACE RBRACE
    41          | FOR Expr . LBRACE StatementSEMICOLON RBRACE
@@ -1063,7 +1082,7 @@ state 79
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    LBRACE  shift, and go to state 110
+    LBRACE  shift, and go to state 113
     OR      shift, and go to state 92
     AND     shift, and go to state 93
     NE      shift, and go to state 94
@@ -1079,7 +1098,7 @@ state 79
     STAR    shift, and go to state 104
 
 
-state 80
+state 81
 
    33 Statement: IF Expr . LBRACE RBRACE
    34          | IF Expr . LBRACE StatementSEMICOLON RBRACE
@@ -1101,7 +1120,7 @@ state 80
    81     | Expr . DIV Expr
    82     | Expr . MOD Expr
 
-    LBRACE  shift, and go to state 111
+    LBRACE  shift, and go to state 114
     OR      shift, and go to state 92
     AND     shift, and go to state 93
     NE      shift, and go to state 94
@@ -1115,25 +1134,6 @@ state 80
     MOD     shift, and go to state 102
     DIV     shift, and go to state 103
     STAR    shift, and go to state 104
-
-
-state 81
-
-   47 Statement: PRINT LPAR . StatementExprSTRLIT RPAR
-
-    LPAR     shift, and go to state 66
-    INTLIT   shift, and go to state 67
-    REALLIT  shift, and go to state 68
-    STRLIT   shift, and go to state 112
-    ID       shift, and go to state 13
-    MINUS    shift, and go to state 69
-    PLUS     shift, and go to state 70
-    NOT      shift, and go to state 71
-
-    StatementExprSTRLIT  go to state 113
-    FuncInvocation       go to state 72
-    IdAux                go to state 73
-    Expr                 go to state 114
 
 
 state 82
@@ -1541,92 +1541,19 @@ state 107
 
 state 108
 
-   39 Statement: FOR LBRACE RBRACE .
-
-    $default  reduce using rule 39 (Statement)
-
-
-state 109
-
-   42 Statement: FOR LBRACE StatementSEMICOLON . RBRACE
-   49 StatementSEMICOLON: StatementSEMICOLON . Statement SEMICOLON
-
-    error   shift, and go to state 51
-    RETURN  shift, and go to state 53
-    LBRACE  shift, and go to state 54
-    RBRACE  shift, and go to state 136
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
-    ID      shift, and go to state 13
-
-    Statement       go to state 107
-    ParseArgs       go to state 61
-    FuncInvocation  go to state 62
-    IdAux           go to state 63
-
-
-state 110
-
-   40 Statement: FOR Expr LBRACE . RBRACE
-   41          | FOR Expr LBRACE . StatementSEMICOLON RBRACE
-
-    error   shift, and go to state 51
-    RETURN  shift, and go to state 53
-    LBRACE  shift, and go to state 54
-    RBRACE  shift, and go to state 137
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
-    ID      shift, and go to state 13
-
-    Statement           go to state 76
-    StatementSEMICOLON  go to state 138
-    ParseArgs           go to state 61
-    FuncInvocation      go to state 62
-    IdAux               go to state 63
-
-
-state 111
-
-   33 Statement: IF Expr LBRACE . RBRACE
-   34          | IF Expr LBRACE . StatementSEMICOLON RBRACE
-   35          | IF Expr LBRACE . RBRACE ELSE LBRACE RBRACE
-   36          | IF Expr LBRACE . RBRACE ELSE LBRACE StatementSEMICOLON RBRACE
-   37          | IF Expr LBRACE . StatementSEMICOLON RBRACE ELSE LBRACE RBRACE
-   38          | IF Expr LBRACE . StatementSEMICOLON RBRACE ELSE LBRACE StatementSEMICOLON RBRACE
-
-    error   shift, and go to state 51
-    RETURN  shift, and go to state 53
-    LBRACE  shift, and go to state 54
-    RBRACE  shift, and go to state 139
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
-    ID      shift, and go to state 13
-
-    Statement           go to state 76
-    StatementSEMICOLON  go to state 140
-    ParseArgs           go to state 61
-    FuncInvocation      go to state 62
-    IdAux               go to state 63
-
-
-state 112
-
    52 StatementExprSTRLIT: STRLIT .
 
     $default  reduce using rule 52 (StatementExprSTRLIT)
 
 
-state 113
+state 109
 
    47 Statement: PRINT LPAR StatementExprSTRLIT . RPAR
 
-    RPAR  shift, and go to state 141
+    RPAR  shift, and go to state 136
 
 
-state 114
+state 110
 
    51 StatementExprSTRLIT: Expr .
    70 Expr: Expr . OR Expr
@@ -1658,6 +1585,79 @@ state 114
     STAR   shift, and go to state 104
 
     $default  reduce using rule 51 (StatementExprSTRLIT)
+
+
+state 111
+
+   39 Statement: FOR LBRACE RBRACE .
+
+    $default  reduce using rule 39 (Statement)
+
+
+state 112
+
+   42 Statement: FOR LBRACE StatementSEMICOLON . RBRACE
+   49 StatementSEMICOLON: StatementSEMICOLON . Statement SEMICOLON
+
+    error   shift, and go to state 51
+    RETURN  shift, and go to state 53
+    LBRACE  shift, and go to state 54
+    RBRACE  shift, and go to state 137
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
+    ID      shift, and go to state 13
+    IF      shift, and go to state 58
+
+    Statement       go to state 107
+    ParseArgs       go to state 61
+    FuncInvocation  go to state 62
+    IdAux           go to state 63
+
+
+state 113
+
+   40 Statement: FOR Expr LBRACE . RBRACE
+   41          | FOR Expr LBRACE . StatementSEMICOLON RBRACE
+
+    error   shift, and go to state 51
+    RETURN  shift, and go to state 53
+    LBRACE  shift, and go to state 54
+    RBRACE  shift, and go to state 138
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
+    ID      shift, and go to state 13
+    IF      shift, and go to state 58
+
+    Statement           go to state 76
+    StatementSEMICOLON  go to state 139
+    ParseArgs           go to state 61
+    FuncInvocation      go to state 62
+    IdAux               go to state 63
+
+
+state 114
+
+   33 Statement: IF Expr LBRACE . RBRACE
+   34          | IF Expr LBRACE . StatementSEMICOLON RBRACE
+   35          | IF Expr LBRACE . RBRACE ELSE LBRACE RBRACE
+   36          | IF Expr LBRACE . RBRACE ELSE LBRACE StatementSEMICOLON RBRACE
+   37          | IF Expr LBRACE . StatementSEMICOLON RBRACE ELSE LBRACE RBRACE
+   38          | IF Expr LBRACE . StatementSEMICOLON RBRACE ELSE LBRACE StatementSEMICOLON RBRACE
+
+    error   shift, and go to state 51
+    RETURN  shift, and go to state 53
+    LBRACE  shift, and go to state 54
+    RBRACE  shift, and go to state 140
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
+    ID      shift, and go to state 13
+    IF      shift, and go to state 58
+
+    Statement           go to state 76
+    StatementSEMICOLON  go to state 141
+    ParseArgs           go to state 61
+    FuncInvocation      go to state 62
+    IdAux               go to state 63
 
 
 state 115
@@ -2105,19 +2105,26 @@ state 135
 
 state 136
 
+   47 Statement: PRINT LPAR StatementExprSTRLIT RPAR .
+
+    $default  reduce using rule 47 (Statement)
+
+
+state 137
+
    42 Statement: FOR LBRACE StatementSEMICOLON RBRACE .
 
     $default  reduce using rule 42 (Statement)
 
 
-state 137
+state 138
 
    40 Statement: FOR Expr LBRACE RBRACE .
 
     $default  reduce using rule 40 (Statement)
 
 
-state 138
+state 139
 
    41 Statement: FOR Expr LBRACE StatementSEMICOLON . RBRACE
    49 StatementSEMICOLON: StatementSEMICOLON . Statement SEMICOLON
@@ -2126,10 +2133,10 @@ state 138
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 147
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement       go to state 107
     ParseArgs       go to state 61
@@ -2137,7 +2144,7 @@ state 138
     IdAux           go to state 63
 
 
-state 139
+state 140
 
    33 Statement: IF Expr LBRACE RBRACE .
    35          | IF Expr LBRACE RBRACE . ELSE LBRACE RBRACE
@@ -2148,7 +2155,7 @@ state 139
     $default  reduce using rule 33 (Statement)
 
 
-state 140
+state 141
 
    34 Statement: IF Expr LBRACE StatementSEMICOLON . RBRACE
    37          | IF Expr LBRACE StatementSEMICOLON . RBRACE ELSE LBRACE RBRACE
@@ -2159,22 +2166,15 @@ state 140
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 149
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement       go to state 107
     ParseArgs       go to state 61
     FuncInvocation  go to state 62
     IdAux           go to state 63
-
-
-state 141
-
-   47 Statement: PRINT LPAR StatementExprSTRLIT RPAR .
-
-    $default  reduce using rule 47 (Statement)
 
 
 state 142
@@ -2326,10 +2326,10 @@ state 154
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 158
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement           go to state 76
     StatementSEMICOLON  go to state 159
@@ -2405,10 +2405,10 @@ state 159
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 163
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement       go to state 107
     ParseArgs       go to state 61
@@ -2425,10 +2425,10 @@ state 160
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 164
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement           go to state 76
     StatementSEMICOLON  go to state 165
@@ -2474,10 +2474,10 @@ state 165
     RETURN  shift, and go to state 53
     LBRACE  shift, and go to state 54
     RBRACE  shift, and go to state 168
-    FOR     shift, and go to state 56
-    IF      shift, and go to state 57
-    PRINT   shift, and go to state 58
+    PRINT   shift, and go to state 56
+    FOR     shift, and go to state 57
     ID      shift, and go to state 13
+    IF      shift, and go to state 58
 
     Statement       go to state 107
     ParseArgs       go to state 61

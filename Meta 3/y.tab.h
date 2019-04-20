@@ -51,37 +51,37 @@
      RPAR = 267,
      RSQ = 268,
      ELSE = 269,
-     FOR = 270,
-     IF = 271,
-     VAR = 272,
-     INT = 273,
-     FLOAT32 = 274,
-     BOOL = 275,
-     STRING = 276,
-     PARSEINT = 277,
-     FUNC = 278,
-     CMDARGS = 279,
-     PRINT = 280,
-     RESERVED = 281,
-     INTLIT = 282,
-     REALLIT = 283,
-     STRLIT = 284,
-     ID = 285,
-     ASSIGN = 286,
-     OR = 287,
-     AND = 288,
-     NE = 289,
-     EQ = 290,
-     GE = 291,
-     GT = 292,
-     LE = 293,
-     LT = 294,
-     MINUS = 295,
-     PLUS = 296,
-     MOD = 297,
-     DIV = 298,
-     STAR = 299,
-     NOT = 300
+     VAR = 270,
+     INT = 271,
+     FLOAT32 = 272,
+     BOOL = 273,
+     STRING = 274,
+     PARSEINT = 275,
+     FUNC = 276,
+     CMDARGS = 277,
+     PRINT = 278,
+     FOR = 279,
+     RESERVED = 280,
+     INTLIT = 281,
+     REALLIT = 282,
+     STRLIT = 283,
+     ID = 284,
+     ASSIGN = 285,
+     OR = 286,
+     AND = 287,
+     NE = 288,
+     EQ = 289,
+     GE = 290,
+     GT = 291,
+     LE = 292,
+     LT = 293,
+     MINUS = 294,
+     PLUS = 295,
+     MOD = 296,
+     DIV = 297,
+     STAR = 298,
+     NOT = 299,
+     IF = 300
    };
 #endif
 /* Tokens.  */
@@ -97,37 +97,37 @@
 #define RPAR 267
 #define RSQ 268
 #define ELSE 269
-#define FOR 270
-#define IF 271
-#define VAR 272
-#define INT 273
-#define FLOAT32 274
-#define BOOL 275
-#define STRING 276
-#define PARSEINT 277
-#define FUNC 278
-#define CMDARGS 279
-#define PRINT 280
-#define RESERVED 281
-#define INTLIT 282
-#define REALLIT 283
-#define STRLIT 284
-#define ID 285
-#define ASSIGN 286
-#define OR 287
-#define AND 288
-#define NE 289
-#define EQ 290
-#define GE 291
-#define GT 292
-#define LE 293
-#define LT 294
-#define MINUS 295
-#define PLUS 296
-#define MOD 297
-#define DIV 298
-#define STAR 299
-#define NOT 300
+#define VAR 270
+#define INT 271
+#define FLOAT32 272
+#define BOOL 273
+#define STRING 274
+#define PARSEINT 275
+#define FUNC 276
+#define CMDARGS 277
+#define PRINT 278
+#define FOR 279
+#define RESERVED 280
+#define INTLIT 281
+#define REALLIT 282
+#define STRLIT 283
+#define ID 284
+#define ASSIGN 285
+#define OR 286
+#define AND 287
+#define NE 288
+#define EQ 289
+#define GE 290
+#define GT 291
+#define LE 292
+#define LT 293
+#define MINUS 294
+#define PLUS 295
+#define MOD 296
+#define DIV 297
+#define STAR 298
+#define NOT 299
+#define IF 300
 
 
 

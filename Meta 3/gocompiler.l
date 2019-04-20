@@ -141,13 +141,13 @@ CMDARGS         "os.Args"
 {LSQ}           {if(print==1) printf("LSQ\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return LSQ;}}
 
 
+{FOR}			            {if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return FOR;}}
+{IF}			            {if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return IF;}}
 
 {RBRACE}                    {if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RBRACE;}}
 {RPAR}			            {if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RPAR;}}                            
 {RSQ}                       {if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RSQ;}}
 {ELSE}			            {if(print==1) printf("ELSE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ELSE;}}
-{FOR}			            {if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FOR;}}
-{IF}			            {if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return IF;}}
 {VAR}			            {if(print==1) printf("VAR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return VAR;}}
 {INT}			            {if(print==1) printf("INT\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return INT;}}
 {FLOAT32}		            {if(print==1) printf("FLOAT32\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FLOAT32;}}

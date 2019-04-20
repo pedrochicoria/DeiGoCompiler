@@ -3,10 +3,12 @@ var a,t bool;
 var d int;
 
 func main(c float32){
-	var a bool;
+	var a int;
 
-	var b bool;	
+	if(a<=123){
+		a=-a*a;
+		a=-1;
+	}
 }
 	
 
-var string1 string;

@@ -372,22 +372,22 @@ struct yy_trans_info
 static yyconst flex_int16_t yy_accept[219] =
     {   0,
         0,    0,    0,    0,    0,    0,    0,    0,   60,   58,
-        1,    2,    2,   13,   45,   15,   58,   23,   26,    8,
+        1,    2,    2,   13,   45,   15,   58,   23,   28,    8,
        12,    9,   11,   58,   10,   42,   42,    3,   20,    7,
-       18,   44,   24,   27,    4,   44,   44,   44,   44,   44,
+       18,   44,   24,   29,    4,   44,   44,   44,   44,   44,
        44,   44,   44,   44,   44,   44,   44,   44,   44,   22,
-       58,   25,   50,   46,   46,   49,   48,   55,   56,   55,
+       58,   27,   50,   46,   46,   49,   48,   55,   56,   55,
        55,   53,   52,   52,    2,   21,    6,   40,   41,   54,
        51,   41,   42,    0,    0,   19,   16,   17,   44,   44,
        44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   40,   30,   44,   44,   44,   44,   44,   44,
+       44,   44,   40,   26,   44,   44,   44,   44,   44,   44,
 
        44,   44,   44,   44,   44,   44,   14,   46,   48,   47,
        56,   57,   52,    0,   41,    0,    0,   41,   42,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   29,
+       44,   44,   44,   44,   44,   44,   44,   44,   44,   25,
        44,   44,   44,   32,   40,    0,   44,   44,   44,   44,
        44,   44,   44,   31,    0,   41,    0,   41,   34,   44,
-       44,   44,   44,   44,   28,   44,   44,    0,   38,   44,
+       44,   44,   44,   44,   30,   44,   44,    0,   38,   44,
        44,    0,   44,   44,   44,   44,   44,   44,   44,   44,
        44,   44,   44,   44,    0,   44,   44,    0,   44,   44,
        44,   44,   44,   44,   44,   44,   44,   44,   44,    0,
@@ -1141,33 +1141,33 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 145 "gocompiler.l"
-{if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RBRACE;}}
+#line 144 "gocompiler.l"
+{if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return FOR;}}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 146 "gocompiler.l"
-{if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RPAR;}}                            
+#line 145 "gocompiler.l"
+{if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.node = newNode("NULL",NULL,line,column-strlen(yytext));return IF;}}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 147 "gocompiler.l"
-{if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RSQ;}}
+{if(print==1) printf("RBRACE\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RBRACE;}}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 148 "gocompiler.l"
-{if(print==1) printf("ELSE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ELSE;}}
+{if(print==1) printf("RPAR\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RPAR;}}                            
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 149 "gocompiler.l"
-{if(print==1) printf("FOR\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return FOR;}}
+{if(print==1) printf("RSQ\n");column+=yyleng;missing_semicolon=1;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return RSQ;}}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 150 "gocompiler.l"
-{if(print==1) printf("IF\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return IF;}}
+{if(print==1) printf("ELSE\n");column+=yyleng;missing_semicolon=0;if(parse == 1){straux=yytext;yylval.value = (char*) strdup(yytext);return ELSE;}}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP

@@ -92,14 +92,74 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
     
     else if(strcmp(current->type,"Id")==0){
 
-        return anotaIdFuncao(current, funcAux);
+        return anotaId(current, funcAux);
+    
+    }
+    else if(strcmp(current->type,"Not")==0){
+        char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+        if(strcmp("bool",tipo1)==0){
+            addNote(current,"bool");
+            return "bool";
+        }
+        else{
+            printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"!",tipo1);
+            
+        }
+        addNote(current,"undef");
+        return "undef";
+    }
+    else if(strcmp(current->type,"Minus")==0||strcmp(current->type,"Plus")==0){
+        char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+        if(strcmp("int",tipo1)==0){
+            addNote(current,"int");
+            return "int";
+        }
+        else if(strcmp("float32",tipo1)==0){
+            addNote(current,"float32");
+            return "float32";
+        }
+        else{
+            if(strcmp(current->type,"Minus")==0){
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"-",tipo1);
+            }
+            else{
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"+",tipo1);
+            }
+            addNote(current,"undef");
+            return "undef";
+        }
+    }
+    else if(strcmp(current->type,"If")==0){
+        char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+        if(strcmp(tipo1,"bool")!=0){
+            printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"if");
+
+        }
+        anotaStatementsExpressoes(current->child->brother,funcAux);                 // bloco do if existe sempre
+        printf("----------------%s\n",current->type);
+        anotaStatementsExpressoes(current->child->brother->brother,funcAux);        // bloco do else existe sempre mesmo que o else nao
+
+    
+    }
+    else if(strcmp(current->type,"For")==0){
+        if(strcmp(current->child->type,"Block")==0){
+
+            anotaStatementsExpressoes(current->child,funcAux);
+            return "null";
+        }
+        char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+        if(strcmp(tipo1,"bool")!=0){
+            printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"for");
+        }
+        anotaStatementsExpressoes(current->child->brother,funcAux);
+        return "null";
     
     }
     else if(strcmp(current->type,"Call")==0){
 
         // verifica se a funcao existe e tudo esta como suposto 
         // qual o tipo de erro que da se tiver +/- argumentos do que e pedido o professor nao diz no enunciado
-        char *tipo=anotaStatementsExpressoes(current->child,funcAux);
+        char *tipo=anotaIdFuncao(current->child,funcAux);
         addNote(current,tipo);
         node * parametros =current->child->brother;
         while(parametros){
@@ -109,6 +169,22 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         return tipo ;
     
     }
+    
+    else if(strcmp(current->type,"Assign")==0){
+
+        // verifica se a var existe e se o tipo que lhe esta a ser dado esta correto
+        char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+        char *tipo2=anotaStatementsExpressoes(current->child->brother,funcAux);
+        
+        if(strcmp(tipo1,tipo2)==0){
+            addNote(current,tipo1);
+            return tipo1;
+        }
+        addNote(current,"undef");
+        return "undef";
+    
+    }
+
     else if(strcmp(current->type,"Eq")==0||strcmp(current->type,"Lt")==0||strcmp(current->type,"Gt")==0||strcmp(current->type,"Ne")==0||strcmp(current->type,"Le")==0||strcmp(current->type,"Ge")==0){
         char *tipo1 =anotaStatementsExpressoes(current->child, funcAux);
         char *tipo2 =anotaStatementsExpressoes(current->child->brother, funcAux);
@@ -129,19 +205,20 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             else{
                 addNote(current,tipo1);
             }
+
            
         
         }
         else if(strcmp(tipo1,"int")==0&&strcmp(tipo2,"int")==0){ // inteiros so podem ser comparados comparados com inteiros
-            addNote(current,tipo1);
+            addNote(current,"bool");
 
         }
         else if(strcmp(tipo1,"float32")==0&&strcmp(tipo2,"float32")==0){ // floats32 so podem ser comparados comparados com floats32
-            addNote(current,tipo1);
+            addNote(current,"bool");
 
         }
         else if(strcmp(tipo1,"string")==0&&strcmp(tipo2,"string")==0){ // strings so podem ser comparados comparados com strings
-            addNote(current,tipo1);
+            addNote(current,"bool");
 
         }
         else{
@@ -164,24 +241,26 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">=",tipo1,tipo2);               
             }
             
-            addNote(current,"undef");           
+            addNote(current,"undef");    
+            /*       
             if(current->brother!=NULL){
-                anotaStatementsExpressoes(current->brother, funcAux);
-            }
+                //anotaStatementsExpressoes(current->brother, funcAux);
+            }*/
             return "undef";
         }
+        /*
         if(current->brother!=NULL){
             anotaStatementsExpressoes(current->brother, funcAux);
-        }
-        return tipo1;
+        }*/
+        return "bool";
 
     }
-    else if(strcmp(current->type,"Plus")==0||strcmp(current->type,"Sub")==0||strcmp(current->type,"Star")==0||strcmp(current->type,"Div")==0||strcmp(current->type,"Mod")==0){
+    else if(strcmp(current->type,"Add")==0||strcmp(current->type,"Sub")==0||strcmp(current->type,"Mul")==0||strcmp(current->type,"Div")==0||strcmp(current->type,"Mod")==0){
         char *tipo1 =anotaStatementsExpressoes(current->child, funcAux);
         char *tipo2 =anotaStatementsExpressoes(current->child->brother, funcAux);
     
         if(strcmp(tipo1,"bool")==0&&strcmp(tipo2,"bool")==0){           // booleanos nao podem usar contas matematicas
-            if(strcmp(current->type,"Plus")==0){
+            if(strcmp(current->type,"Add")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"+",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Sub")==0){
@@ -197,12 +276,14 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
             }
             else{
-                addNote(current,tipo1);
+                addNote(current,tipo1);  // And e Or
+                return tipo1;
             }
-           
+            addNote(current,tipo1);
+            return "undef";
         
         }
-        else if(strcmp(tipo1,"bool")==0||strcmp(tipo2,"bool")==0){           // booleanos nao podem usar contas matematicas
+        else if(strcmp(tipo1,tipo2)!=0){           // se sao diferentes nao aceita 
             if(strcmp(current->type,"Plus")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"+",tipo1);               
             }
@@ -218,66 +299,55 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             else if(strcmp(current->type,"Mod")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"%",tipo1); 
             }
-            else{
-                addNote(current,tipo1);
+            else if(strcmp(current->type,"And")==0){
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"&&",tipo1); 
             }
-           
+            else if(strcmp(current->type,"Or")==0){
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"||",tipo1); 
+            }
+            addNote(current,"undef");
+            return "undef";
         
         }
-        else if(strcmp(tipo1,"int")==0&&strcmp(tipo2,"int")==0){ // inteiros so podem ser comparados comparados com inteiros
-            addNote(current,tipo1);
-
-        }
-        else if(strcmp(tipo1,"float32")==0&&strcmp(tipo2,"float32")==0){ // floats32 so podem ser comparados comparados com floats32
-            addNote(current,tipo1);
-
-        }
-        else if(strcmp(tipo1,"string")==0&&strcmp(tipo2,"string")==0){ // strings so podem ser comparados comparados com strings
-            addNote(current,tipo1);
-
-        }
         else{
-            if(strcmp(current->type,"Eq")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"==",tipo1,tipo2);               
-            }
-            else if(strcmp(current->type,"Lt")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<",tipo1,tipo2);               
-            }
-            else if(strcmp(current->type,"Gt")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">",tipo1,tipo2);               
-            }
-            else if(strcmp(current->type,"Ne")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"!=",tipo1,tipo2);               
-            }
-            else if(strcmp(current->type,"Le")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<=",tipo1,tipo2);               
-            }
-            else if(strcmp(current->type,"Ge")==0){
-                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">=",tipo1,tipo2);               
-            }
-            
-            addNote(current,"undef");           
-            if(current->brother!=NULL){
-                anotaStatementsExpressoes(current->brother, funcAux);
-            }
-            return "undef";
+            addNote(current,tipo1);
+            return tipo1;
         }
+        
+        /*
         if(current->brother!=NULL){
             anotaStatementsExpressoes(current->brother, funcAux);
-        }
+        }*/
         return tipo1;
 
     }
     else if(strcmp(current->type,"Block")){
-        if(current->child)
-            anotaStatementsExpressoes(current->child, funcAux);
+        printf("---------------------------------------------BLOCKKK\n");
+        if(current->child){
+            node *nodeAux = current->child;
+            
+            while(nodeAux){
+                
+                anotaStatementsExpressoes(nodeAux, funcAux);
+                nodeAux=nodeAux->brother;
+            }
+            /*
+            if(current->brother){
+                nodeAux = current->child;
+                while(nodeAux){
+                    anotaStatementsExpressoes(nodeAux, funcAux);
+                    nodeAux=nodeAux->brother;
+                }
+            }*/
+        }
+            
     }
-    
+    /*
     else{
         if(current->child)
             anotaStatementsExpressoes(current->child, funcAux);
-    }
-    return NULL;
+    }*/
+    return "null";
 }
 char* anotaIdFuncao(node* current, func_table* funcAux){
    

@@ -29,11 +29,11 @@
     
 };
 
-%token SEMICOLON BLANKID PACKAGE RETURN  COMMA LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT 
-
+%token SEMICOLON BLANKID PACKAGE RETURN  COMMA LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE VAR INT FLOAT32 BOOL STRING PARSEINT FUNC CMDARGS PRINT FOR 
+ 
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> DIV AND ASSIGN STAR MINUS MOD NOT OR PLUS GE GT EQ LE LT NE Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
+%type<node> FOR IF  DIV AND ASSIGN STAR MINUS MOD NOT OR PLUS GE GT EQ LE LT NE Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
 
 %left COMMA
 %right ASSIGN
@@ -204,39 +204,39 @@ Statement:
                                                                                                             $$=$2;
                                                                                                         }
                                                                                                         }
-     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE  RBRACE                                                                           {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addBrother(aux,newNode("Block",NULL,line,column));
                                                                                                         }
-     | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE StatementSEMICOLON RBRACE                                                         {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addChild(aux,$4);
                                                                                                         addBrother(aux,newNode("Block",NULL,line,column));
                                                                                                         }
-     | IF Expr LBRACE  RBRACE ELSE LBRACE RBRACE                                                        {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE  RBRACE ELSE LBRACE RBRACE                                                        {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addBrother(aux,newNode("Block",NULL,line,column));}
 
-     | IF Expr LBRACE  RBRACE ELSE LBRACE StatementSEMICOLON RBRACE                                     {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE  RBRACE ELSE LBRACE StatementSEMICOLON RBRACE                                     {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         aux2=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addBrother(aux,aux2);
                                                                                                         addChild(aux2,$7);}
-     | IF Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE RBRACE                                      {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE RBRACE                                      {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addChild(aux,$4);
                                                                                                         addBrother(aux,newNode("Block",NULL,line,column));}
-     | IF Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE StatementSEMICOLON RBRACE                   {$$ =  newNode("If",NULL,line,column);
+     | IF Expr LBRACE StatementSEMICOLON RBRACE ELSE LBRACE StatementSEMICOLON RBRACE                   {$$ =  newNode("If",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         aux2=newNode("Block",NULL,line,column);
@@ -246,19 +246,22 @@ Statement:
                                                                                                         addChild(aux2,$8);
                                                                                                         }
 
-     | FOR LBRACE RBRACE                                                                                {$$ =  newNode("For",NULL,line,column);
+     | FOR LBRACE RBRACE                                                                                {$$ =  newNode("For",NULL,$1->line,$1->column);
                                                                                                         addChild($$,newNode("Block",NULL,line,column));
                                                                                                         }
-     | FOR Expr LBRACE RBRACE                                                                           {$$ =  newNode("For",NULL,line,column);
+
+     | FOR Expr LBRACE RBRACE                                                                           {$$ =  newNode("For",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         addBrother($2,newNode("Block",NULL,line,column));}
-     | FOR Expr LBRACE StatementSEMICOLON RBRACE                                                        {$$ =  newNode("For",NULL,line,column);
+
+     | FOR Expr LBRACE StatementSEMICOLON RBRACE                                                        {$$ =  newNode("For",NULL,$1->line,$1->column);
                                                                                                         addChild($$,$2);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addBrother($2,aux);
                                                                                                         addChild(aux,$4);
                                                                                                         }
-     | FOR LBRACE StatementSEMICOLON RBRACE                                                             {$$ =  newNode("For",NULL,line,column);
+
+     | FOR LBRACE StatementSEMICOLON RBRACE                                                             {$$ =  newNode("For",NULL,$1->line,$1->column);
                                                                                                         aux=newNode("Block",NULL,line,column);
                                                                                                         addChild($$,aux);
                                                                                                         addChild(aux,$3);
