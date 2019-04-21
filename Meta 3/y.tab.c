@@ -1848,7 +1848,7 @@ yyreduce:
 
   case 31:
 #line 186 "gocompiler.y"
-    {(yyval.node) =  newNode("Assign",NULL,line,column);
+    {(yyval.node) =  newNode("Assign",NULL,(yyvsp[(2) - (3)].node)->line,(yyvsp[(2) - (3)].node)->column);
                                                                                                         addChild((yyval.node),(yyvsp[(1) - (3)].node));
                                                                                                         addBrother((yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node));}
     break;

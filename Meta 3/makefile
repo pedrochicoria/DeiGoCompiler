@@ -6,4 +6,4 @@ make:
 	rm -f gocompiler.zip
 	zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c semantics.c semantics.h
 	
-	./gocompiler -s < testes/vardcl.dgo 
+	./gocompiler -s < testes/errors.dgo 

@@ -3,12 +3,20 @@ var a,t bool;
 var d int;
 
 func main(c float32){
-	var a int;
+var t int;
+	for(t>z){
+		c=1
+		c=2
+	}
 
 	if(a<=123){
 		a=-a*a;
-		a=-1;
+
+	}else{
+		c=1
+		c=1
 	}
+
 }
 	
 

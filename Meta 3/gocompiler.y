@@ -183,7 +183,7 @@ VarsAndStatements:
 
 Statement:
     
-     IdAux ASSIGN Expr                                                                                  {$$ =  newNode("Assign",NULL,line,column);
+     IdAux ASSIGN Expr                                                                                  {$$ =  newNode("Assign",NULL,$2->line,$2->column);
                                                                                                         addChild($$,$1);
                                                                                                         addBrother($1,$3);}
 
