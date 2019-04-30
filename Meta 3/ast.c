@@ -68,8 +68,10 @@ void printAST(node *current, int npontos)
                     printf("%s", current->type);
                 }
                 if(current->note!=NULL){
-
-                    printf(" - %s",current->note);
+                    if(strcmp(current->note,"none")!=0){
+                            printf(" - %s",current->note);
+                    }
+                    
                 }
                 printf("\n");
                 if (current->child != NULL)

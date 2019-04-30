@@ -25,24 +25,28 @@ void criaTabelas(node* current){
     }
     
     current=funcVarHead;
-    
+
     while(strcmp(current->type,"FuncDecl")==0||strcmp(current->type,"VarDecl")==0){
     
         if(strcmp(current->type,"FuncDecl")==0){ 
-                                                         
+
             //ponteiroFuncao(current->child->child->value); // aponta para o id 
            
             node* nodeAux=current->child->brother->child;                                   //  a apontar para o primeiro statement
             func_table *funcAux=ponteiroFuncao(current->child->child->value);               // funcao onde se esta
-            while(nodeAux){
-                if(strcmp(nodeAux->type,"VarDecl")==0){                                     // adiciona variavel a tabela
-                    adicionaVarsLocais(nodeAux,funcAux);
+            if(funcAux){
+                while(nodeAux){
+                    if(strcmp(nodeAux->type,"VarDecl")==0){                                     // adiciona variavel a tabela
+                        adicionaVarsLocais(nodeAux,funcAux);
+                    }
+                    else if(strcmp(nodeAux->type,"NULL")!=0){                                                       // caso em que e um statement
+                        anotaStatementsExpressoes(nodeAux,funcAux);
+                    }
+                    nodeAux=nodeAux->brother;
                 }
-                else if(strcmp(nodeAux->type,"NULL")!=0){                                                       // caso em que e um statement
-                    anotaStatementsExpressoes(nodeAux,funcAux);
-                }
-                nodeAux=nodeAux->brother;
             }
+            //printf("---------------%s\n",current->child->child->value); 
+            
 
         }
 
@@ -88,24 +92,28 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
 
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         char *tipo2=anotaStatementsExpressoes(current->child->brother,funcAux);
-        if(strcmp(tipo1,"int")!=0){
-
+        if(strcmp(tipo1,"int")!=0||strcmp(tipo2,"int")!=0){
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"strconv.Atoi",tipo1,tipo2);
             addNote(current,"undef");
             return "undef";
         }
-        if(strcmp(tipo2,"int")!=0){
-
-            addNote(current,"undef");
-            return "undef";
-        }
+        
         addNote(current,"int");
         return "int"; 
     }
-    else if(strcmp(current->type,"Return")==0){  // falta ver se é o mesmo tipo que a funcao
+    else if(strcmp(current->type,"Return")==0){     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! falta ver se é o mesmo tipo que a funcao!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                                    // supostamente ja esta
         if(current->child){
-            anotaStatementsExpressoes(current->child,funcAux);
+            char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
+            if(strcmp(tipo1,funcAux->type)!=0){
+                printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"return");
+            }
         }
-        
+        else{
+            if(strcmp("none",funcAux->type)!=0){
+                printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->line,current->column,"none","return");
+            }
+        }
         
         return "null"; 
     }
@@ -214,13 +222,16 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         // qual o tipo de erro que da se tiver +/- argumentos do que e pedido o professor nao diz no enunciado
         char *tipo=anotaIdFuncao(current->child,funcAux);
         addNote(current,tipo);
+        /*
         node * parametros =current->child->brother;
         while(parametros){
             anotaStatementsExpressoes(parametros,funcAux);
             parametros=parametros->brother;
         }
+        
+        */
+
         return tipo ;
-    
     }
     
     else if(strcmp(current->type,"Assign")==0){
@@ -228,13 +239,23 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         // verifica se a var existe e se o tipo que lhe esta a ser dado esta correto
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         char *tipo2=anotaStatementsExpressoes(current->child->brother,funcAux);
+
+        variavelExiste(current->child, funcAux);
+        variavelExiste(current->child->brother, funcAux);
+
+
+        if(strcmp(tipo1,"undef")==0||strcmp(tipo2,"undef")==0){
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"=",tipo1,tipo2);   
+            addNote(current,"undef");
+            return tipo1;            
+        }
         
         if(strcmp(tipo1,tipo2)==0){
             addNote(current,tipo1);
             return tipo1;
         }
-        variavelExiste(current->child, funcAux);
-        variavelExiste(current->child->brother, funcAux);
+        
+        
         printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"=",tipo1,tipo2);               
         addNote(current,tipo1);
         return tipo1;
@@ -269,6 +290,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             addNote(current,"bool");
 
         }
+        
         else if(strcmp(tipo1,"float32")==0&&strcmp(tipo2,"float32")==0){ // floats32 so podem ser comparados comparados com floats32
             addNote(current,"bool");
 
@@ -277,6 +299,11 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             addNote(current,"bool");
 
         }
+        /*
+        else if((strcmp(tipo1,"int")==0&&strcmp(tipo2,"float32")==0)||(strcmp(tipo1,"float32")==0&&strcmp(tipo2,"int")==0)){ // inteiros so podem ser comparados  com floats
+            addNote(current,"bool");
+
+        }*/
         else{
             if(strcmp(current->type,"Eq")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"==",tipo1,tipo2);               
@@ -311,14 +338,14 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         char *tipo1 =anotaStatementsExpressoes(current->child, funcAux);
         char *tipo2 =anotaStatementsExpressoes(current->child->brother, funcAux);
     
-        if(strcmp(tipo1,"bool")==0&&strcmp(tipo2,"bool")==0){           // booleanos nao podem usar contas matematicas
+        if((strcmp(tipo1,"bool")==0&&strcmp(tipo2,"bool")==0)||(strcmp(tipo1,"undef")==0&&strcmp(tipo2,"undef")==0)){           // booleanos nao podem usar contas matematicas
             if(strcmp(current->type,"Add")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"+",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Sub")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);               
             }
-            else if(strcmp(current->type,"Star")==0){
+            else if(strcmp(current->type,"Mul")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Div")==0){
@@ -340,7 +367,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             else if(strcmp(current->type,"Sub")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);               
             }
-            else if(strcmp(current->type,"Star")==0){
+            else if(strcmp(current->type,"Mul")==0){
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Div")==0){
@@ -356,47 +383,62 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         
         }
         else{
-            if(strcmp(tipo1,"string")==0){
-                if(strcmp(current->type,"Add")==0){
-                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"+",tipo1,tipo2);
-                    variavelExiste(current->child, funcAux);
-                    variavelExiste(current->child->brother, funcAux);
-                    return "string";               
-                }
-                else if(strcmp(current->type,"Sub")==0){
-                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);               
-                }
-                else if(strcmp(current->type,"Star")==0){
-                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2);               
-                }
-                else if(strcmp(current->type,"Div")==0){
-                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"/",tipo1,tipo2);               
-                }
-                else if(strcmp(current->type,"Mod")==0){
+            if(strcmp(tipo1,"float32")==0){
+                if(strcmp(current->type,"Mod")==0){
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
-                }
-                addNote(current,"undef");
-                variavelExiste(current->child, funcAux);
-                variavelExiste(current->child->brother, funcAux);
-                return "undef";
-            }
-            if(strcmp(current->type,"Mod")==0){
-                if(strcmp(tipo1,"int")==0){
-                    addNote(current,tipo1);
-                    variavelExiste(current->child, funcAux);
-                    variavelExiste(current->child->brother, funcAux);
-                    return tipo1;
-                }
-                else{
-                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);
                     addNote(current,"undef");
                     variavelExiste(current->child, funcAux);
                     variavelExiste(current->child->brother, funcAux);
-                    return "undef";               
+                    return "undef";
+                }
+                addNote(current,"float32");
+                variavelExiste(current->child, funcAux);
+                variavelExiste(current->child->brother, funcAux);
+                return "float32";
+            }
+            if(strcmp(tipo1,"string")==0){
+                variavelExiste(current->child, funcAux);
+                variavelExiste(current->child->brother, funcAux);
+                if(strcmp(current->type,"Add")==0){
+                    addNote(current,"string");
+                    return "string";               
+                }
+                else if(strcmp(current->type,"Sub")==0){
+                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);         
+                    addNote(current,"undef");
+                    return "undef";      
+                }
+                else if(strcmp(current->type,"Mul")==0){
+                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2); 
+                    addNote(current,"undef");
+                    return "undef";                
+                }
+                else if(strcmp(current->type,"Div")==0){
+                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"/",tipo1,tipo2); 
+                    addNote(current,"undef");
+                    return "undef";                
+                }
+                else if(strcmp(current->type,"Mod")==0){
+                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2); 
+                    addNote(current,"undef");
+                    return "undef";                
                 }
 
 
+                /*
+                if(strcmp(current->type,"Mod")==0){
+                    printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
+                    addNote(current,"undef");
+                    variavelExiste(current->child, funcAux);
+                    variavelExiste(current->child->brother, funcAux);
+                    return "undef";
+                }
+                addNote(current,"int");
+                variavelExiste(current->child, funcAux);
+                variavelExiste(current->child->brother, funcAux);
+                return "int";*/
             }
+            
 
             addNote(current,tipo1);
             variavelExiste(current->child, funcAux);
@@ -467,19 +509,76 @@ char* anotaIdFuncao(node* current, func_table* funcAux){
         while(funcAux2){
             if(funcAux2->func){
                 if(strcmp(funcAux2->name,current->value)==0){
-                    if(strcmp(funcAux2->type,"none")==0){
-                        addNote(current,"undef");
-                        return "undef";
-                    }   
-                    addNote(current,funcAux2->type);
-                    return funcAux2->type;
+                    node* nodeAux=current->brother;
+                    param_table *paramsAux=funcAux2->params;
+                    int params1=0;          // conta o numero de parametros do no 
+                    int params2=0;          // conta o numero de parametros que estao na arvore
+                    int invalido=0;
+                    char strAux[1024]="\0";
+                    strcat(strAux,"(");
+                    while(nodeAux||paramsAux){
+                        char *tipo1;
+                        if(nodeAux){            // precisa de anotar todos os nos , mesmo que nao haja parametros , por isso e que nao esta no if asseguir
+                            tipo1=anotaStatementsExpressoes(nodeAux,funcAux);
+                            if(strcmp(strAux,"(")==0){
+                                strcat(strAux,tipo1);
+                            }
+                            else{
+                                strcat(strAux,",");
+                                strcat(strAux,tipo1);
+                            }
+                        }
+                        if(nodeAux&&paramsAux){
+                            //printf("%s %s\n",tipo1,paramsAux->type);
+                            if(strcmp(tipo1,paramsAux->type)!=0){
+                                invalido=1;
+                            }
+                        }
+                        if(nodeAux){
+                            params1++;
+                            nodeAux=nodeAux->brother;
+                        }
+                        if(paramsAux){
+                            paramsAux=paramsAux->next;
+                            params2++;
+                        }
+                    }
+                    strcat(strAux,")");
+                    /*
+                    printf("%d %d\n",params1,params2);
+                    printf("%d\n",invalido);*/
+                    if(params1==params2&&invalido==0){
+                            // esta tudo bem anota o que é suposto e da return do seu tipo
+                            addNote(current,strAux);
+                            return funcAux2->type;
+                    }
+                    printf("Line %d, column %d: Cannot find symbol %s%s\n",current->line,current->column,current->value,strAux);
+                    addNote(current,"undef");
+                    return "undef";
+                
                 }
             }
-            
             funcAux2=funcAux2->next;
         }
+        // para o caso de a variavel nao existir
+        
+        node* nodeAux=current->brother;
+        char strAux[1024]="\0";
+        strcat(strAux,"(");
+        while(nodeAux){
+            char *tipo1=anotaStatementsExpressoes(nodeAux,funcAux);
+            if(strcmp(strAux,"(")==0){
+                strcat(strAux,tipo1);
+            }
+            else{
+                    strcat(strAux,",");
+                    strcat(strAux,tipo1);
+            }            
+            nodeAux=nodeAux->brother;
+        }
+        strcat(strAux,")");
         // chegou ao fim quer dizer que nao ha mais variaveis e esta nao foi encontrada
-        printf("Line %d, column %d: Cannot find symbol %s\n",current->line,current->column,current->value);
+        printf("Line %d, column %d: Cannot find symbol %s%s\n",current->line,current->column,current->value,strAux);
         addNote(current,"undef");
         return "undef";
 }
@@ -520,6 +619,8 @@ char* anotaId(node* current, func_table* funcAux){
 
 
         // printf("Line %d, column %d: Cannot find symbol %s\n",current->line,current->column,current->value);
+
+        // acaba por nao ser preciso porque o professor ordena os erros
         /*  ------------------------------------------------------------------------
             O print de variavel nao encontrada vai ser feita noutra funcao 
             p.e
@@ -578,10 +679,17 @@ void variavelExiste(node* current, func_table* funcAux){
 func_table* ponteiroFuncao(char* funcaoNome){               // retorna um ponteiro para um funcao
     struct func_table *funcAux =funcHead;
     while(funcAux){
-        if(strcmp(funcAux->name,funcaoNome)==0){
-
-            return funcAux;
+        if(funcAux->func){
+            if(strcmp(funcAux->name,funcaoNome)==0){
+                if(funcAux->declared==0){
+                    funcAux->declared=1;
+                    return funcAux;
+                }
+            return NULL;
         }
+
+        }
+        
         funcAux=funcAux->next;
     }
     return NULL;
@@ -612,6 +720,7 @@ func_table* adicionaFuncao(node* current){                                      
 
             funcHead->params=NULL;
             funcHead->func=1;
+            funcHead->declared=0;
             funcHead->name=funcName;
             funcHead->type=funcType;
             funcHead->next=NULL;
@@ -639,6 +748,7 @@ func_table* adicionaFuncao(node* current){                                      
             }
 
             funcAux->func=1;
+            funcAux->declared=0;
             funcAux->name=funcName;
             funcAux->type=funcType;
             funcAux->next=NULL;
@@ -707,10 +817,24 @@ void adicionaParametros(node* current,func_table * funcAux){
 
     nodeAux=nodeAux->child; // FuncParams -> ParamDecl
     param_table* paramsAux=NULL;
-    param_table* paramsHead;
-    param_table* paramsAux2=paramsAux;
+    param_table* paramsHead=NULL;
+    param_table* paramsAux2=paramsHead;
+    int found=0;
     while(nodeAux){   // ParamDecl -> ParamDecl
-        if(!paramsAux){
+        found=0;
+        paramsAux2=paramsHead;
+        while(paramsAux2){
+            
+            if(strcmp(paramsAux2->name,nodeAux->child->brother->value)==0){  // a variavel ja é um parametro
+                found=1;
+                printf("Line %d, column %d: Symbol %s already defined\n",nodeAux->child->brother->line,nodeAux->child->brother->column,nodeAux->child->brother->value);
+                //printf("%s---\n",paramsAux2->name);
+            }
+            paramsAux2=paramsAux2->next;
+            
+        }
+        if(!found){
+            if(!paramsAux){
             paramsAux = (struct param_table*)malloc(sizeof( param_table));
             paramsAux->next=NULL;
             paramsAux->name=(char *)malloc(sizeof( char)*100); 
@@ -719,8 +843,8 @@ void adicionaParametros(node* current,func_table * funcAux){
             strcpy(paramsAux->type,nodeAux->child->type); 
             paramsAux->type[0]=tolower(paramsAux->type[0]);
             paramsHead=paramsAux;                                     // para guardar a cabeca da lista de parametros porque e isso que tem de ser guardado
-        }
-        else{
+            }
+            else{
 
             paramsAux ->next = (struct param_table*)malloc(sizeof( param_table));
             paramsAux=paramsAux->next;
@@ -732,6 +856,8 @@ void adicionaParametros(node* current,func_table * funcAux){
             paramsAux->type[0]=tolower(paramsAux->type[0]);
 
         }
+        }
+        
         
         nodeAux=nodeAux->brother;
     }
@@ -750,7 +876,7 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
         parsAux=parsAux->next;  
     }    
     var_table *varsAux =funcAux->vars;
-
+    
     if(!varsAux){
                 
         varsAux= (struct var_table*)malloc(sizeof( var_table));
@@ -761,10 +887,14 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
         strcpy(varsAux->type,nodeAux->child->type); 
         varsAux->type[0]=tolower(varsAux->type[0]);
         funcAux->vars=varsAux;
+        if (usedVar(nodeAux->brother,varsAux->name)==0){
+            printf("Line %d, column %d: Symbol %s declared but never used\n",nodeAux2->line,nodeAux2->column,varsAux->name);
+        }
         return;
     }
+   
     if(strcmp(varsAux->name,nodeAux->child->brother->value)==0){ // compara so a cabeca da lista
-        
+        printf("--------------%s\n",varsAux->name); 
         printf("Line %d, column %d: Symbol %s already defined\n",nodeAux2->line,nodeAux2->column,nodeAux2->value);
         return;
     }
@@ -785,6 +915,9 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
     varsAux->type=(char *)malloc(sizeof( char)*100);
     strcpy(varsAux->type,nodeAux->child->type); 
     varsAux->type[0]=tolower(varsAux->type[0]);
+    if (usedVar(nodeAux->brother,varsAux->name)==0){
+        printf("Line %d, column %d: Symbol %s declared but never used\n",nodeAux2->line,nodeAux2->column,varsAux->name);
+    }
 
 }
 void printTabelaFuncoes(){ // Verificar se os \n's estao bem 
@@ -858,7 +991,8 @@ int existeVariavelOuFuncao(char * name,node* current,int opcao){
 
         if(strcmp(funcAux->name,name)==0){
             if(opcao==1){
-                printf("Line %d, column %d: Symbol %s(",current->line,current->column,name);
+                printf("Line %d, column %d: Symbol %s already defined\n",current->line,current->column,name);
+                /*printf("Line %d, column %d: Symbol %s(",current->line,current->column,name);
                 node* nodeAux=current; // vai para id
                 nodeAux=nodeAux->brother;
                 if(nodeAux->brother)            // no caso de a funcao nao ser none
@@ -877,7 +1011,7 @@ int existeVariavelOuFuncao(char * name,node* current,int opcao){
                     printf(",%s %s",nodeAux->child->brother->value,tipo);
                     nodeAux=nodeAux->brother;
                 }
-                printf(") already defined\n");
+                printf(") already defined\n");*/
                 return 1;
             }
             else{
@@ -889,6 +1023,24 @@ int existeVariavelOuFuncao(char * name,node* current,int opcao){
         funcAux=funcAux->next;
     }
     return 0;
+}
+int usedVar(node* current,char *varName){ // retorna 0 se nao encontrar a variavel , retorna 1 se a variavel existe
+    if(!current){
+        return 0;
+    }
+    if(strcmp(current->type,"Id")==0){
+        if(strcmp(current->value,varName)==0){
+            return 1;
+        }
+        else{
+            return usedVar(current->child,varName) || usedVar(current->brother,varName);
+        }
+    }
+    else{
+        return usedVar(current->child,varName) || usedVar(current->brother,varName);
+    }
+    
+
 }
 
 

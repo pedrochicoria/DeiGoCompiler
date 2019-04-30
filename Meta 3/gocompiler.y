@@ -33,7 +33,7 @@
  
 %token <value> RESERVED INTLIT REALLIT STRLIT ID 
 
-%type<node> FOR IF  DIV AND ASSIGN STAR MINUS MOD NOT OR PLUS GE GT EQ LE LT NE Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
+%type<node> RETURN PARSEINT FOR IF  DIV AND ASSIGN STAR MINUS MOD NOT OR PLUS GE GT EQ LE LT NE Program Declarations DeclarationsAux VarDeclaration VarSpec VarSpecAux Type FuncDeclaration Parameters ParametersAux VarsAndStatements Statement StatementSEMICOLON StatementExprSTRLIT ParseArgs FuncInvocation FuncInvocationAux Expr FuncBody  IdAux
 
 %left COMMA
 %right ASSIGN
@@ -267,8 +267,8 @@ Statement:
                                                                                                         addChild(aux,$3);
                                                                                                         }
 
-     | RETURN                                                                                           {$$ =  newNode("Return",NULL,line,column);}
-     | RETURN Expr                                                                                      {$$ =  newNode("Return",NULL,line,column);addChild($$,$2);}
+     | RETURN                                                                                           {$$ =  newNode("Return",NULL,$1->line,$1->column);}
+     | RETURN Expr                                                                                      {$$ =  newNode("Return",NULL,$1->line,$1->column);addChild($$,$2);}
 
      | FuncInvocation                                                                                   {$$=newNode("Call",NULL,line,column);addChild($$,$1);}
      | ParseArgs                                                                                        {$$=$1;}
@@ -292,7 +292,7 @@ StatementExprSTRLIT:
     ;
 
 ParseArgs:
-    IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {$$=newNode("ParseArgs",NULL,line,column);addChild($$,$1);addBrother($1,$9);}
+    IdAux COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR                                     {$$=newNode("ParseArgs",NULL,$5->line,$5->column);addChild($$,$1);addBrother($1,$9);}
     | IdAux COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                                                  {$$=newNode("ParseArgs",NULL,line,column);addChild($$,$1);addBrother($1,newNode("Error",NULL,line,column));syntaxError=1;}
     ;
 

@@ -3,6 +3,7 @@ typedef struct func_table{ // representa uma lista ligada de funcores e de varia
     char* name;
     char* type;
     int func;
+    int declared;
     struct var_table *vars; //
     struct param_table *params;
     struct func_table *next;
@@ -41,3 +42,4 @@ void adicionaVarsLocais(node* current,func_table * funcAux);
 char* anotaId(node* current, func_table* funcAux);
 char* anotaIdFuncao(node* current, func_table* funcAux);
 void variavelExiste(node* current, func_table* funcAux);
+int usedVar(node* current,char *varName);
