@@ -1,4 +1,6 @@
 %{
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>

@@ -1,3 +1,6 @@
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
+
 #include "semantics.h" 
 #include <ctype.h> // sera que pode dar problemas COMPILE TIME ERROR ?
 struct func_table *funcHead =NULL;                                      // ponteiro para a cabeça da lista ligada de funcoes
