@@ -1,4 +1,5 @@
 #include "ast.h"
+
 typedef struct func_table{ // representa uma lista ligada de funcores e de variaveis globais
     char* name;
     char* type;

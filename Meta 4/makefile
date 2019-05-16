@@ -7,6 +7,6 @@ make:
 	rm -f gocompiler.zip
 	zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c semantics.c codegen.c semantics.h
 	
-	./gocompiler   < testes/smallest.dgo > testesC/exec.ll |sort
-	
-	lli-3.8 testesC/exec.ll 
+	./gocompiler   < testes/smallest.dgo > testesC/exec.ll | sort
+	cd testesC
+	lli exec.ll 

@@ -1,4 +1,5 @@
 #include "codegen.h"
+
 extern struct func_table *funcHead;  
 void generateCode(node*  current){
 	global_Vars_Fun(current);
