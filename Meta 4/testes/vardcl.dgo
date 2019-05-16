@@ -1,0 +1,14 @@
+package main
+var a,t bool;
+var d int;
+
+func main(c float32){
+	var t int;
+	
+
+}
+	
+func asd(){
+	main(3.1)	
+};
+

@@ -1,0 +1,36 @@
+package main;
+
+
+func factorial1(n int,a bool,z int) int  {
+	
+	/*
+	read = !read * !!(10 + c) - '0';
+	a= b || c - d && e - (chamada (f ,1, 100e+1));
+	a=-(1)>-2*-3- funcao(n-1||6);
+
+	if (-(-z>-a || 1<2 && 4>5 && 0<=2)  || 1>=9){};
+
+	if (-!a){}
+
+	if(1<2<=-33>4>=5){}
+
+	c = c && a < d > e >= b <= !e > a > e || e < a+(-(-z>(z>(z>=(z<=(z<id(z<funcao (z>0,z<0,z>=z<0,z<=0)))))) > 1<2 < 4>5 >= 0<=2)  || 1>=9);*/
+	
+
+	
+};
+func case1(){
+	if a<b<=c>=d>e{
+		
+	}
+}
+func case2(){
+	if a<=b<c>=d>e{
+		
+	}
+}
+func case1(){
+	if a<b<=c>=d>e{
+		
+	}
+}

@@ -1,0 +1,15 @@
+package funcs
+
+
+func asdr(a string) int{
+	var asd1,asd2 bool;
+	if(asd1>asd2){asd1=asd2;}
+	var asd1,asd2 int;
+	if(asd1>asd2){
+	}
+	var a string;
+	asdr(a+a,asd1);
+
+
+
+}

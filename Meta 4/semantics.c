@@ -3,9 +3,10 @@
 struct func_table *funcHead =NULL;                                      // ponteiro para a cabeça da lista ligada de funcoes
 int line;
 int column;
+int semanticError;
 
 void criaTabelas(node* current){
-
+    semanticError=0;
     current=current->child;
     node* funcVarHead=current;
 
@@ -93,6 +94,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         char *tipo2=anotaStatementsExpressoes(current->child->brother,funcAux);
         if(strcmp(tipo1,"int")!=0||strcmp(tipo2,"int")!=0){
+            semanticError=1;
             printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"strconv.Atoi",tipo1,tipo2);
             addNote(current,"undef");
             return "undef";
@@ -106,11 +108,13 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         if(current->child){
             char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
             if(strcmp(tipo1,funcAux->type)!=0){
+                semanticError=1;
                 printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"return");
             }
         }
         else{
             if(strcmp("none",funcAux->type)!=0){
+                semanticError=1;
                 printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->line,current->column,"none","return");
             }
         }
@@ -133,6 +137,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
 
             while(current->value[i]!='\0'){     // é um octa
                 if((current->value[i]<'0'||current->value[i]>'7')){
+                    semanticError=1;
                     printf("Line %d, column %d: Invalid octal constant: %s\n",current->line,current->column,current->value);
                     addNote(current,"int");
                     return "int";
@@ -157,6 +162,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         //variavelExiste(current->child, funcAux);
         if(strcmp("bool",tipo1)!=0){
+            semanticError=1;
             printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"!",tipo1);
         }
         addNote(current,"bool");
@@ -176,9 +182,11 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         }
         else{
             if(strcmp(current->type,"Minus")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"-",tipo1);
             }
             else{
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to type %s\n",current->line,current->column,"+",tipo1);
             }
             //variavelExiste(current->child, funcAux);
@@ -190,6 +198,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         
         if(strcmp(tipo1,"bool")!=0){
+            semanticError=1;
             printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"if");
 
         }
@@ -210,6 +219,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         }
         char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
         if(strcmp(tipo1,"bool")!=0){
+            semanticError=1;
             printf("Line %d, column %d: Incompatible type %s in %s statement\n",current->child->line,current->child->column,tipo1,"for");
         }
         anotaStatementsExpressoes(current->child->brother,funcAux);
@@ -246,6 +256,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
 
 
         if(strcmp(tipo1,"undef")==0||strcmp(tipo2,"undef")==0){
+            semanticError=1;
             printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"=",tipo1,tipo2);   
             addNote(current,"undef");
             return tipo1;            
@@ -256,7 +267,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
             return tipo1;
         }
         
-        
+        semanticError=1;
         printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"=",tipo1,tipo2);               
         addNote(current,tipo1);
         return tipo1;
@@ -274,15 +285,19 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
 
         if(strcmp(tipo1,"bool")==0&&strcmp(tipo2,"bool")==0){ // booleanos so podem ser comparados comparados com booleanos    
             if(strcmp(current->type,"Lt")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Gt")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Le")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<=",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Ge")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">=",tipo1,tipo2);               
             }
             else{
@@ -311,21 +326,27 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         }*/
         else{
             if(strcmp(current->type,"Eq")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"==",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Lt")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Gt")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Ne")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"!=",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Le")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"<=",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Ge")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,">=",tipo1,tipo2);               
             }
             
@@ -343,18 +364,23 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
     
         if((strcmp(tipo1,"bool")==0&&strcmp(tipo2,"bool")==0)||(strcmp(tipo1,"undef")==0&&strcmp(tipo2,"undef")==0)){           // booleanos nao podem usar contas matematicas
             if(strcmp(current->type,"Add")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"+",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Sub")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Mul")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Div")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"/",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Mod")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
             }
             addNote(current,tipo1);
@@ -365,18 +391,23 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         }
         else if(strcmp(tipo1,tipo2)!=0){           // se sao diferentes nao aceita 
             if(strcmp(current->type,"Add")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"+",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Sub")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Mul")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Div")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"/",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Mod")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
             }
             addNote(current,"undef");
@@ -388,6 +419,7 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         else{
             if(strcmp(tipo1,"float32")==0){
                 if(strcmp(current->type,"Mod")==0){
+                    semanticError=1;
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2);               
                     addNote(current,"undef");
                     //variavelExiste(current->child, funcAux);
@@ -407,21 +439,25 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
                     return "string";               
                 }
                 else if(strcmp(current->type,"Sub")==0){
+                    semanticError=1;
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"-",tipo1,tipo2);         
                     addNote(current,"undef");
                     return "undef";      
                 }
                 else if(strcmp(current->type,"Mul")==0){
+                    semanticError=1;
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"*",tipo1,tipo2); 
                     addNote(current,"undef");
                     return "undef";                
                 }
                 else if(strcmp(current->type,"Div")==0){
+                    semanticError=1;
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"/",tipo1,tipo2); 
                     addNote(current,"undef");
                     return "undef";                
                 }
                 else if(strcmp(current->type,"Mod")==0){
+                    semanticError=1;
                     printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"%",tipo1,tipo2); 
                     addNote(current,"undef");
                     return "undef";                
@@ -466,9 +502,11 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         }
         else {           
             if(strcmp(current->type,"And")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"&&",tipo1,tipo2);               
             }
             else if(strcmp(current->type,"Or")==0){
+                semanticError=1;
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n",current->line,current->column,"||",tipo1,tipo2);                           
             }
 
@@ -558,6 +596,7 @@ char* anotaIdFuncao(node* current, func_table* funcAux){
                             addNote(current,strAux);
                             return funcAux2->type;
                     }
+                    semanticError=1;
                     printf("Line %d, column %d: Cannot find symbol %s%s\n",current->line,current->column,current->value,strAux);
                     addNote(current,"undef");
                     return "undef";
@@ -583,6 +622,8 @@ char* anotaIdFuncao(node* current, func_table* funcAux){
             nodeAux=nodeAux->brother;
         }
         strcat(strAux,")");
+
+        semanticError=1;
         // chegou ao fim quer dizer que nao ha mais variaveis e esta nao foi encontrada
         printf("Line %d, column %d: Cannot find symbol %s%s\n",current->line,current->column,current->value,strAux);
         addNote(current,"undef");
@@ -678,6 +719,7 @@ void variavelExiste(node* current, func_table* funcAux){
             
             funcAux2=funcAux2->next;
         }
+        semanticError=1;
         // chega ao fim o que quer dizer que a variavel nao existe
         printf("Line %d, column %d: Cannot find symbol %s\n",current->line,current->column,current->value);
         
@@ -833,6 +875,7 @@ void adicionaParametros(node* current,func_table * funcAux){
             
             if(strcmp(paramsAux2->name,nodeAux->child->brother->value)==0){  // a variavel ja é um parametro
                 found=1;
+                semanticError=1;
                 printf("Line %d, column %d: Symbol %s already defined\n",nodeAux->child->brother->line,nodeAux->child->brother->column,nodeAux->child->brother->value);
                 //printf("%s---\n",paramsAux2->name);
             }
@@ -876,6 +919,7 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
     node *nodeAux2=nodeAux->child->brother;
     while(parsAux!=NULL){
         if(strcmp(parsAux->name,nodeAux2->value)==0){
+            semanticError=1;
             printf("Line %d, column %d: Symbol %s already defined\n",nodeAux2->line,nodeAux2->column,nodeAux2->value);
             return;
         }
@@ -894,19 +938,22 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
         varsAux->type[0]=tolower(varsAux->type[0]);
         funcAux->vars=varsAux;
         if (usedVar(nodeAux->brother,varsAux->name)==0){
+            semanticError=1;
             printf("Line %d, column %d: Symbol %s declared but never used\n",nodeAux2->line,nodeAux2->column,varsAux->name);
         }
         return;
     }
    
     if(strcmp(varsAux->name,nodeAux->child->brother->value)==0){ // compara so a cabeca da lista
-        printf("--------------%s\n",varsAux->name); 
+        //printf("--------------%s\n",varsAux->name); 
+        semanticError=1;
         printf("Line %d, column %d: Symbol %s already defined\n",nodeAux2->line,nodeAux2->column,nodeAux2->value);
         return;
     }
     while(varsAux->next){                                       // compara o resto dos elemntos
 
         if(strcmp(varsAux->next->name,nodeAux->child->brother->value)==0){
+            semanticError=1;
             printf("Line %d, column %d: Symbol %s already defined\n",nodeAux2->line,nodeAux2->column,nodeAux2->value);
             return;
         }
@@ -922,6 +969,7 @@ void adicionaVarsLocais(node* nodeAux,func_table * funcAux){
     strcpy(varsAux->type,nodeAux->child->type); 
     varsAux->type[0]=tolower(varsAux->type[0]);
     if (usedVar(nodeAux->brother,varsAux->name)==0){
+        semanticError=1;
         printf("Line %d, column %d: Symbol %s declared but never used\n",nodeAux2->line,nodeAux2->column,varsAux->name);
     }
 
@@ -997,6 +1045,7 @@ int existeVariavelOuFuncao(char * name,node* current,int opcao){
 
         if(strcmp(funcAux->name,name)==0){
             if(opcao==1){
+                semanticError=1;
                 printf("Line %d, column %d: Symbol %s already defined\n",current->line,current->column,name);
                 /*printf("Line %d, column %d: Symbol %s(",current->line,current->column,name);
                 node* nodeAux=current; // vai para id
@@ -1021,6 +1070,7 @@ int existeVariavelOuFuncao(char * name,node* current,int opcao){
                 return 1;
             }
             else{
+                semanticError=1;
                 printf("Line %d, column %d: Symbol %s already defined\n",current->line,current->column,name);
                 return 1;
             }
