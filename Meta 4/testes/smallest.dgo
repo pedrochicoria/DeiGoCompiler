@@ -2,6 +2,6 @@ package main;
 var a int;
 //var a bool;
 var b string;
-func main (s int,t float32 )int {
+func main ( )int {
 
 };
