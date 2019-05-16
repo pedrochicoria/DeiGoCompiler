@@ -10,11 +10,6 @@ typedef struct func_table{ // representa uma lista ligada de funcores e de varia
     
 } func_table;
 
-typedef struct glblvar_table{ // representa uma lista ligada de variaveis globais
-    char* name;
-    char* type;
-    struct glblvar *next;
-} glblvar_table;
 
 typedef struct param_table{ // representa uma lista ligada de parametros de uma funcao
     char* name;
