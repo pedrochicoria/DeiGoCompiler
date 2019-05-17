@@ -3,4 +3,4 @@ rm -f gocompiler.zip
 zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c semantics.c codegen.c semantics.h
 ./gocompiler   < testesC/input.dgo > testesC/exec.ll | sort
 ./gocompiler   < testesC/input.dgo
-lli testesC/exec.ll
+lli-3.8 testesC/exec.ll

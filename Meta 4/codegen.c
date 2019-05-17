@@ -17,7 +17,7 @@ void global_Vars_Fun(node *current){
 				printf("@global.var.%s = common global i32 0, align 4\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"float32")==0){
-				printf("@global.var.%s = common global double 0, align 4\n", funcAux->name);
+				printf("@global.var.%s = common global double 0, align 8\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"bool")==0){
 				printf("@global.var.%s = common global i1 0, align 4\n", funcAux->name);
@@ -36,6 +36,7 @@ void global_Vars_Fun(node *current){
 		
 		if(funcAux->func==1){
 			add_Func(funcAux);
+
 		}
 	
 		funcAux=funcAux->next;
@@ -87,6 +88,9 @@ void add_Func(func_table* funcAux){
 	// adciona variaveis locais
 	add_Local_Vars(funcAux->vars);
 
+	// faz store dos parametros
+	add_Store_Params(paramsAux);
+
 	// requer um bloco, depois apagar 
 	printf("\tret i32 1\n");
 	printf("}\n");
@@ -100,13 +104,43 @@ void add_Params(param_table *paramsAux){
 			printf(", align 4\n");
 		}
 		else if(strcmp(paramsAux->type,"float32")==0){
-			printf("float ");
-			printf(", align 4\n");
+			printf("double ");
+			printf(", align 8\n");
 		}
 		else if(strcmp(paramsAux->type,"bool")==0){
 			printf("i1 ");
 			printf(", align 4\n");
 		}
+		
+		paramsAux=paramsAux->next;
+	}
+}
+void add_Store_Params(param_table *paramsAux){ // depois de allocar variaveis para os parametros é preciso fazer store de ponteiros
+	while(paramsAux){
+
+		printf("\tstore ");
+		if(strcmp(paramsAux->type,"int")==0){
+			printf("i32 ");
+			printf("%%%s, ",paramsAux->name);
+			printf("i32* ");
+			printf("%%%s.addr, align 4",paramsAux->name);
+
+
+		}
+		else if(strcmp(paramsAux->type,"float32")==0){
+			printf("double ");
+			printf("%%%s, ",paramsAux->name);
+			printf("double* ");
+			printf("%%%s.addr, align 8",paramsAux->name);
+		}
+		else if(strcmp(paramsAux->type,"bool")==0){
+			printf("i1 ");
+			printf("%%%s, ",paramsAux->name);
+			printf("i1* ");
+			printf("%%%s.addr, align 4",paramsAux->name);
+		}
+		printf("\n");
+		
 		
 		paramsAux=paramsAux->next;
 	}
@@ -121,7 +155,7 @@ void add_Local_Vars(var_table *varAux){
 		}
 		else if(strcmp(varAux->type,"float32")==0){
 			printf("double ");
-			printf(", align 4\n");
+			printf(", align 8\n");
 		}
 		else if(strcmp(varAux->type,"bool")==0){
 			printf("i1 ");
@@ -130,4 +164,20 @@ void add_Local_Vars(var_table *varAux){
 		
 		varAux=varAux->next;
 	}
+}
+void generate_From_Tree(node* current){
+
+}
+node* get_Node_Of_Func(char *funcName,node* current){
+	if (!current){
+		return NULL;
+	}
+	if(strcmp(current->type,"FuncDcl")==0){
+		return node;
+
+	}else{
+		get_Node_Of_Func(current->child);
+		get_Node_Of_Func(current->brother);
+	}	
+	
 }

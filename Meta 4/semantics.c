@@ -106,8 +106,8 @@ char* anotaStatementsExpressoes(node *current, func_table *funcAux){
         addNote(current,"int");
         return "int"; 
     }
-    else if(strcmp(current->type,"Return")==0){     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! falta ver se é o mesmo tipo que a funcao!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                                    // supostamente ja esta
+    else if(strcmp(current->type,"Return")==0){     
+                                                   
         if(current->child){
             char *tipo1=anotaStatementsExpressoes(current->child,funcAux);
             if(strcmp(tipo1,funcAux->type)!=0){
