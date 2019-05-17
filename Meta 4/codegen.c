@@ -98,7 +98,8 @@ void add_Func(func_table* funcAux){
 	add_Store_Params(paramsAux);
 
 	// gera o código apartir da arvore (semelhante a anotar a arvore ), mas ignorando declaracao de variaveis que ja foi feita em cima
-	generate_From_Tree(funcAux->name,root);
+	node* nodeAux=get_Node_Of_Func(funcAux->name,root);
+	generate_From_Tree(nodeAux);
 	
 
 	// requer um bloco, !!! depois apagar
@@ -181,8 +182,8 @@ void add_Local_Vars(var_table *varAux){
 		varAux=varAux->next;
 	}
 }
-void generate_From_Tree(char *funcName,node* current){  // !!!!!! alterar para que o get node fique fora da funcao para ela ser recuriva !!!!!!
-	node* funcNode=get_Node_Of_Func(funcName,current);
+void generate_From_Tree(node* current){  // !!!!!! alterar para que o get node fique fora da funcao para ela ser recuriva !!!!!!
+
 	
 }
 
