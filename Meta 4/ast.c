@@ -1,3 +1,5 @@
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
 #include "ast.h"
 
 node *newNode(char *type, char *value,int line,int column)

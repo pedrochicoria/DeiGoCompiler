@@ -1,3 +1,5 @@
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
 #include "ast.h"
 typedef struct func_table{ // representa uma lista ligada de funcores e de variaveis globais
     char* name;

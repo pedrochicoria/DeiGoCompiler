@@ -1,3 +1,5 @@
+    //Joao Mendes 2015233148
+    //Pedro Chicoria 2015262771
 #include "codegen.h"
 
 extern struct func_table *funcHead;  
@@ -15,7 +17,7 @@ void global_Vars_Fun(node *current){
 				printf("@global.var.%s = common global i32 0, align 4\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"float32")==0){
-				printf("@global.var.%s = common global float 0, align 4\n", funcAux->name);
+				printf("@global.var.%s = common global double 0, align 4\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"bool")==0){
 				printf("@global.var.%s = common global i1 0, align 4\n", funcAux->name);
@@ -49,7 +51,7 @@ void add_Func(func_table* funcAux){
 		printf("i32 ");
 	}
 	else if(strcmp(funcAux->type,"float32")==0){
-		printf("float ");
+		printf("double ");
 	}
 	else if(strcmp(funcAux->type,"bool")==0){
 		printf("i1 ");
@@ -63,7 +65,7 @@ void add_Func(func_table* funcAux){
 			printf("i32 ");
 		}
 		else if(strcmp(paramsAux->type,"float32")==0){
-			printf("float ");
+			printf("double ");
 		}
 		else if(strcmp(paramsAux->type,"bool")==0){
 			printf("i1 ");
@@ -118,7 +120,7 @@ void add_Local_Vars(var_table *varAux){
 			printf(", align 4\n");
 		}
 		else if(strcmp(varAux->type,"float32")==0){
-			printf("float ");
+			printf("double ");
 			printf(", align 4\n");
 		}
 		else if(strcmp(varAux->type,"bool")==0){
