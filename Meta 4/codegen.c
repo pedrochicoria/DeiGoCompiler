@@ -2,13 +2,19 @@
     //Pedro Chicoria 2015262771
 #include "codegen.h"
 
-extern struct func_table *funcHead;  
+extern struct func_table *funcHead; 
+node* root; 
 void generateCode(node*  current){
 	global_Vars_Fun(current);
 }
 
 void global_Vars_Fun(node *current){
 	func_table *funcAux=funcHead;
+
+	//podemos declara las no inicio
+	printf("declare i32 @atoi(i8*)\n");
+	printf("declare i32 @printf(i8*, ...)\n");
+
 
 	// ---------------------------- Variaveis globais ---------------------------- 
 	while(funcAux){
@@ -91,9 +97,19 @@ void add_Func(func_table* funcAux){
 	// faz store dos parametros
 	add_Store_Params(paramsAux);
 
-	// requer um bloco, depois apagar 
+	// gera o código apartir da arvore (semelhante a anotar a arvore ), mas ignorando declaracao de variaveis que ja foi feita em cima
+	generate_From_Tree(funcAux->name,root);
+	
+
+	// requer um bloco, !!! depois apagar
 	printf("\tret i32 1\n");
+	
+	
 	printf("}\n");
+
+
+	// auxiliar para ver a arvore
+	//printAST(root, 0);
 }
 void add_Params(param_table *paramsAux){
 	while(paramsAux){
@@ -165,19 +181,33 @@ void add_Local_Vars(var_table *varAux){
 		varAux=varAux->next;
 	}
 }
-void generate_From_Tree(node* current){
-
+void generate_From_Tree(char *funcName,node* current){  // !!!!!! alterar para que o get node fique fora da funcao para ela ser recuriva !!!!!!
+	node* funcNode=get_Node_Of_Func(funcName,current);
+	
 }
+
+
+// vai encontrar o nó pertencente a uma funcao
 node* get_Node_Of_Func(char *funcName,node* current){
+
 	if (!current){
 		return NULL;
 	}
-	if(strcmp(current->type,"FuncDcl")==0){
-		return node;
+	if(strcmp(current->type,"FuncDecl")==0){
+		return current;
 
 	}else{
-		get_Node_Of_Func(current->child);
-		get_Node_Of_Func(current->brother);
+		// falta return
+		node* aux1;
+		node *aux2;
+		aux1=get_Node_Of_Func(funcName,current->child);
+		aux2=get_Node_Of_Func(funcName,current->brother);
+		if(aux1!=NULL){
+			return aux1;
+		}
+		if(aux2!=NULL){
+			return aux2;
+		}
 	}	
-	
+	return NULL;
 }

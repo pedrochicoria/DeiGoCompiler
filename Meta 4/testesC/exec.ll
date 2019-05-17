@@ -1,3 +1,5 @@
+declare i32 @atoi(i8*)
+declare i32 @printf(i8*, ...)
 @global.var.a = common global i32 0, align 4
 @global.var.b = common global i32 0, align 4
 define i32 @main() {
