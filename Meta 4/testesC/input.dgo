@@ -1,7 +1,17 @@
 package main; 
 var a int;
-//var a bool;
-var b string;
+
+var b int;
 func main ( )int {
+
+};
+
+func funcao (a int , b bool,f float32 )int {
+    var a2 int;
+    var b2 bool;
+    var f2 float32;
+    a2=a;
+    b2=b;
+    f2=f;
 
 };

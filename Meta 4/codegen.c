@@ -24,21 +24,6 @@ void global_Vars_Fun(node *current){
 		funcAux=funcAux->next;
 	}
 	funcAux=funcHead;
-	/*
-	while(current){
-		if(strcmp(current->type,"FuncDcl")==0||strcmp(current->type,"VarDcl")==0){
-			while(current){
-				if(strcmp(current->type,"FuncDcl")==0){
-					printf("FUNCAO");
-				}
-				current=current->brother;
-			}
-		}
-		else{
-			current=current->child;
-		}
-		
-	}*/
 	// ---------------------------- Funcoes ---------------------------- 
 	/*
 	pode se percorrer adicionar primeiro todas as variaveis(primeiros parametros e depois locais) porque em ficheiros .ll nas funcoes o 
@@ -48,7 +33,7 @@ void global_Vars_Fun(node *current){
 	while(funcAux){
 		
 		if(funcAux->func==1){
-			add_Vars_To_Func(funcAux);
+			add_Func(funcAux);
 		}
 	
 		funcAux=funcAux->next;
@@ -58,7 +43,7 @@ void global_Vars_Fun(node *current){
 	// printf("define i32 @main(){\tret i32 0\n}\n");
 
 }
-void add_Vars_To_Func(func_table* funcAux){
+void add_Func(func_table* funcAux){
 	printf("define ");
 	if(strcmp(funcAux->type,"int")==0){
 		printf("i32 ");
@@ -90,11 +75,57 @@ void add_Vars_To_Func(func_table* funcAux){
 		}
 		paramsAux=paramsAux->next;
 	}
-
 	printf(") {\n");
+	
+	
+	// adiciona os parametros a funcao
+	paramsAux = funcAux->params;
+	add_Params(paramsAux);
 
+	// adciona variaveis locais
+	add_Local_Vars(funcAux->vars);
 
 	// requer um bloco, depois apagar 
 	printf("\tret i32 1\n");
-	printf("}");
+	printf("}\n");
+}
+void add_Params(param_table *paramsAux){
+	while(paramsAux){
+
+		printf("\t%%%s.addr = alloca ",paramsAux->name);
+		if(strcmp(paramsAux->type,"int")==0){
+			printf("i32 ");
+			printf(", align 4\n");
+		}
+		else if(strcmp(paramsAux->type,"float32")==0){
+			printf("float ");
+			printf(", align 4\n");
+		}
+		else if(strcmp(paramsAux->type,"bool")==0){
+			printf("i1 ");
+			printf(", align 4\n");
+		}
+		
+		paramsAux=paramsAux->next;
+	}
+}
+void add_Local_Vars(var_table *varAux){
+	while(varAux){
+
+		printf("\t%%%s = alloca ",varAux->name);
+		if(strcmp(varAux->type,"int")==0){
+			printf("i32 ");
+			printf(", align 4\n");
+		}
+		else if(strcmp(varAux->type,"float32")==0){
+			printf("float ");
+			printf(", align 4\n");
+		}
+		else if(strcmp(varAux->type,"bool")==0){
+			printf("i1 ");
+			printf(", align 4\n");
+		}
+		
+		varAux=varAux->next;
+	}
 }
