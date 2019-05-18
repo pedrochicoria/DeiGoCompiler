@@ -1,23 +1,8 @@
 package main; 
-var a int;
-
-var b int;
 func main ( )int {
-
+    var a int;
+    a=2;
+    fmt.Println(a);
+    fmt.Println(1);
 };
 
-func funcao (a int , b bool,f float32 )int {
-    var a2 int;
-    var b2 bool;
-    var f2 float32;
-    a2=a;
-    b2=b;
-    f2=f;
-    fmt.Println(a2+a2);
-    fmt.Println(a2+a2);
-    var str1 string;
-    var str2 string;
-    str1=str1+str2:
-    fmt.Println(str1);
-
-};

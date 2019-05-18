@@ -1,10 +1,12 @@
     //Joao Mendes 2015233148
     //Pedro Chicoria 2015262771
 #include "codegen.h"
+#include <string.h>
 
 extern struct func_table *funcHead; 
-struct str_list *srtHead;
+struct str_list *strHead =NULL ;
 int strCount=0;  // contador de strs global
+int countCal= 1; // contador de calls usados para prints
 
 node* root; 
 void generateCode(node*  current){
@@ -42,15 +44,18 @@ void global_Vars_Fun(node *current){
 	*/
 
 	while(funcAux){
-		
 		if(funcAux->func==1){
 			add_Func(funcAux);
 
 		}
-	
 		funcAux=funcAux->next;
 	}
-	
+
+
+	// para fazer print das strings usadas para prints
+	print_Global_Str();
+
+
 	// Para nao se queixar que nao tem main
 	// printf("define i32 @main(){\tret i32 0\n}\n");
 
@@ -101,8 +106,14 @@ void add_Func(func_table* funcAux){
 	add_Store_Params(paramsAux);
 
 	// gera o código apartir da arvore (semelhante a anotar a arvore ), mas ignorando declaracao de variaveis que ja foi feita em cima
+	
 	node* nodeAux=get_Node_Of_Func(funcAux->name,root); // aponta para o FuncDecl dessa funcao
-	generate_From_Tree(nodeAux->child); 		// ve apartir do filho se nao vai ver outras funcoes
+	nodeAux=nodeAux->child->brother->child; 			// aponta para o primeiro statement
+	while(nodeAux){
+		generate_From_Tree(nodeAux); 		// ve apartir do filho se nao vai ver outras funcoes
+		nodeAux=nodeAux->brother;
+	}
+	
 	
 
 	// requer um bloco, !!! depois apagar
@@ -192,30 +203,54 @@ void generate_From_Tree(node* current){
 	}
 	//printf("%s\n",current->type);
 	if(strcmp(current->type,"Print")==0){
-		if(strcmp(current->type,"Print")==0){
+		char* strNew=(char *) malloc(1024*sizeof(char));
 		if(strcmp(current->child->note,"int")==0){
-			printf("\t@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount); // adciona a lista de strlits
-			strCount++;
-			generate_From_Tree(current->brother);
+			//printf("@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount); // adciona a lista de strlits
+			sprintf(strNew,"@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount);
+			printf("\t%%%d = load i32, i32* %%%s, align 4\n",countCal,current->child->value);
+			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", countCal, strCount, countCal);
+			add_StrLit(strNew);
+			countCal++;
 		}
-		if(strcmp(current->child->note,"float32")==0){
-
+		else if(strcmp(current->child->note,"float32")==0){
+			sprintf(strNew, "@.str.%d = private unnamed_addr constant [7 x i8] c\"%%.08f\\0A\\00\", align 1\n", strCount);
+			add_StrLit(strNew);
 		}
-		if(strcmp(current->child->note,"bool")==0){
-
+		else if(strcmp(current->child->note,"bool")==0){
+			//sprintf(strNew, "@.global.strlit.%d = private unnamed_addr constant [6 x i8] c\"true\\0A\\00\", align 1\n", strCount);
+			// como fazer ???? para true e false 
+			// fazer codigo em llvm para ver o que dá ???
+			sprintf(strNew, "@.str.%d = private unnamed_addr constant [7 x i8] c\"false\\0A\\00\", align 1\n", strCount);
+			add_StrLit(strNew);
 		}
-		if(strcmp(current->child->note,"str")==0){
+		else if(strcmp(current->child->note,"string")==0){
+			char *oldString=current->child->value;  // para remover as aspas
+			char newString[(int)strlen(oldString)-2];
 
-		}
+			int i ;
+			for(i=0;oldString[i+1]!='"';i++){
 
+				newString[i]=oldString[i+1];
+			}
+			newString[i]='\0';
 		
+			sprintf(strNew, "@.str.%d = private unnamed_addr constant [%d x i8] c\"%s\\0A\\00\", align 1\n", strCount,(int )strlen(newString)+2,newString);
+			add_StrLit(strNew);
+			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([%d x i8], [%d x i8]* @.str.%d, i32 0, i32 0))\n",countCal,(int )strlen(newString)+2,(int )strlen(newString)+2,strCount);
+			countCal++;
+		}
+
 		strCount++;
-	}
+		free(strNew);
 
 	}
+	else if(strcmp(current->type,"IntLit")==0){
+		
+	}
+	
 	else{
 		generate_From_Tree(current->child);
-		generate_From_Tree(current->brother);
+		
 	}
 	
 }
@@ -246,9 +281,26 @@ node* get_Node_Of_Func(char *funcName,node* current){
 }
 
 // adiciona a str a lista ligada de listas
+void add_StrLit(char* strAdd){
+	str_list *strAux=strHead;
+	if(!strHead){ // se nao houver nenhum adiciona a cabeca
+		strHead=(str_list *)malloc(sizeof(str_list));
+		strHead->str=(char *)strdup(strAdd);
+		strHead->next=NULL;
+		return;
+	}
 
-void print_Globa_Str(){
-	struct str_list *strAux=srtHead;
+	while(strAux->next){
+		strAux=strAux->next;
+	}
+	strAux->next=(str_list *)malloc(sizeof(str_list));
+	strAux=strAux->next;
+	strAux->str=(char *)strdup(strAdd);
+	strAux->next=NULL;
+
+}
+void print_Global_Str(){
+	struct str_list *strAux=strHead;
 	while(strAux){
 		printf("%s",strAux->str);
 		strAux=strAux->next;
