@@ -3,6 +3,9 @@
 #include "codegen.h"
 
 extern struct func_table *funcHead; 
+struct str_list *srtHead;
+int strCount=0;  // contador de strs global
+
 node* root; 
 void generateCode(node*  current){
 	global_Vars_Fun(current);
@@ -98,8 +101,8 @@ void add_Func(func_table* funcAux){
 	add_Store_Params(paramsAux);
 
 	// gera o código apartir da arvore (semelhante a anotar a arvore ), mas ignorando declaracao de variaveis que ja foi feita em cima
-	node* nodeAux=get_Node_Of_Func(funcAux->name,root);
-	generate_From_Tree(nodeAux);
+	node* nodeAux=get_Node_Of_Func(funcAux->name,root); // aponta para o FuncDecl dessa funcao
+	generate_From_Tree(nodeAux->child); 		// ve apartir do filho se nao vai ver outras funcoes
 	
 
 	// requer um bloco, !!! depois apagar
@@ -182,11 +185,40 @@ void add_Local_Vars(var_table *varAux){
 		varAux=varAux->next;
 	}
 }
-void generate_From_Tree(node* current){  // !!!!!! alterar para que o get node fique fora da funcao para ela ser recuriva !!!!!!
+void generate_From_Tree(node* current){  
+	
+	if(current==NULL){
+		return;
+	}
+	//printf("%s\n",current->type);
+	if(strcmp(current->type,"Print")==0){
+		if(strcmp(current->type,"Print")==0){
+		if(strcmp(current->child->note,"int")==0){
+			printf("\t@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount); // adciona a lista de strlits
+			strCount++;
+			generate_From_Tree(current->brother);
+		}
+		if(strcmp(current->child->note,"float32")==0){
 
+		}
+		if(strcmp(current->child->note,"bool")==0){
+
+		}
+		if(strcmp(current->child->note,"str")==0){
+
+		}
+
+		
+		strCount++;
+	}
+
+	}
+	else{
+		generate_From_Tree(current->child);
+		generate_From_Tree(current->brother);
+	}
 	
 }
-
 
 // vai encontrar o nó pertencente a uma funcao
 node* get_Node_Of_Func(char *funcName,node* current){
@@ -194,7 +226,7 @@ node* get_Node_Of_Func(char *funcName,node* current){
 	if (!current){
 		return NULL;
 	}
-	if(strcmp(current->type,"FuncDecl")==0){
+	if(strcmp(current->type,"FuncDecl")==0&&strcmp(current->child->child->value,funcName)==0){
 		return current;
 
 	}else{
@@ -211,4 +243,14 @@ node* get_Node_Of_Func(char *funcName,node* current){
 		}
 	}	
 	return NULL;
+}
+
+// adiciona a str a lista ligada de listas
+
+void print_Globa_Str(){
+	struct str_list *strAux=srtHead;
+	while(strAux){
+		printf("%s",strAux->str);
+		strAux=strAux->next;
+	}
 }
