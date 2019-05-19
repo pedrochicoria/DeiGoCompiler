@@ -7,9 +7,15 @@ extern struct func_table *funcHead;
 struct str_list *strHead =NULL ;
 int strCount=0;  // contador de strs global
 int countCal= 1; // contador de calls usados para prints
-int operacao=0;
+int operacao=1;
 int registo=0;
 node* root; 
+
+
+
+
+
+
 void generateCode(node*  current){
 	global_Vars_Fun(current);
 }
@@ -208,19 +214,9 @@ void generate_From_Tree(node* current){
 		if(strcmp(current->child->note,"int")==0){
 			//printf("@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount); // adciona a lista de strlits
 			sprintf(strNew,"@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount);
-			if(strcmp(current->child->type,"Id")==0){
-				printf("\t%%%d = load i32, i32* %%%s, align 4\n",countCal,current->child->value);
-				printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", countCal, strCount, countCal);
-			
-			}
-			else if(strcmp(current->child->type,"IntLit")==0){
-
-				printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %s)\n", countCal, strCount, current->child->value);
-			
-			}
-			else{ 			// expressao
-
-			}
+			generate_From_Tree(current->child);
+			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", countCal, strCount, countCal);
+		
 			add_StrLit(strNew);
 			countCal++;
 		}
@@ -256,8 +252,18 @@ void generate_From_Tree(node* current){
 		free(strNew);
 
 	}
-	if(strcmp(current->type,"Add")==0){
-		printf("%%%d");
+	else if(strcmp(current->type,"Add")==0){
+		printf("%%%d = add %%%d, %%%d",operacao);
+
+	}
+	else if(strcmp(current->type,"Id")==0){
+		printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->value);
+		operacao++;
+
+	}
+	else if(strcmp(current->type,"IntLit")==0){
+		printf("\t%%%d = add i32 0, %s\n",operacao,current->value);
+		operacao++;
 	}
 
 	

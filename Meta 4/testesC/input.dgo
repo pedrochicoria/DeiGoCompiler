@@ -1,11 +1,10 @@
 
 package main; 
 func main ( )int {
-    var a int;
-    a=2;
-    fmt.Println(a+a);
+    var a int ;
+    fmt.Println(a);
     fmt.Println(1);
-    fmt.Println(1123);
-    fmt.Println("asd");
+    //fmt.Println(1123);
+    //fmt.Println("asd");
 };
 
