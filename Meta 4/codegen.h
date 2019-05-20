@@ -15,3 +15,4 @@ void generate_From_Tree(node* current);
 node* get_Node_Of_Func(char *funcName,node* current);
 void add_StrLit(char* strAdd);
 void print_Global_Str();
+int isGlobal(char *varName);

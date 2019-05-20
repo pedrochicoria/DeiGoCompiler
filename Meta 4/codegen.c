@@ -6,9 +6,8 @@
 extern struct func_table *funcHead; 
 struct str_list *strHead =NULL ;
 int strCount=0;  // contador de strs global
-int countCal= 1; // contador de calls usados para prints
-int operacao=1;
-int registo=0;
+int operacao=1;  // contador de variaveis temporarias
+
 node* root; 
 
 
@@ -31,7 +30,7 @@ void global_Vars_Fun(node *current){
 				printf("@global.var.%s = common global i32 0, align 4\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"float32")==0){
-				printf("@global.var.%s = common global double 0, align 8\n", funcAux->name);
+				printf("@global.var.%s = common global double 0.0000e+00, align 8\n", funcAux->name);
 			}
 			else if(strcmp(funcAux->type,"bool")==0){
 				printf("@global.var.%s = common global i1 0, align 4\n", funcAux->name);
@@ -49,7 +48,6 @@ void global_Vars_Fun(node *current){
 	while(funcAux){
 		if(funcAux->func==1){
 			add_Func(funcAux);
-
 		}
 		funcAux=funcAux->next;
 	}
@@ -65,47 +63,77 @@ void global_Vars_Fun(node *current){
 }
 void add_Func(func_table* funcAux){
 	printf("define ");
-	if(strcmp(funcAux->type,"int")==0){
+	param_table *paramsAux;
+	if(strcmp(funcAux->name,"main")==0){
 		printf("i32 ");
-	}
-	else if(strcmp(funcAux->type,"float32")==0){
-		printf("double ");
-	}
-	else if(strcmp(funcAux->type,"bool")==0){
-		printf("i1 ");
-	}
-	printf("@%s(",funcAux->name);
+		
+		printf("@%s(",funcAux->name);
 	
-	// ---------------------- Argumentos ----------------------
-	param_table *paramsAux = funcAux->params;
-	while(paramsAux){
-		if(strcmp(paramsAux->type,"int")==0){
+		// ---------------------- Argumentos ----------------------
+		paramsAux = funcAux->params;
+		printf("i32 %%argc, i8** %%argv");
+		printf(") {\n");
+		
+		
+		// adiciona os parametros a funcao
+		paramsAux = funcAux->params;
+		add_Params(paramsAux);
+		printf("\t%%argc_aux = alloca i32, align 4\n");
+		printf("\t%%argv_aux = alloca i8**, align 8\n");
+		printf("\tstore i32 %%argc, i32* %%argc_aux, align 4\n");
+		printf("\tstore i8** %%argv, i8*** %%argv_aux, align 8\n");
+
+	
+	}
+	else{
+		if(strcmp(funcAux->type,"int")==0){
 			printf("i32 ");
 		}
-		else if(strcmp(paramsAux->type,"float32")==0){
+		else if(strcmp(funcAux->type,"float32")==0){
 			printf("double ");
 		}
-		else if(strcmp(paramsAux->type,"bool")==0){
+		else if(strcmp(funcAux->type,"bool")==0){
 			printf("i1 ");
 		}
-		printf("%%");
-		printf("%s",paramsAux->name);
-		if(paramsAux->next){ // para por  a virgula
-				printf(", ");
+		
+		else if(strcmp(funcAux->type,"none")==0){
+			printf("void ");
 		}
-		paramsAux=paramsAux->next;
-	}
-	printf(") {\n");
+		printf("@%s(",funcAux->name);
 	
-	
-	// adiciona os parametros a funcao
-	paramsAux = funcAux->params;
-	add_Params(paramsAux);
+		// ---------------------- Argumentos ----------------------
+		paramsAux = funcAux->params;
+		while(paramsAux){
+			if(strcmp(paramsAux->type,"int")==0){
+				printf("i32 ");
+			}
+			else if(strcmp(paramsAux->type,"float32")==0){
+				printf("double ");
+			}
+			else if(strcmp(paramsAux->type,"bool")==0){
+				printf("i1 ");
+			}
+			printf("%%");
+			printf("%s",paramsAux->name);
+			if(paramsAux->next){ // para por  a virgula
+					printf(", ");
+			}
+			paramsAux=paramsAux->next;
+		}
+		printf(") {\n");
+		
+		// adiciona os parametros a funcao
+		paramsAux = funcAux->params;
+		add_Params(paramsAux);
 
+	}
+	
+	
 	// adciona variaveis locais
 	add_Local_Vars(funcAux->vars);
 
 	// faz store dos parametros
+	paramsAux = funcAux->params;
 	add_Store_Params(paramsAux);
 
 	// gera o código apartir da arvore (semelhante a anotar a arvore ), mas ignorando declaracao de variaveis que ja foi feita em cima
@@ -117,10 +145,25 @@ void add_Func(func_table* funcAux){
 		nodeAux=nodeAux->brother;
 	}
 	
-	
-
-	// requer um bloco, !!! depois apagar
-	printf("\tret i32 1\n");
+	// ver se os returns estao bem
+	if(strcmp(funcAux->name,"main")==0){
+		printf("\tret i32 0\n");
+	}
+	else{
+		if(strcmp(funcAux->type,"int")==0){
+			printf("\tret i32 0\n");
+		}
+		else if(strcmp(funcAux->type,"float32")==0){
+			printf("\tret double 0.0\n");
+		}
+		else if(strcmp(funcAux->type,"bool")==0){
+			printf("\tret i1 true\n");
+		}
+		
+		else if(strcmp(funcAux->type,"none")==0){
+			printf("\tret void \n");
+		}
+	}
 	
 	
 	printf("}\n");
@@ -211,16 +254,16 @@ void generate_From_Tree(node* current){
 			//printf("@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount); // adciona a lista de strlits
 			sprintf(strNew,"@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount);
 			generate_From_Tree(current->child);
-			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", countCal, strCount, countCal);
+			printf("\t%%%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", operacao, strCount, operacao-1);
 			add_StrLit(strNew);
-			countCal++;
+			operacao++;
 		}
 		else if(strcmp(current->child->note,"float32")==0){
 			sprintf(strNew, "@.str.%d = private unnamed_addr constant [7 x i8] c\"%%.08f\\0A\\00\", align 1\n", strCount);
 			generate_From_Tree(current->child);
-			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.%d, i32 0, i32 0), double %%%d)\n", countCal, strCount, countCal);
+			printf("\t%%%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.%d, i32 0, i32 0), double %%%d)\n", operacao, strCount, operacao-1);
 			add_StrLit(strNew);
-			countCal++;
+			operacao++;
 		}
 		else if(strcmp(current->child->note,"bool")==0){
 			//sprintf(strNew, "@.global.strlit.%d = private unnamed_addr constant [6 x i8] c\"true\\0A\\00\", align 1\n", strCount);
@@ -242,13 +285,59 @@ void generate_From_Tree(node* current){
 		
 			sprintf(strNew, "@.str.%d = private unnamed_addr constant [%d x i8] c\"%s\\0A\\00\", align 1\n", strCount,(int )strlen(newString)+2,newString);
 			add_StrLit(strNew);
-			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([%d x i8], [%d x i8]* @.str.%d, i32 0, i32 0))\n",countCal,(int )strlen(newString)+2,(int )strlen(newString)+2,strCount);
-			countCal++;
+			printf("\t%%%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([%d x i8], [%d x i8]* @.str.%d, i32 0, i32 0))\n",operacao,(int )strlen(newString)+2,(int )strlen(newString)+2,strCount);
+			operacao++;
 		}
 
 		strCount++;
 		free(strNew);
 
+	}
+	else if(strcmp(current->type,"VarDecl")==0){
+		//Nao faz nada porque a declaracao de variaveis ja foi feita antes
+		return;
+	}
+	else if(strcmp(current->type,"Assign")==0){
+		if(strcmp(current->child->note,"int")==0){
+			if(isGlobal(current->child->value)){
+				printf("\t%%%d = load i32, i32* @global.var.%s, align 4\n",operacao,current->child->value);
+			}
+			else{
+				printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->child->value);
+			}
+			operacao++;
+			generate_From_Tree(current->child->brother);
+
+			if(isGlobal(current->child->value)){
+				printf("\tstore i32 %%%d, i32* @global.var.%s, align 8\n",operacao-1,current->child->value);
+			}
+			else{
+				printf("\tstore i32 %%%d, i32* %%%s, align 8\n",operacao-1,current->child->value);
+			}
+			
+			generate_From_Tree(current->child);
+		}
+		else if(strcmp(current->child->note,"float32")==0){
+			if(isGlobal(current->child->value)){
+				printf("\t%%%d = load double, double* @global.var.%s, align 4\n",operacao,current->child->value);
+			}
+			else{
+				printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->child->value);
+			}
+			operacao++;
+			generate_From_Tree(current->child->brother);
+			if(isGlobal(current->child->value)){
+				printf("\tstore double %%%d, double* @global.var.%s, align 8\n",operacao-1,current->child->value);
+			}
+			else{
+				printf("\tstore double %%%d, double* %%%s, align 8\n",operacao-1,current->child->value);
+			}
+			
+			generate_From_Tree(current->child);
+		}
+		else if(strcmp(current->child->note,"bool")==0){ // falta fazer aqui !!!
+
+		}
 	}
 	else if(strcmp(current->type,"Add")==0){
 		//printf("%%%d = add %%%d, %%%d",operacao);
@@ -256,11 +345,22 @@ void generate_From_Tree(node* current){
 	}
 	else if(strcmp(current->type,"Id")==0){
 		if(strcmp(current->note,"int")==0){
-			printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->value);
+			if(isGlobal(current->value)){
+				printf("\t%%%d = load i32, i32* @global.var.%s, align 4\n",operacao,current->value);
+			}
+			else{
+				printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->value);
+			}
 			operacao++;
 		}
 		else if(strcmp(current->note,"float32")==0){
-			printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->value);
+			if(isGlobal(current->value)){
+				printf("\t%%%d = load double, double* @global.var.%s, align 4\n",operacao,current->value);
+			}
+			else{
+				printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->value);
+			}
+			
 			operacao++;
 		}
 
@@ -270,10 +370,13 @@ void generate_From_Tree(node* current){
 		operacao++;
 	}
 	else if(strcmp(current->type,"RealLit")==0){
-		// esta mal
-		printf("\t%%%d = fadd double 0.000000e+00, %s00000e+00\n",operacao,current->value);
+		// 
+
+		// ESTA MAL ? CASAS DECIMAIS A MAIS
+		printf("\t%%%d = fadd double 0.000000e+00, %s000000e+00\n",operacao,current->value);
 		operacao++;
 	}
+	
 
 	
 	else{
@@ -333,4 +436,14 @@ void print_Global_Str(){
 		printf("%s",strAux->str);
 		strAux=strAux->next;
 	}
+}
+int isGlobal(char *varName){
+	struct func_table *funcAux=funcHead;
+	while(funcAux){
+		if(strcmp(funcAux->name,varName)==0){
+			return 1;
+		}
+		funcAux=funcAux->next;
+	}
+	return 0;
 }

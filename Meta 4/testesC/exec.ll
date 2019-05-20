@@ -1,28 +1,22 @@
 declare i32 @atoi(i8*)
 declare i32 @printf(i8*, ...)
-define i32 @main() {
-	%a = alloca i32 , align 4
-	%d = alloca double , align 8
-	%1 = load i32, i32* %a, align 4
-	%call1 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.0, i32 0, i32 0), i32 %1)
-	%2 = add i32 0, 1
-	%call2 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.1, i32 0, i32 0), i32 %2)
-	%3 = load i32, i32* %a, align 4
-	%call3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.2, i32 0, i32 0), i32 %3)
-	%4 = add i32 0, 1
-	%call4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.3, i32 0, i32 0), i32 %4)
-	%5 = fadd double 0.000000e+00, 1.000000e+00
-	%call5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.4, i32 0, i32 0), double %5)
-	%6 = load double, double* %d, align 4
-	%7 = load double, double* %d, align 4
-	%call6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.5, i32 0, i32 0), double %6)
-	%call7 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.str.6, i32 0, i32 0))
-	ret i32 1
+@global.var.gl = common global i32 0, align 4
+@global.var.g2 = common global double 0.0000e+00, align 8
+@global.var.b = common global i1 0, align 4
+define i32 @main(i32 %argc, i8** %argv) {
+	%argc_aux = alloca i32, align 4
+	%argv_aux = alloca i8**, align 8
+	store i32 %argc, i32* %argc_aux, align 4
+	store i8** %argv, i8*** %argv_aux, align 8
+	%1 = load double, double* @global.var.g2, align 4
+	%2 = fadd double 0.000000e+00, 1.0111000000e+00
+	store double %2, double* @global.var.g2, align 8
+	%3 = load double, double* @global.var.g2, align 4
+	%4 = load double, double* @global.var.g2, align 4
+	%5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.0, i32 0, i32 0), double %4)
+	ret i32 0
 }
-@.str.0 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@.str.1 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@.str.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@.str.3 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@.str.4 = private unnamed_addr constant [7 x i8] c"%.08f\0A\00", align 1
-@.str.5 = private unnamed_addr constant [7 x i8] c"%.08f\0A\00", align 1
-@.str.6 = private unnamed_addr constant [5 x i8] c"asd\0A\00", align 1
+define void @retorna() {
+	ret void 
+}
+@.str.0 = private unnamed_addr constant [7 x i8] c"%.08f\0A\00", align 1

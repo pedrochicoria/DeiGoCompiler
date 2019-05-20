@@ -1,16 +1,39 @@
 
 package main; 
-func main ( )int {
+var gl int;
+var g2 float32;
+var t string;
+var b bool;
+func main(){
+    g2=1.0111;
+    fmt.Println(g2);
+    /*
+    fmt.Println(g2);
+    gl=1;
+    fmt.Println(gl);
+    
     var a int ;
+    a=1;
     fmt.Println(a);
     fmt.Println(1);
     fmt.Println(a);
     fmt.Println(1);
-    fmt.Println(1.0);
+    fmt.Println(1.00000);
     var d float32;
     d=1.012;
     fmt.Println(d);
-    //fmt.Println(1123);
+    fmt.Println(1123);
+    
     fmt.Println("asd");
+    if(a>1){
+        for(d>123.0){
+
+        }
+    }
+    */
 };
+
+func retorna() {
+
+}
 
