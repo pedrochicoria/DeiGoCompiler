@@ -4,7 +4,13 @@ func main ( )int {
     var a int ;
     fmt.Println(a);
     fmt.Println(1);
+    fmt.Println(a);
+    fmt.Println(1);
+    fmt.Println(1.0);
+    var d float32;
+    d=1.012;
+    fmt.Println(d);
     //fmt.Println(1123);
-    //fmt.Println("asd");
+    fmt.Println("asd");
 };
 

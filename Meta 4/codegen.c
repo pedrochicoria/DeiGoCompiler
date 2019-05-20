@@ -12,10 +12,6 @@ int registo=0;
 node* root; 
 
 
-
-
-
-
 void generateCode(node*  current){
 	global_Vars_Fun(current);
 }
@@ -216,13 +212,15 @@ void generate_From_Tree(node* current){
 			sprintf(strNew,"@.str.%d = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n",strCount);
 			generate_From_Tree(current->child);
 			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.str.%d, i32 0, i32 0), i32 %%%d)\n", countCal, strCount, countCal);
-		
 			add_StrLit(strNew);
 			countCal++;
 		}
 		else if(strcmp(current->child->note,"float32")==0){
 			sprintf(strNew, "@.str.%d = private unnamed_addr constant [7 x i8] c\"%%.08f\\0A\\00\", align 1\n", strCount);
+			generate_From_Tree(current->child);
+			printf("\t%%call%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.%d, i32 0, i32 0), double %%%d)\n", countCal, strCount, countCal);
 			add_StrLit(strNew);
+			countCal++;
 		}
 		else if(strcmp(current->child->note,"bool")==0){
 			//sprintf(strNew, "@.global.strlit.%d = private unnamed_addr constant [6 x i8] c\"true\\0A\\00\", align 1\n", strCount);
@@ -253,16 +251,27 @@ void generate_From_Tree(node* current){
 
 	}
 	else if(strcmp(current->type,"Add")==0){
-		printf("%%%d = add %%%d, %%%d",operacao);
+		//printf("%%%d = add %%%d, %%%d",operacao);
 
 	}
 	else if(strcmp(current->type,"Id")==0){
-		printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->value);
-		operacao++;
+		if(strcmp(current->note,"int")==0){
+			printf("\t%%%d = load i32, i32* %%%s, align 4\n",operacao,current->value);
+			operacao++;
+		}
+		else if(strcmp(current->note,"float32")==0){
+			printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->value);
+			operacao++;
+		}
 
 	}
 	else if(strcmp(current->type,"IntLit")==0){
 		printf("\t%%%d = add i32 0, %s\n",operacao,current->value);
+		operacao++;
+	}
+	else if(strcmp(current->type,"RealLit")==0){
+		// esta mal
+		printf("\t%%%d = fadd double 0.000000e+00, %s00000e+00\n",operacao,current->value);
 		operacao++;
 	}
 
