@@ -64,6 +64,7 @@ void global_Vars_Fun(node *current){
 void add_Func(func_table* funcAux){
 	printf("define ");
 	param_table *paramsAux;
+	// para a main adiciona coisas especificas
 	if(strcmp(funcAux->name,"main")==0){
 		printf("i32 ");
 		
@@ -78,13 +79,15 @@ void add_Func(func_table* funcAux){
 		// adiciona os parametros a funcao
 		paramsAux = funcAux->params;
 		add_Params(paramsAux);
-		printf("\t%%argc_aux = alloca i32, align 4\n");
-		printf("\t%%argv_aux = alloca i8**, align 8\n");
-		printf("\tstore i32 %%argc, i32* %%argc_aux, align 4\n");
-		printf("\tstore i8** %%argv, i8*** %%argv_aux, align 8\n");
+		printf("\t%%argc.addr = alloca i32, align 4\n");
+		printf("\t%%argv.addr = alloca i8**, align 8\n");
+		printf("\tstore i32 %%argc, i32* %%argc.addr, align 4\n");
+		printf("\tstore i8** %%argv, i8*** %%argv.addr, align 8\n");
 
 	
 	}
+	
+	//uma funcao que nao seja a main  
 	else{
 		if(strcmp(funcAux->type,"int")==0){
 			printf("i32 ");
@@ -293,6 +296,38 @@ void generate_From_Tree(node* current){
 		free(strNew);
 
 	}
+	else if(strcmp(current->type,"ParseArgs")==0){
+		// so aceita ser atribuido a int 
+		// so aceita que seja passado um int
+
+		
+		// 				!!!!!!!ATENCAO QUE O QUE ESTA DENTRO DO ATOI PODE SER UMA EXPRESSAO !!!!!!!
+
+		printf("\t%%%d = load i8**, i8*** %%argv.addr, align 8\n",operacao);
+		operacao++;
+
+		// vai buscar o current->child->brother que é o numero do argumento 
+		int operacaoAux=operacao-1;
+		generate_From_Tree(current->child->brother);
+
+
+
+		printf("\t%%%d = getelementptr inbounds i8*, i8** %%%d, i32 %%%d\n",operacao,operacaoAux,operacao-1);
+		operacao++;
+		printf("\t%%%d = load i8*, i8** %%%d, align 8\n",operacao,operacao-1);
+		operacao++;
+		printf("\t%%%d = call i32 @atoi(i8* %%%d)\n",operacao,operacao-1);
+		operacao++;
+		if(isGlobal(current->child->value)==0){
+			printf("\tstore i32 %%%d, i32* %%%s, align 4\n",operacao-1,current->child->value);
+		}
+		else{
+			printf("\tstore i32 %%%d, i32* @global.var.%s, align 4\n",operacao-1,current->child->value);
+		}
+
+
+		
+	}
 	else if(strcmp(current->type,"VarDecl")==0){
 		//Nao faz nada porque a declaracao de variaveis ja foi feita antes
 		return;
@@ -341,7 +376,7 @@ void generate_From_Tree(node* current){
 	}
 	else if(strcmp(current->type,"Add")==0){
 		//printf("%%%d = add %%%d, %%%d",operacao);
-
+		
 	}
 	else if(strcmp(current->type,"Id")==0){
 		if(strcmp(current->note,"int")==0){
@@ -370,6 +405,7 @@ void generate_From_Tree(node* current){
 		operacao++;
 	}
 	else if(strcmp(current->type,"RealLit")==0){
+		
 
 		// ESTA MAL ? CASAS DECIMAIS A MAIS
 		printf("\t%%%d = fadd double 0.000000e+00, %s000000e+00\n",operacao,current->value);
@@ -446,7 +482,6 @@ int isGlobal(char *varName){
 	}
 	return 0;
 }
-
 // funcao que cria a main no caso de o ficheiro estar vazio
 void create_Main(){
 	
