@@ -270,6 +270,7 @@ CMDARGS         "os.Args"
 int main(int argc, char *argv[]){
     line=1;
     column=1;
+
     if (argc>1){
         if(strcmp(argv[1],"-l")==0){
         print=1;
@@ -298,7 +299,9 @@ int main(int argc, char *argv[]){
         }
     }else{
         parse=1;
+            
         yyparse();
+        
         if(syntaxError==0){
                 criaTabelas(root);
                 if(semanticError==0){

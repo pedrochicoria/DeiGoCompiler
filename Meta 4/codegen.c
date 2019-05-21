@@ -370,7 +370,6 @@ void generate_From_Tree(node* current){
 		operacao++;
 	}
 	else if(strcmp(current->type,"RealLit")==0){
-		// 
 
 		// ESTA MAL ? CASAS DECIMAIS A MAIS
 		printf("\t%%%d = fadd double 0.000000e+00, %s000000e+00\n",operacao,current->value);
@@ -446,4 +445,9 @@ int isGlobal(char *varName){
 		funcAux=funcAux->next;
 	}
 	return 0;
+}
+
+// funcao que cria a main no caso de o ficheiro estar vazio
+void create_Main(){
+	
 }

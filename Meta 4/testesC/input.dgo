@@ -1,13 +1,25 @@
 
 package main; 
+/*
 var gl int;
 var g2 float32;
 var t string;
-var b bool;
+
+*/
+var f2 float32 ;
 func main(){
-    g2=1.0111;
-    fmt.Println(g2);
+    
+    var f1 float32 ;
+    
+    f2=-1.0;
+    f1=f2;
+
+    fmt.Println(f1);
+    fmt.Println(f1);
     /*
+    g2=1.0111;
+    fmt.Println(b);
+    
     fmt.Println(g2);
     gl=1;
     fmt.Println(gl);
@@ -29,11 +41,14 @@ func main(){
         for(d>123.0){
 
         }
-    }
-    */
+    }*/
+    
 };
+/*
 
 func retorna() {
 
 }
+*/
+
 
