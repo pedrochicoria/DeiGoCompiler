@@ -311,6 +311,7 @@ void generate_From_Tree(node* current){
 			for(i=0;oldString[i+1]!='"';i++){
 
 				newString[i]=oldString[i+1];
+				
 			}
 			newString[i]='\0';
 		

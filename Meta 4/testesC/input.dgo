@@ -10,7 +10,7 @@ var b bool;
 
 func main(){
     var asd float32;
-    asd=3.0%1.5;
+    asd=3%1;
     fmt.Println(asd);
     /*
     var b bool;
@@ -18,6 +18,8 @@ func main(){
     fmt.Println(!b);
     var a int;
     a=10;
+
+
     a=11%2;
     fmt.Println(a);
     */

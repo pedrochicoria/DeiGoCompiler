@@ -5,4 +5,4 @@ zip -r gocompiler.zip gocompiler.l gocompiler.y ast.h ast.c semantics.c codegen.
 ./gocompiler   -s< testesC/input.dgo
 ./gocompiler   < testesC/input.dgo
  
-lli-3.8 testesC/exec.ll 1001 123 421
+lli testesC/exec.ll 1001 123 421
