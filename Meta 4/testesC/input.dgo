@@ -9,13 +9,18 @@ var b bool;
 */
 
 func main(){
+    var asd float32;
+    asd=3.0%1.5;
+    fmt.Println(asd);
+    /*
     var b bool;
 
     fmt.Println(!b);
     var a int;
-    a=1;
-    a=(2*a)/(4/2);
+    a=10;
+    a=11%2;
     fmt.Println(a);
+    */
     /*
     var a float32;
 

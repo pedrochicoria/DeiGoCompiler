@@ -417,10 +417,9 @@ void generate_From_Tree(node* current){
 	}
 	else if(strcmp(current->type,"Add")==0||strcmp(current->type,"Sub")==0||strcmp(current->type,"Mul")==0||strcmp(current->type,"Div")==0||strcmp(current->type,"Mod")==0){
 		
-		//!!!!!!!!!!!!!!!!!!!!! falta ver se é float !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
 		if(strcmp(current->child->note,"int")==0){
 			if(strcmp(current->type,"Add")==0){
-			
 				generate_From_Tree(current->child);
 				int operacaoAux=operacao;
 				generate_From_Tree(current->child->brother);
@@ -452,8 +451,51 @@ void generate_From_Tree(node* current){
 				printf("\t%%%d = sdiv i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
 				operacao++;
 			}
+			
+			else if(strcmp(current->type,"Mod")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = srem i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
 		}
-		
+		if(strcmp(current->child->note,"float32")==0){
+			if(strcmp(current->type,"Add")==0){
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = fadd double %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
+			else if(strcmp(current->type,"Sub")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = fsub double %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+				
+			}
+			else if(strcmp(current->type,"Mul")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = fmul double %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
+			else if(strcmp(current->type,"Div")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = fdiv double %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
+		}
+
 
 	}
 	else if(strcmp(current->type,"Minus")==0){
