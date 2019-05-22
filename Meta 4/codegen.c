@@ -7,6 +7,7 @@ extern struct func_table *funcHead;
 struct str_list *strHead =NULL ;
 int strCount=0;  // contador de strs global
 int operacao=1;  // contador de variaveis temporarias
+int cmpBool =1;  // usado para fazer comparacao de strings para prints
 
 node* root; 
 
@@ -244,6 +245,7 @@ void add_Local_Vars(var_table *varAux){
 		
 		varAux=varAux->next;
 	}
+	printf("\n"); //facilitar leitura
 }
 void generate_From_Tree(node* current){  
 	
@@ -269,11 +271,37 @@ void generate_From_Tree(node* current){
 			operacao++;
 		}
 		else if(strcmp(current->child->note,"bool")==0){
-			//sprintf(strNew, "@.global.strlit.%d = private unnamed_addr constant [6 x i8] c\"true\\0A\\00\", align 1\n", strCount);
-			// como fazer ???? para true e false 
-			// fazer codigo em llvm para ver o que dá ???
+			generate_From_Tree(current->child);
+			printf("\t%%%d = icmp eq i1 %%%d, 1\n",operacao,cmpBool);
+			printf("\tbr i1 %%%d, label %%compare.if.%d, label %%compare.else.%d\n",operacao-1,cmpBool,cmpBool);
+			operacao++;
+
+			// IF
+			// faz print de true
+			printf("\ncompare.if.%d:\n",cmpBool);
+			printf("\t%%%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str.%d, i32 0, i32 0))\n",operacao,strCount);
+			printf("\tbr label %%compare.end.%d\n",cmpBool);			
+			operacao++;
+
+			// ELSE
+			// faz print de false
+			printf("\ncompare.else.%d:\n",cmpBool);
+			printf("\t%%%d = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.%d, i32 0, i32 0))\n",operacao,strCount+1);
+			printf("\tbr label %%compare.end.%d\n",cmpBool);
+			operacao++;
+			
+			// END
+			printf("\ncompare.end.%d:\n",cmpBool);
+
+			cmpBool++;
+			sprintf(strNew, "@.str.%d = private unnamed_addr constant [6 x i8] c\"true\\0A\\00\", align 1\n", strCount);
+			add_StrLit(strNew);
+			strCount++; // em baixo nao faz isto porque faz mais em baixo
 			sprintf(strNew, "@.str.%d = private unnamed_addr constant [7 x i8] c\"false\\0A\\00\", align 1\n", strCount);
 			add_StrLit(strNew);
+
+
+
 		}
 		else if(strcmp(current->child->note,"string")==0){
 			char *oldString=current->child->value;  // para remover as aspas
@@ -300,9 +328,6 @@ void generate_From_Tree(node* current){
 		// so aceita ser atribuido a int 
 		// so aceita que seja passado um int
 
-		
-		// 				!!!!!!!ATENCAO QUE O QUE ESTA DENTRO DO ATOI PODE SER UMA EXPRESSAO !!!!!!!
-
 		printf("\t%%%d = load i8**, i8*** %%argv.addr, align 8\n",operacao);
 		operacao++;
 
@@ -325,7 +350,6 @@ void generate_From_Tree(node* current){
 			printf("\tstore i32 %%%d, i32* @global.var.%s, align 4\n",operacao-1,current->child->value);
 		}
 
-
 		
 	}
 	else if(strcmp(current->type,"VarDecl")==0){
@@ -344,20 +368,20 @@ void generate_From_Tree(node* current){
 			generate_From_Tree(current->child->brother);
 
 			if(isGlobal(current->child->value)){
-				printf("\tstore i32 %%%d, i32* @global.var.%s, align 8\n",operacao-1,current->child->value);
+				printf("\tstore i32 %%%d, i32* @global.var.%s, align 4\n",operacao-1,current->child->value);
 			}
 			else{
-				printf("\tstore i32 %%%d, i32* %%%s, align 8\n",operacao-1,current->child->value);
+				printf("\tstore i32 %%%d, i32* %%%s, align 4\n",operacao-1,current->child->value);
 			}
-			
-			generate_From_Tree(current->child);
+		
+			generate_From_Tree(current->child); // simplesmente guardar a variavel num novo registo para poder ser usado depois
 		}
 		else if(strcmp(current->child->note,"float32")==0){
 			if(isGlobal(current->child->value)){
-				printf("\t%%%d = load double, double* @global.var.%s, align 4\n",operacao,current->child->value);
+				printf("\t%%%d = load double, double* @global.var.%s, align 8\n",operacao,current->child->value);
 			}
 			else{
-				printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->child->value);
+				printf("\t%%%d = load double, double* %%%s, align 8\n",operacao,current->child->value);
 			}
 			operacao++;
 			generate_From_Tree(current->child->brother);
@@ -367,16 +391,96 @@ void generate_From_Tree(node* current){
 			else{
 				printf("\tstore double %%%d, double* %%%s, align 8\n",operacao-1,current->child->value);
 			}
+
+			generate_From_Tree(current->child); // simplesmente guardar a variavel num novo registo para poder ser usado depois
+		}
+		else if(strcmp(current->child->note,"bool")==0){ // falta aqui
+			
+			if(isGlobal(current->child->value)){
+				printf("\t%%%d = load i1, i1* @global.var.%s, align 4\n",operacao,current->child->value);
+			}
+			else{
+				printf("\t%%%d = load i1, i1* %%%s, align 4\n",operacao,current->child->value);
+			}
+			operacao++;
+			generate_From_Tree(current->child->brother);
+			if(isGlobal(current->child->value)){
+				printf("\tstore i1 %%%d, i1* @global.var.%s, align 4\n",operacao-1,current->child->value);
+			}
+			else{
+				printf("\tstore i1 %%%d, i1* %%%s, align 4\n",operacao-1,current->child->value);
+			}
 			
 			generate_From_Tree(current->child);
-		}
-		else if(strcmp(current->child->note,"bool")==0){ // falta fazer aqui !!!
-
+			
 		}
 	}
-	else if(strcmp(current->type,"Add")==0){
-		//printf("%%%d = add %%%d, %%%d",operacao);
+	else if(strcmp(current->type,"Add")==0||strcmp(current->type,"Sub")==0||strcmp(current->type,"Mul")==0||strcmp(current->type,"Div")==0||strcmp(current->type,"Mod")==0){
 		
+		//!!!!!!!!!!!!!!!!!!!!! falta ver se é float !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		if(strcmp(current->child->note,"int")==0){
+			if(strcmp(current->type,"Add")==0){
+			
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = add i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}	
+			else if(strcmp(current->type,"Sub")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = sub i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+				
+			}
+			else if(strcmp(current->type,"Mul")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = mul i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
+			else if(strcmp(current->type,"Div")==0){
+				
+				generate_From_Tree(current->child);
+				int operacaoAux=operacao;
+				generate_From_Tree(current->child->brother);
+				printf("\t%%%d = sdiv i32 %%%d, %%%d\n",operacao,operacaoAux-1,operacao-1);
+				operacao++;
+			}
+		}
+		
+
+	}
+	else if(strcmp(current->type,"Minus")==0){
+		
+		if(strcmp(current->child->note,"int")==0){
+
+			generate_From_Tree(current->child);
+			printf("\t%%%d = sub nsw i32 0, %%%d\n",operacao,operacao-1);
+		}
+		else if(strcmp(current->child->note,"float32")==0){
+			
+			generate_From_Tree(current->child);
+			printf("\t%%%d = fsub double -0.000000e+00, %%%d\n",operacao,operacao-1);
+		}
+		
+		operacao++;
+	}
+	else if(strcmp(current->type,"And")==0||strcmp(current->type,"Or")==0){
+	
+	}
+	else if(strcmp(current->type,"Not")==0){
+		generate_From_Tree(current->child);
+
+		printf("\t%%%d = zext i1 %%%d to i32\n",operacao,operacao-1);
+		operacao++;
+		printf("\t%%%d = icmp eq i32 %%%d, 0\n",operacao,operacao-1);
+		operacao++;
 	}
 	else if(strcmp(current->type,"Id")==0){
 		if(strcmp(current->note,"int")==0){
@@ -395,7 +499,15 @@ void generate_From_Tree(node* current){
 			else{
 				printf("\t%%%d = load double, double* %%%s, align 4\n",operacao,current->value);
 			}
-			
+			operacao++;
+		}
+		if(strcmp(current->note,"bool")==0){
+			if(isGlobal(current->value)){
+				printf("\t%%%d = load i1, i1* @global.var.%s, align 4\n",operacao,current->value);
+			}
+			else{
+				printf("\t%%%d = load i1, i1* %%%s, align 4\n",operacao,current->value);
+			}
 			operacao++;
 		}
 
@@ -481,8 +593,4 @@ int isGlobal(char *varName){
 		funcAux=funcAux->next;
 	}
 	return 0;
-}
-// funcao que cria a main no caso de o ficheiro estar vazio
-void create_Main(){
-	
 }

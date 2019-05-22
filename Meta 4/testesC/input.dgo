@@ -5,10 +5,23 @@ var gl int;
 var g2 float32;
 var t string;
 
+var b bool;
 */
 
-
 func main(){
+    var b bool;
+
+    fmt.Println(!b);
+    var a int;
+    a=1;
+    a=(2*a)/(4/2);
+    fmt.Println(a);
+    /*
+    var a float32;
+
+    a=-1.0;
+    fmt.Println(a);
+    
     var i2 int ;
 
 
@@ -18,9 +31,11 @@ func main(){
     fmt.Println(i2);
     i2,_ = strconv.Atoi(os.Args[3]);
     fmt.Println(i2);
-    /*
+    
+    
     var f1 float32 ;
     var f3 float32 ;
+    var f2 float32 ;
     f2=1.0;
     f1=f2;
     f3=f1;
@@ -34,9 +49,6 @@ func main(){
     fmt.Println(g2);
     gl=1;
     fmt.Println(gl);
-    
-    var a int ;
-    a=1;
     fmt.Println(a);
     fmt.Println(1);
     fmt.Println(a);
@@ -48,18 +60,20 @@ func main(){
     fmt.Println(1123);
     
     fmt.Println("asd");
-    if(a>1){
-        for(d>123.0){
+    if(a>1.0){
+        for(d>1.0){
 
         }
-    }*/
-    
+    }
+    gl=-gl;
+    */
+
 };
-/*
+
 
 func retorna() {
 
 }
-*/
+
 
 
